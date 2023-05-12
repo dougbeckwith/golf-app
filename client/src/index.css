@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide number arrows on input fields */
+@layer utilities {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* .btn {
+    @apply text-base font-medium rounded-lg py-3 px-4;
+  }
+   .btn--primary {
+    @apply bg-[#14A76C] text-white hover:bg-[#129963];
+  }
+  
+  .btn--secondary {
+    @apply border border-[#4974a5] text-[#4974a5] hover:bg-slate-100;
+  }
+
+  .btn--danger {
+    @apply border border-[#E5625E] text-[#E5625E] hover:bg-slate-100;
+  }
+
+  .btn--small {
+    @apply text-base rounded-md py-2 px-2;
+  }
+  .btn--extra--small {
+    @apply text-base rounded py-0 px-2;
+  }
+
+  .tittle {
+    @apply text-4xl text-black;
+  } */
+
