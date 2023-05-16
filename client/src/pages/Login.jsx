@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
 
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -28,10 +28,28 @@ const Login = () => {
     inputReference.current.focus();
   }, []);
 
+  const updateErrors = () => {
+    if (!email && !password) {
+      setErrors([
+        "Please enter a valid email address",
+        "Please enter a valid password"
+      ]);
+    }
+    if (!password && email) {
+      setErrors(["Please enter a valid password"]);
+    }
+    if (!email && password) {
+      setErrors(["Please enter a valid email address"]);
+    }
+    if (email && password) {
+      setErrors([]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("Login Not Working Yet");
-    setIsloading(true);
+    updateErrors();
+    setIsloading(false);
   };
 
   return (
@@ -39,7 +57,7 @@ const Login = () => {
       <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-400">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
-            Log into Golf Stats
+            Sign In
           </h2>
           <div className="sm:bg-dark-400 px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
             <form>
@@ -74,17 +92,28 @@ const Login = () => {
                   value={password}
                 />
               </div>
-              {error && <p className="text-red">{error}</p>}
+
+              {errors.length > 0 &&
+                errors.map((error, index) => {
+                  return (
+                    <p key={index} className="text-pink-400 text-sm">
+                      {error}
+                    </p>
+                  );
+                })}
+
               <button
                 disabled={isLoading}
                 onClick={handleSubmit}
+                type={"submit"}
                 className="mt-4 w-full bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                Login
+                Sign In
               </button>
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-500 pr-2">Need an account?</p>
                 <button
                   disabled={isLoading}
+                  type={"button"}
                   onClick={navigateToCreateAccount}
                   className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
                   Sign Up
