@@ -9,25 +9,31 @@ const SignUp = () => {
   // State for errors array if any
   const [errors, setErrors] = useState([]);
 
-  // State for email and password inputs
+  // State for email
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // State for email validation
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [emailInputBorderWarning, setEmailInputBorderWarning] = useState(false);
 
+  // State for password
+  const [password, setPassword] = useState("");
   // State for password validation
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isPasswordLongEnough, setIsPassLongEnough] = useState(false);
-  const [
-    passwordHasOneUpperCaseOneLowerCase,
-    setPasswordHasOneUpperCaseOneLowerCase
-  ] = useState(false);
-  const [passwordHasOneSpecialCharacter, setPasswordHasOneSpecialCharacter] =
+  const [isPasswordSixCharactersLong, setIsPasswordSixCharactersLong] =
     useState(false);
   const [passwordInputBorderWarning, setPasswordInputBorderWarning] =
     useState(false);
 
-  // State for email validation
-  const [isEmailValid, setIsEmailValid] = useState(false);
-  const [emailInputBorderWarning, setEmailInputBorderWarning] = useState(false);
+  // State for confirm password
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [bothPasswords, setBothPasswords] = useState({});
+
+  const [
+    confirmIsPasswordMatchingPasswordInputBorderWarning,
+    setConfirmIsPasswordMatchingPasswordInputBorderWarning
+  ] = useState(false);
+
+  const [isPasswordMatching, setIsPasswordMatching] = useState(false);
 
   // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
@@ -40,58 +46,88 @@ const SignUp = () => {
     emailInputRef.current.focus();
   }, []);
 
+  // useEffect(() => {
+  //   console.log(" re render");
+  // }, [password, confirmPassword]);
+
   const handleEmailChange = (e) => {
-    console.log("handle email change");
     setEmail(e.target.value);
     validateEmail(e.target.value);
     setErrors([]);
   };
 
+  const handleEmailBlur = (e) => {
+    validateEmail(e.target.value);
+  };
+
+  const handlePasswordBlur = (e) => {
+    validatePassword(e.target.value);
+  };
+
+  const handleConfirmPasswordBlur = (e) => {
+    validateConfirmPassword(e.target.value);
+  };
+
   const handlePasswordChange = (e) => {
-    console.log("handle password change");
     setPassword(e.target.value);
     validatePassword(e.target.value);
     setErrors([]);
   };
 
-  const validatePassword = (password) => {
-    console.log("validate");
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    validateConfirmPassword(e.target.value);
+  };
+
+  const validatePassword = async (password) => {
+    console.log("password validate (password)", password);
+    console.log("password validate (confirmPassword)", confirmPassword);
+
     if (password.length >= 6) {
-      setIsPassLongEnough(true);
-    } else {
-      setIsPassLongEnough(false);
-    }
-    if (/^(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
-      setPasswordHasOneUpperCaseOneLowerCase(true);
-    } else {
-      setPasswordHasOneUpperCaseOneLowerCase(false);
-    }
-    if (/^(?=.*[-+_!@#$%^&*., ?])/.test(password)) {
-      setPasswordHasOneSpecialCharacter(true);
-    } else {
-      setPasswordHasOneSpecialCharacter(false);
-    }
-    if (
-      password.length >= 6 &&
-      /^(?=.*[a-z])(?=.*[A-Z])/.test(password) &&
-      /^(?=.*[-+_!@#$%^&*., ?])/.test(password)
-    ) {
-      setIsPasswordValid(true);
+      setIsPasswordSixCharactersLong(true);
       setPasswordInputBorderWarning(false);
+      setIsPasswordValid(true);
     } else {
+      setIsPasswordSixCharactersLong(false);
       setPasswordInputBorderWarning(true);
-      setIsPasswordValid(false);
+    }
+    if (confirmPassword.length > 0) {
+      console.log("in here confirm password:", confirmPassword);
+      validateConfirmPassword(confirmPassword);
+    }
+  };
+
+  const validateConfirmPassword = (confirmPassword) => {
+    console.log("confirm password validate (password):", password);
+    console.log("confirm password validate (confirmPassword)", confirmPassword);
+    if (confirmPassword === password) {
+      console.log("passwords match");
+      setConfirmIsPasswordMatchingPasswordInputBorderWarning(false);
+      setIsPasswordMatching(true);
+    } else {
+      console.log("passwords dont match");
+      setConfirmIsPasswordMatchingPasswordInputBorderWarning(true);
+      setIsPasswordMatching(false);
     }
   };
 
   const validateEmail = (email) => {
-    console.log("validate email");
+    // eslint-disable-next-line
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      console.log("validate email ");
       setIsEmailValid(true);
       setEmailInputBorderWarning(false);
     } else {
       setIsEmailValid(false);
       setEmailInputBorderWarning(true);
+    }
+  };
+
+  const validateForm = () => {
+    if (isPasswordMatching && isEmailValid && isPasswordValid) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -119,15 +155,24 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    validatePassword(password);
-    validateEmail(email);
-    updateErrors();
+    // validatePassword(password);
+    // validateEmail(email);
+    const isFormValid = validateForm();
+    if (isFormValid) {
+      // send form data
+      console.log("sending create acccount form data");
+      console.log("password", password);
+      console.log("email", email);
+    } else {
+      updateErrors();
+    }
+
     setIsloading(false);
   };
 
   return (
     <>
-      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-400">
+      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
             Create Account
@@ -136,7 +181,7 @@ const SignUp = () => {
             <form>
               <div>
                 <div className="pb-1 pl-1">
-                  <label htmlFor="email" className="text-lg text-gray-400">
+                  <label htmlFor="email" className="text-lg">
                     Email
                   </label>
                 </div>
@@ -144,23 +189,34 @@ const SignUp = () => {
                   ref={emailInputRef}
                   id="email"
                   type="text"
-                  onChange={handleEmailChange}
+                  onBlur={(e) => handleEmailBlur(e)}
+                  onChange={(e) => handleEmailChange(e)}
                   className={
                     emailInputBorderWarning
-                      ? "bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400 ring-pink-400"
-                      : "bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400 ring-blue-400"
+                      ? "bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-pink-400"
+                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none ${
+                          email.length === 0 || !isEmailValid
+                            ? "border-dark-200 focus:border-blue-400"
+                            : "border-pink-400 focus:border-pink-400"
+                        } ${
+                          isEmailValid &&
+                          "border-green-500 focus:border-green-500"
+                        } `
                   }
-                  placeholder="John@gmail.com"
+                  placeholder="Enter Email Address"
                   value={email}
                 />
               </div>
+
               <div>
                 <div className="flex items-center pt-1 pl-1">
                   {" "}
-                  <p className="h-full text-gray-500 text-xs pr-1">
-                    Valid email address
+                  <p className="h-full text-gray-600 text-xs pr-1">
+                    Enter a valid email
                   </p>
-                  {isEmailValid && <IoCheckmarkCircleOutline color={"green"} />}
+                  {isEmailValid && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
               </div>
 
@@ -173,13 +229,21 @@ const SignUp = () => {
                 <input
                   id="password"
                   type="password"
-                  onChange={handlePasswordChange}
+                  onBlur={(e) => handlePasswordBlur(e)}
+                  onChange={(e) => handlePasswordChange(e)}
                   className={
                     passwordInputBorderWarning
-                      ? "bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400 ring-pink-400"
-                      : "bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400 ring-blue-400"
+                      ? "bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-pink-400 "
+                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2  border-dark-200 focus:outline-none ${
+                          password.length === 0 || !isPasswordValid
+                            ? "border-dark-200 focus:border-blue-400"
+                            : "border-pink-400 focus:border-pink-400"
+                        } ${
+                          isPasswordValid &&
+                          "border-green-500 focus:border-green-500"
+                        } `
                   }
-                  placeholder="Password"
+                  placeholder="Enter Password"
                   value={password}
                 />
               </div>
@@ -187,42 +251,65 @@ const SignUp = () => {
               <div>
                 <div className="flex items-center pt-1 pl-1">
                   {" "}
-                  <p className="h-full text-gray-500 text-xs pr-1">
+                  <p className="h-full text-gray-600 text-xs pr-1">
                     At least 6 characters long
                   </p>
-                  {isPasswordLongEnough && (
-                    <IoCheckmarkCircleOutline color={"green"} />
+                  {isPasswordSixCharactersLong && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
                   )}
                 </div>
               </div>
-              <div>
-                <div className="flex items-center pl-1">
-                  {" "}
-                  <p className="h-full text-gray-500 text-xs pr-1">
-                    At least 1 uppercase and 1 lowercase character
-                  </p>
-                  {passwordHasOneUpperCaseOneLowerCase && (
-                    <IoCheckmarkCircleOutline color={"green"} />
-                  )}
+
+              <div className="pt-5">
+                <div className="pb-1 pl-1">
+                  <label htmlFor="confirmPassword" className="text-lg">
+                    Confirm Password
+                  </label>
                 </div>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  onBlur={(e) => handleConfirmPasswordBlur(e)}
+                  onChange={(e) => handleConfirmPasswordChange(e)}
+                  className={
+                    confirmIsPasswordMatchingPasswordInputBorderWarning
+                      ? "bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-pink-400 "
+                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2  border-dark-200 focus:outline-none ${
+                          confirmPassword.length === 0 && !isPasswordMatching
+                            ? "border-dark-200 focus:border-blue-400"
+                            : "border-pink-400 focus:border-pink-400"
+                        } ${
+                          isPasswordMatching &&
+                          isPasswordValid &&
+                          confirmPassword.length !== 0
+                            ? "border-green-500 focus:border-green-500"
+                            : ""
+                        } `
+                  }
+                  placeholder="Enter Confirm Password"
+                  value={confirmPassword}
+                />
               </div>
+
               <div>
-                <div className="flex items-center pl-1">
+                <div className="flex items-center pt-1 pl-1">
                   {" "}
-                  <p className="h-full text-gray-500 text-xs pr-1">
-                    At least 1 special character !*%^
+                  <p className="h-full text-gray-600 text-xs pr-1">
+                    Passswords must match
                   </p>
-                  {passwordHasOneSpecialCharacter && (
-                    <IoCheckmarkCircleOutline color={"green"} />
+                  {isPasswordMatching && confirmPassword.length !== 0 ? (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  ) : (
+                    <></>
                   )}
                 </div>
               </div>
 
               <button
                 disabled={isLoading}
-                onClick={handleSubmit}
+                onClick={(e) => handleSubmit(e)}
                 type={"submit"}
-                className="mt-10 w-full bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Sign Up
               </button>
 
@@ -236,13 +323,13 @@ const SignUp = () => {
                 })}
 
               <div className="flex w-full justify-center items-center pt-4">
-                <p className="text-gray-500 pr-2">Already have an account?</p>
+                <p className="text-gray-600 pr-2">Already have an account?</p>
                 <Link to={"/login"}>
                   <button
                     disabled={isLoading}
                     onClick={navigateToLogin}
                     type={"button"}
-                    className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
+                    className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
                     Login
                   </button>
                 </Link>

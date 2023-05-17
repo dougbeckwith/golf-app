@@ -29,32 +29,22 @@ const Login = () => {
   }, []);
 
   const updateErrors = () => {
-    if (!email && !password) {
-      setErrors([
-        "Please enter a valid email address",
-        "Please enter a valid password"
-      ]);
-    }
-    if (!password && email) {
-      setErrors(["Please enter a valid password"]);
-    }
-    if (!email && password) {
-      setErrors(["Please enter a valid email address"]);
-    }
-    if (email && password) {
-      setErrors([]);
-    }
+    setErrors(["Invalid email or password"]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    updateErrors();
+    if (email === "" || password === "") {
+      updateErrors();
+      return;
+    }
+
     setIsloading(false);
   };
 
   return (
     <>
-      <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-400">
+      <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
             Sign In
@@ -63,7 +53,7 @@ const Login = () => {
             <form>
               <div>
                 <div className="pb-1 pl-1">
-                  <label htmlFor="email" className="text-lg text-gray-400">
+                  <label htmlFor="email" className="text-lg">
                     Email
                   </label>
                 </div>
@@ -72,7 +62,7 @@ const Login = () => {
                   id="email"
                   type="text"
                   onChange={handleEmailChange}
-                  className="bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
+                  className="bg-dark-200 placeholder-opacity-30 text-gray-400 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
                   placeholder="John@gmail.com"
                   value={email}
                 />
@@ -87,7 +77,7 @@ const Login = () => {
                   id="password"
                   type="password"
                   onChange={handlePasswordChange}
-                  className="bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
+                  className="bg-dark-200 placeholder-opacity-30 text-gray-300 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
                   placeholder="Password"
                   value={password}
                 />
@@ -106,7 +96,7 @@ const Login = () => {
                 disabled={isLoading}
                 onClick={handleSubmit}
                 type={"submit"}
-                className="mt-4 w-full bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Sign In
               </button>
               <div className="flex w-full justify-center items-center pt-4">

@@ -39,6 +39,9 @@ module.exports = {
       red: {
         400: "#ff1744"
       },
+      green: {
+        500: "#0E9F6E"
+      },
       relaxRed: "#D2686E",
       redError: "#ff0000"
       // ...
