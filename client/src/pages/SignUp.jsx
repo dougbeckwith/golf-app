@@ -31,12 +31,7 @@ const SignUp = () => {
     emailInputRef.current.focus();
   }, []);
 
-  // useEffect(() => {
-  //   console.log(" re render");
-  // }, [password, confirmPassword]);
-
   const onInputChange = (e) => {
-    console.log("input change");
     const { name, value } = e.target;
     setInput((prev) => ({
       ...prev,
@@ -46,9 +41,7 @@ const SignUp = () => {
   };
 
   const validateInput = (e) => {
-    console.log("validate input");
     let { name, value } = e.target;
-    console.log(name, value);
     setError((prev) => {
       const stateObj = { ...prev, [name]: "" };
 
@@ -66,13 +59,10 @@ const SignUp = () => {
           if (!value) {
             stateObj[name] = "Please enter Password.";
           }
-          console.log(value);
           if (value.length < 6 && value.length > 0) {
-            console.log("test");
             stateObj[name] = "Password must be at least 6 characters long.";
           }
           if (input.confirmPassword && value !== input.confirmPassword) {
-            console.log("test2");
             stateObj["confirmPassword"] =
               "Password and Confirm Password does not match.";
           } else {
@@ -96,104 +86,20 @@ const SignUp = () => {
     });
   };
 
-  // const handleEmailChange = (e) => {
-  //   setEmail(e.target.value);
-  //   validateEmail(e.target.value);
-  //   setErrors([]);
-  // };
-
-  // const handleEmailBlur = (e) => {
-  //   validateEmail(e.target.value);
-  // };
-
-  // const handlePasswordBlur = (e) => {
-  //   validatePassword(e.target.value);
-  // };
-
-  // const handleConfirmPasswordBlur = (e) => {
-  //   validateConfirmPassword(e.target.value);
-  // };
-
-  // const handlePasswordChange = (e) => {
-  //   setPassword(e.target.value);
-  //   validatePassword(e.target.value);
-  //   setErrors([]);
-  // };
-
-  // const handleConfirmPasswordChange = (e) => {
-  //   setConfirmPassword(e.target.value);
-  //   validateConfirmPassword(e.target.value);
-  // };
-
-  // const validatePassword = async (password) => {
-  //   console.log("password validate (password)", password);
-  //   console.log("password validate (confirmPassword)", confirmPassword);
-
-  //   if (password.length >= 6) {
-  //     setIsPasswordSixCharactersLong(true);
-  //     setPasswordInputBorderWarning(false);
-  //     setIsPasswordValid(true);
-  //   } else {
-  //     setIsPasswordSixCharactersLong(false);
-  //     setPasswordInputBorderWarning(true);
-  //   }
-  //   if (confirmPassword.length > 0) {
-  //     console.log("in here confirm password:", confirmPassword);
-  //     validateConfirmPassword(confirmPassword);
-  //   }
-  // };
-
-  // const validateConfirmPassword = (confirmPassword) => {
-  //   console.log("confirm password validate (password):", password);
-  //   console.log("confirm password validate (confirmPassword)", confirmPassword);
-  //   if (confirmPassword === password) {
-  //     console.log("passwords match");
-  //     setConfirmIsPasswordMatchingPasswordInputBorderWarning(false);
-  //     setIsPasswordMatching(true);
-  //   } else {
-  //     console.log("passwords dont match");
-  //     setConfirmIsPasswordMatchingPasswordInputBorderWarning(true);
-  //     setIsPasswordMatching(false);
-  //   }
-  // };
-
-  // const validateEmail = (email) => {
-  //   // eslint-disable-next-line
-  //   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-  //     console.log("validate email ");
-  //     setIsEmailValid(true);
-  //     setEmailInputBorderWarning(false);
-  //   } else {
-  //     setIsEmailValid(false);
-  //     setEmailInputBorderWarning(true);
-  //   }
-  // };
-
-  // const validateForm = () => {
-  //   if (isPasswordMatching && isEmailValid && isPasswordValid) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
-
-  // const updateErrors = () => {
-  //   if (!isEmailValid && !isPasswordValid) {
-  //     setErrors([
-  //       "Please enter a valid email address",
-  //       "Please enter a valid password"
-  //     ]);
-  //   }
-  //   if (!isEmailValid && isPasswordValid) {
-  //     setErrors(["Please enter a valid email address"]);
-  //   }
-  //   if (isEmailValid && !isPasswordValid) {
-  //     setErrors(["Please enter a valid password"]);
-  //   }
-  //   if (isEmailValid && isPasswordValid) {
-  //     setErrors([]);
-  //   }
-  // };
+  const isSignUpButtonDisabled = () => {
+    if (
+      !error.email &&
+      !error.password &&
+      !error.confirmPassword &&
+      input.email &&
+      input.password &&
+      input.confirmPassword
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const navigateToLogin = () => {
     navigate("/login");
@@ -201,7 +107,8 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e);
+    console.log("submit data to backend to create user");
+    console.log(input);
     setIsloading(false);
   };
 
@@ -239,14 +146,12 @@ const SignUp = () => {
                 />
               </div>
 
-              <div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.email && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.email}
-                    </p>
-                  )}
-                </div>
+              <div className="flex items-center pt-1 pl-1">
+                {error.email && (
+                  <p className="h-full text-pink-400 text-xs pr-1">
+                    {error.email}
+                  </p>
+                )}
               </div>
 
               <div className="pt-5">
@@ -274,14 +179,12 @@ const SignUp = () => {
                 />
               </div>
 
-              <div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.password && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.password}
-                    </p>
-                  )}
-                </div>
+              <div className="flex items-center pt-1 pl-1">
+                {error.password && (
+                  <p className="h-full text-pink-400 text-xs pr-1">
+                    {error.password}
+                  </p>
+                )}
               </div>
 
               <div className="pt-5">
@@ -309,32 +212,21 @@ const SignUp = () => {
                 />
               </div>
 
-              <div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.confirmPassword && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.confirmPassword}
-                    </p>
-                  )}
-                </div>
+              <div className="flex items-center pt-1 pl-1">
+                {error.confirmPassword && (
+                  <p className="h-full text-pink-400 text-xs pr-1">
+                    {error.confirmPassword}
+                  </p>
+                )}
               </div>
 
               <button
-                disabled={isLoading}
+                disabled={isSignUpButtonDisabled()}
                 onClick={handleSubmit}
                 type={"submit"}
                 className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Sign Up
               </button>
-
-              {/* {errors.length > 0 &&
-                errors.map((error, index) => {
-                  return (
-                    <p key={index} className="text-pink-400 text-sm">
-                      {error}
-                    </p>
-                  );
-                })} */}
 
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-600 pr-2">Already have an account?</p>

@@ -4,22 +4,31 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const navigate = useNavigate();
 
-  const [errors, setErrors] = useState([]);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // State for input
+  const [input, setInput] = useState({
+    email: "",
+    password: ""
+  });
+
+  // State for errors
+  const [error, setError] = useState({
+    email: "",
+    password: ""
+  });
 
   // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
   const navigateToCreateAccount = () => {
     navigate("/signup");
+  };
+
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   // Focus input on load
@@ -28,16 +37,17 @@ const Login = () => {
     inputReference.current.focus();
   }, []);
 
-  const updateErrors = () => {
-    setErrors(["Invalid email or password"]);
+  const isSignInButtonDisabled = () => {
+    if (!error.email && !error.password && input.email && input.password) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (email === "" || password === "") {
-      updateErrors();
-      return;
-    }
+    console.log("handle sign in submit");
 
     setIsloading(false);
   };
@@ -59,13 +69,20 @@ const Login = () => {
                 </div>
                 <input
                   ref={inputReference}
-                  id="email"
+                  name="email"
                   type="text"
-                  onChange={handleEmailChange}
-                  className="bg-dark-200 placeholder-opacity-30 text-gray-400 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
+                  onChange={onInputChange}
+                  className={`bg-dark-200 placeholder-opacity-30 text-gray-300 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400`}
                   placeholder="John@gmail.com"
-                  value={email}
+                  value={input.email}
                 />
+                <div className="flex items-center pt-1 pl-1">
+                  {error.email && (
+                    <p className="h-full text-pink-400 text-xs pr-1">
+                      {error.email}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="pt-2 pb-4">
                 <div className="pb-2 pl-1">
@@ -74,26 +91,26 @@ const Login = () => {
                   </label>
                 </div>
                 <input
-                  id="password"
+                  name="password"
                   type="password"
-                  onChange={handlePasswordChange}
+                  onChange={onInputChange}
                   className="bg-dark-200 placeholder-opacity-30 text-gray-300 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
                   placeholder="Password"
-                  value={password}
+                  value={input.password}
                 />
               </div>
 
-              {errors.length > 0 &&
+              {/* {errors.length > 0 &&
                 errors.map((error, index) => {
                   return (
                     <p key={index} className="text-pink-400 text-sm">
                       {error}
                     </p>
                   );
-                })}
+                })} */}
 
               <button
-                disabled={isLoading}
+                disabled={isSignInButtonDisabled()}
                 onClick={handleSubmit}
                 type={"submit"}
                 className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
@@ -102,7 +119,6 @@ const Login = () => {
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-500 pr-2">Need an account?</p>
                 <button
-                  disabled={isLoading}
                   type={"button"}
                   onClick={navigateToCreateAccount}
                   className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
