@@ -1,8 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../context/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
+
+  // State for response errors
+  const [errors, setErrors] = useState([]);
 
   // State for input
   const [input, setInput] = useState({
@@ -45,10 +50,27 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handle sign in submit");
-
+    const credentials = {
+      email: input.email,
+      password: input.password
+    };
+    try {
+      const { user, errors } = await userContext.actions.signIn(credentials);
+      if (user) {
+        console.log("logged in");
+        console.log("user", user);
+        setErrors([]);
+        // navigate to clubs eventually
+      }
+      if (errors) {
+        console.log("errors", errors);
+        setErrors(errors);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     setIsloading(false);
   };
 
@@ -100,14 +122,14 @@ const Login = () => {
                 />
               </div>
 
-              {/* {errors.length > 0 &&
+              {errors.length > 0 &&
                 errors.map((error, index) => {
                   return (
                     <p key={index} className="text-pink-400 text-sm">
                       {error}
                     </p>
                   );
-                })} */}
+                })}
 
               <button
                 disabled={isSignInButtonDisabled()}
