@@ -13,7 +13,8 @@ const userSchema = new Schema(
       required: true
     }
   },
-  { collection: "user-data" }
+  { collection: "user-data" },
+  { strict: true }
 );
 
 // userSchema.path("email").validate(function (email) {

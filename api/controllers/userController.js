@@ -1,12 +1,12 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 // GET a User
 const getUser = async (req, res) => {
-  const { id } = req.params;
   try {
-    const user = await User.findById(id);
-    res.status(200).send(user);
+    res.status(200).json({ user: req.currentUser });
   } catch (error) {
+    console.log(error);
     res.status(400).send({ error: error.message });
   }
 };
@@ -14,11 +14,29 @@ const getUser = async (req, res) => {
 // CREATE new user
 const createUser = async (req, res) => {
   try {
-    // hash password before storing password uising bcrypt
-    const user = await User.create(req.body);
+    console.log("req.body", req.body);
+
+    const myPlaintextPassword = req.body.password;
+    const saltRounds = 10;
+
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(myPlaintextPassword, salt);
+
+    const user = await User.create({
+      email: req.body.email,
+      password: hash
+    });
+
+    console.log("user created:", user);
+    // "User Email already exists"
     res.status(201).end();
-  } catch {
-    res.status(400).send({ error: error.message });
+  } catch (error) {
+    console.log(error);
+    if (error.code === 11000) {
+      res.status(400).send({ error: ["User Email already exists"] });
+    } else {
+      res.status(400).send({ error: [error.message] });
+    }
   }
 };
 
