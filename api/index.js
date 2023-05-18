@@ -5,6 +5,7 @@ require("dotenv").config();
 const cors = require("cors");
 const port = 5000;
 const clubRoutes = require("./routes/clubRoutes");
+const userRoutes = require("./routes/userRoutes");
 const path = require("path");
 
 const connectDataBase = async () => {
@@ -20,6 +21,14 @@ connectDataBase();
 app.use(cors());
 app.use(express.json());
 app.use("/clubs", clubRoutes);
+app.use("/user", userRoutes);
+
+// send 404 if no other route matched
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route Not Found"
+  });
+});
 
 app.use(express.static(path.join(__dirname, "/client/build")));
 
@@ -30,6 +39,7 @@ app.get("*", (req, res) => {
 app.listen(process.env.PORT || port, () => {
   if (process.env.PORT) {
     console.log(`Server listening ${process.env.PORT}`);
+    console.log(process.protocol);
   } else {
     console.log(`Server listening ${port}`);
   }
