@@ -1,10 +1,16 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import UserContext from "../context/UserContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  // User Context
+  const userContext = useContext(UserContext);
+
+  // State for response errors
+  const [errors, setErrors] = useState([]);
 
   // State for errors
   const [error, setError] = useState({
@@ -105,10 +111,41 @@ const SignUp = () => {
     navigate("/login");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submit data to backend to create user");
-    console.log(input);
+
+    // user credentials
+    const credentials = {
+      email: input.email,
+      password: input.confirmPassword
+    };
+
+    // fetch options
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: input.email,
+        password: input.confirmPassword
+      })
+    };
+    try {
+      const response = await fetch(`http://localhost:5000/user`, options);
+      console.log(response);
+      if (response.status === 201) {
+        await userContext.actions.signIn(credentials);
+        // navigate to clubs eventually
+      }
+      if (response.status === 400) {
+        const { error } = await response.json();
+        setErrors(error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     setIsloading(false);
   };
 
@@ -227,7 +264,14 @@ const SignUp = () => {
                 className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Sign Up
               </button>
-
+              {errors.length > 0 &&
+                errors.map((error, index) => {
+                  return (
+                    <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
+                      {error}
+                    </p>
+                  );
+                })}
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-600 pr-2">Already have an account?</p>
                 <Link to={"/login"}>
