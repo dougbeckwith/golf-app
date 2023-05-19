@@ -11,6 +11,13 @@
   }
 }
 
+#nav a.active {
+  background-color: #2d2d30;
+  color: #0E9F6E;
+  /* text-decoration-line: underline; */
+  /* color: white; */
+}
+
 /* .btn {
     @apply text-base font-medium rounded-lg py-3 px-4;
   }

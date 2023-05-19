@@ -172,7 +172,7 @@ const SignUp = () => {
               <div>
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="email" className="text-lg mr-1">
-                    Email
+                    Email address
                   </label>
                   {error.email.length === 0 && input.email.length !== 0 && (
                     <IoCheckmarkCircleOutline className={"text-green-500"} />
@@ -186,10 +186,9 @@ const SignUp = () => {
                   onChange={onInputChange}
                   className={`${
                     error.email
-                      ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                   }`}
-                  placeholder="Enter Email Address"
                   value={input.email}
                 />
               </div>
@@ -219,10 +218,9 @@ const SignUp = () => {
                   onChange={onInputChange}
                   className={`${
                     error.password
-                      ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                   }`}
-                  placeholder="Enter Password"
                   value={input.password}
                 />
               </div>
@@ -252,10 +250,9 @@ const SignUp = () => {
                   onChange={onInputChange}
                   className={`${
                     error.confirmPassword
-                      ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200 placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                   }`}
-                  placeholder="Enter Confirm Password"
                   value={input.confirmPassword}
                 />
               </div>

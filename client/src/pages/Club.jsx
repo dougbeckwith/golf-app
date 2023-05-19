@@ -100,7 +100,7 @@ const Club = () => {
                   </Link>
                   <button
                     onClick={handleDelete}
-                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-red ">
+                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 ">
                     Delete Club
                   </button>
                 </div>

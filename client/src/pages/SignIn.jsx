@@ -91,7 +91,7 @@ const SignIn = () => {
               <div>
                 <div className="pb-1 pl-1">
                   <label htmlFor="email" className="text-lg">
-                    Email
+                    Email Address
                   </label>
                 </div>
                 <input
@@ -99,8 +99,7 @@ const SignIn = () => {
                   name="email"
                   type="text"
                   onChange={onInputChange}
-                  className={`bg-dark-200 placeholder-opacity-30 text-gray-300 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400`}
-                  placeholder="John@gmail.com"
+                  className={`bg-dark-200  text-gray-300  w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400`}
                   value={input.email}
                 />
                 <div className="flex items-center pt-1 pl-1">
@@ -121,8 +120,7 @@ const SignIn = () => {
                   name="password"
                   type="password"
                   onChange={onInputChange}
-                  className="bg-dark-200 placeholder-opacity-30 text-gray-300 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
-                  placeholder="Password"
+                  className="bg-dark-200  text-gray-300  w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
                   value={input.password}
                 />
               </div>
@@ -141,7 +139,7 @@ const SignIn = () => {
                 onClick={handleSubmit}
                 type={"submit"}
                 className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                Sign In
+                Sign in to account
               </button>
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-500 pr-2">Need an account?</p>

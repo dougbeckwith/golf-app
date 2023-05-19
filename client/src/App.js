@@ -23,8 +23,6 @@ const App = () => {
             <Route path="new" element={<AddClub />} />
             <Route path=":id/edit" element={<EditClub />} />
           </Route>
-          {/* <Route path="courses/:id/update" element={<UpdateCourse />} />
-          <Route path="courses/create" element={<CreateCourse />} /> */}
         </Route>
 
         {/* pass layout element to all clubs routes to get navbar*/}

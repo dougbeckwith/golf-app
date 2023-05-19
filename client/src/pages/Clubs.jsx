@@ -64,7 +64,7 @@ const Clubs = () => {
               Club Distances
             </h1>
             <div className="ml-auto">
-              <Link to="/clubs/add">
+              <Link to="/clubs/new">
                 <button
                   type="button"
                   className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 ">
