@@ -16,7 +16,9 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* public routes */}
         <Route element={<PrivateRoute />}>
+          {/* pass layout element to all clubs routes to get navbar*/}
           <Route path="/clubs" element={<Layout />}>
             <Route index element={<Clubs />} />
             <Route path=":id" element={<Club />} />
@@ -24,8 +26,6 @@ const App = () => {
             <Route path=":id/edit" element={<EditClub />} />
           </Route>
         </Route>
-
-        {/* pass layout element to all clubs routes to get navbar*/}
 
         {/* public routes */}
         <Route path="/" element={<Landing />} />
