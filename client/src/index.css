@@ -14,33 +14,6 @@
 #nav a.active {
   background-color: #2d2d30;
   color: #0E9F6E;
-  /* text-decoration-line: underline; */
-  /* color: white; */
 }
 
-/* .btn {
-    @apply text-base font-medium rounded-lg py-3 px-4;
-  }
-   .btn--primary {
-    @apply bg-[#14A76C] text-white hover:bg-[#129963];
-  }
-  
-  .btn--secondary {
-    @apply border border-[#4974a5] text-[#4974a5] hover:bg-slate-100;
-  }
-
-  .btn--danger {
-    @apply border border-[#E5625E] text-[#E5625E] hover:bg-slate-100;
-  }
-
-  .btn--small {
-    @apply text-base rounded-md py-2 px-2;
-  }
-  .btn--extra--small {
-    @apply text-base rounded py-0 px-2;
-  }
-
-  .tittle {
-    @apply text-4xl text-black;
-  } */
 
