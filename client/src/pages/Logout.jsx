@@ -12,9 +12,9 @@ const Logout = () => {
           You've successfully signed out. See you soon!
         </p>
         <div className="mt-10 flex justify-center gap-x-6">
-          <Link to="/login">
+          <Link to="/signin">
             <button className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
-              Login
+              Sign In
             </button>
           </Link>
         </div>

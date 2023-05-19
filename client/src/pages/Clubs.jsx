@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import ClubItem from "./ClubItem";
-import ClubList from "./ClubList";
-import { sortClubsByAvgYards } from "../../helpers";
+import ClubItem from "../components/ClubItem";
+import ClubList from "../components/ClubList";
+import { sortClubsByAvgYards } from "../helpers";
 
 const Clubs = () => {
   const navigate = useNavigate();
@@ -49,9 +49,9 @@ const Clubs = () => {
               overview.{" "}
               <span className="relative whitespace-nowrap text-blue-600 hidden lg:inline-block">
                 {" "}
-                Record{" "}
+                Add{" "}
                 <span className="hidden lg:inline-block relative text-gray-400">
-                  shots
+                  clubs
                 </span>
               </span>{" "}
               <span className="hidden lg:inline-block">

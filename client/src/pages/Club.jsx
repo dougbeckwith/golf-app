@@ -4,9 +4,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { GiGolfTee } from "react-icons/gi";
-import { getAverageYards } from "../../helpers";
-import ShotList from "./ShotList";
-import ShotItem from "./ShotItem";
+import { getAverageYards } from "../helpers";
+import ShotList from "../components/ShotList";
+import ShotItem from "../components/ShotItem";
 
 const Club = () => {
   const navigate = useNavigate();

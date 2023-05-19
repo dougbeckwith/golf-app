@@ -7,7 +7,7 @@ const NotFound = () => {
       <div className="text-center">
         <h1 className="text-7xl mb-8">Oops!</h1>
         <p className="text-4xl mb-8">404 - Page Not Found!</p>
-        <Link to="/clubs">
+        <Link to="/">
           <button
             type="button"
             className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">

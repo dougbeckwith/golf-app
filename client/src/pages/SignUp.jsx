@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const SignUp = () => {
@@ -48,6 +47,11 @@ const SignUp = () => {
 
   const validateInput = (e) => {
     let { name, value } = e.target;
+    // don't show errors if nothing has been typed and blur effect goes off
+    if (name === "email" && value === "") return;
+    if (name === "password" && value === "") return;
+    if (name === "confirmPassword" && value === "") return;
+
     setError((prev) => {
       const stateObj = { ...prev, [name]: "" };
 
@@ -93,6 +97,9 @@ const SignUp = () => {
   };
 
   const isSignUpButtonDisabled = () => {
+    if (isLoading === true) {
+      return true;
+    }
     if (
       !error.email &&
       !error.password &&
@@ -107,12 +114,14 @@ const SignUp = () => {
     }
   };
 
-  const navigateToLogin = () => {
-    navigate("/login");
+  const navigateToSignIn = () => {
+    navigate("/signin");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    //set loading state to disable sign up button
+    setIsloading(true);
 
     // user credentials
     const credentials = {
@@ -131,12 +140,14 @@ const SignUp = () => {
         password: input.confirmPassword
       })
     };
+
+    // send request to create user
     try {
       const response = await fetch(`http://localhost:5000/user`, options);
-      console.log(response);
       if (response.status === 201) {
+        setErrors([]);
         await userContext.actions.signIn(credentials);
-        // navigate to clubs eventually
+        navigate("/clubs");
       }
       if (response.status === 400) {
         const { error } = await response.json();
@@ -274,15 +285,12 @@ const SignUp = () => {
                 })}
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-600 pr-2">Already have an account?</p>
-                <Link to={"/login"}>
-                  <button
-                    disabled={isLoading}
-                    onClick={navigateToLogin}
-                    type={"button"}
-                    className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
-                    Login
-                  </button>
-                </Link>
+                <button
+                  onClick={navigateToSignIn}
+                  type={"button"}
+                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
+                  Sign In
+                </button>
               </div>
             </form>
           </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
-const Login = () => {
+const SignIn = () => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
 
@@ -24,7 +24,7 @@ const Login = () => {
   // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
 
-  const navigateToCreateAccount = () => {
+  const navigateToSignUp = () => {
     navigate("/signup");
   };
 
@@ -43,6 +43,9 @@ const Login = () => {
   }, []);
 
   const isSignInButtonDisabled = () => {
+    if (isLoading === true) {
+      return true;
+    }
     if (!error.email && !error.password && input.email && input.password) {
       return false;
     } else {
@@ -52,25 +55,27 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsloading(true);
+
     const credentials = {
       email: input.email,
       password: input.password
     };
+
     try {
       const { user, errors } = await userContext.actions.signIn(credentials);
       if (user) {
-        console.log("logged in");
-        console.log("user", user);
         setErrors([]);
-        // navigate to clubs eventually
+        navigate("/clubs");
       }
       if (errors) {
-        console.log("errors", errors);
         setErrors(errors);
       }
     } catch (error) {
       console.log(error);
     }
+
     setIsloading(false);
   };
 
@@ -142,7 +147,7 @@ const Login = () => {
                 <p className="text-gray-500 pr-2">Need an account?</p>
                 <button
                   type={"button"}
-                  onClick={navigateToCreateAccount}
+                  onClick={navigateToSignUp}
                   className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
                   Sign Up
                 </button>
@@ -155,4 +160,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
