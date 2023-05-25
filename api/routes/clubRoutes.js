@@ -9,8 +9,10 @@ const {
   deleteClub
 } = require("../controllers/clubController");
 
+const { authenticateUser } = require("../middleware/user-auth");
+
 // Routes
-router.get("/", getClubs);
+router.get("/", authenticateUser, getClubs);
 router.get("/:id", getClub);
 router.post("/", createClub);
 router.patch("/:id", updateClub);

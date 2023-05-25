@@ -9,7 +9,6 @@ const authenticateUser = async (req, res, next) => {
 
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
-
   // check for email and password
   if (!credentials.name) {
     errors.push("Please Enter Email Address");

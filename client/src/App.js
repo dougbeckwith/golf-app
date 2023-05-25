@@ -10,6 +10,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Logout from "./pages/Logout";
+import Handicap from "./pages/Handicap";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
@@ -18,12 +19,15 @@ const App = () => {
       <Routes>
         {/* private routes */}
         <Route element={<PrivateRoute />}>
-          {/* pass layout element to all clubs routes to get navbar*/}
           <Route path="/clubs" element={<Layout />}>
             <Route index element={<Clubs />} />
             <Route path=":id" element={<Club />} />
             <Route path="new" element={<AddClub />} />
             <Route path=":id/edit" element={<EditClub />} />
+          </Route>
+
+          <Route path="/handicap" element={<Layout />}>
+            <Route index element={<Handicap />} />
           </Route>
         </Route>
 

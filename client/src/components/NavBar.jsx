@@ -24,16 +24,9 @@ const Navbar = () => {
         </p>
         {/* Desktop Links */}
         <ul className="hidden md:flex">
-          <li id="nav" className="font-medium py-10 ml-10">
-            <NavLink
-              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-1 rounded-md"
-              to="/dashboard">
-              Dashboard
-            </NavLink>
-          </li>
           <li id="nav" className="font-medium py-10 ml-2">
             <NavLink
-              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-1 rounded-md"
+              className="text-gray-400  hover:bg-dark-200 hover:text-white ml-8 px-3 py-1 rounded-md"
               to="/clubs"
               end>
               Clubs
@@ -70,13 +63,7 @@ const Navbar = () => {
           id="nav"
           onClick={toggleIcon}
           className=" text-2xl absolute md:hidden top-[90px] left-0 w-full h-screen bg-dark-400 flex flex-col items-center z-10">
-          <li className=" px-3 font-medium py-10">
-            <NavLink
-              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
-              to="/dashboard">
-              Dashboard
-            </NavLink>
-          </li>
+          <li className=" px-3 font-medium py-10"></li>
           <li className=" px-3 font-medium py-10">
             <NavLink
               className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
@@ -93,6 +80,7 @@ const Navbar = () => {
           </li>
           <li className=" px-3 font-medium py-10">
             <NavLink
+              onClick={handleSignOut}
               className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
               to="/">
               Logout

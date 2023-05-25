@@ -3,7 +3,7 @@ const Club = require("../models/Club");
 // GET all clubs
 const getClubs = async (req, res) => {
   try {
-    const clubs = await Club.find({});
+    const clubs = await Club.find({ user: req.currentUser._id });
     res.status(200).send(clubs);
   } catch (error) {
     res.status(400).send({ error: error.message });
@@ -26,6 +26,8 @@ const getClub = async (req, res) => {
 const createClub = async (req, res) => {
   try {
     const club = await Club.create(req.body);
+    // mabewy don't need to send the club back here
+    // if success we can update data on the front end?
     res.status(200).send(club);
   } catch {
     res.status(400).send({ error: error.message });
@@ -92,6 +94,8 @@ const deleteClub = async (req, res) => {
 
   try {
     await Club.findByIdAndDelete(id);
+    // mabey don't need to do another datbase query here instead
+    // if success we can update the clubs on the front end.
     const clubs = await Club.find({});
     res.status(200).send(clubs);
   } catch (error) {

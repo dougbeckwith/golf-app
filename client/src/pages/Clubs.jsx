@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import ClubItem from "../components/ClubItem";
 import ClubList from "../components/ClubList";
 import { sortClubsByAvgYards } from "../helpers";
+import UserContext from "../context/UserContext";
 
 const Clubs = () => {
   const navigate = useNavigate();
+
+  const { authUser } = useContext(UserContext);
 
   const [clubData, setClubData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,14 +18,33 @@ const Clubs = () => {
   useEffect(() => {
     const getAllClubData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_CYCLIC_URL}/clubs`
+        const encodedCredentials = btoa(
+          `${authUser.email}:${authUser.password}`
         );
-        const data = sortClubsByAvgYards(response.data);
-        let highestAvgShot = data[0].avgYards;
-        setHighestAvgShot(highestAvgShot);
-        setClubData(data);
-        setIsLoading(false);
+
+        const options = {
+          method: "GET",
+          headers: {
+            Authorization: `Basic ${encodedCredentials}`
+          }
+        };
+
+        const response = await fetch(`http://localhost:5000/clubs`, options);
+        if (response.status === 200) {
+          const data = await response.json();
+          if (data.length !== 0) {
+            const sortedData = sortClubsByAvgYards(data);
+            let highestAvgShot = sortedData[0].avgYards;
+            setHighestAvgShot(highestAvgShot);
+            console.log(sortedData);
+            setClubData(sortedData);
+            setIsLoading(false);
+          } else {
+            setIsLoading(false);
+          }
+        } else {
+          console.log(response);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -40,27 +61,16 @@ const Clubs = () => {
 
   return (
     <>
-      <div className="px-5 lg:px-0 lg:pt-7 w-full bg-dark-400 min-h-screen max-h-min">
+      <div className="px-5 lg:px-0 md:pt-7 w-full bg-dark-400 min-h-screen max-h-min">
         <div className="container m-auto">
-          <div className="pb-10 pt-10">
-            <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl">
-              <span className="text-gray-400">Welcome</span> to your{" "}
-              <span className="relative text-blue-400">club</span> distance
-              overview.{" "}
-              <span className="relative whitespace-nowrap text-blue-600 hidden lg:inline-block">
-                {" "}
-                Add{" "}
-                <span className="hidden lg:inline-block relative text-gray-400">
-                  clubs
-                </span>
-              </span>{" "}
-              <span className="hidden lg:inline-block">
-                to track distances.
-              </span>
+          <div className="pb-10  hidden md:block">
+            <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl ">
+              Add clubs to track your distances.
             </h1>
           </div>
+
           <div className="w-full flex items-center mb-3 ">
-            <h1 className="text-gray-400 text-2xl font-semibold">
+            <h1 className="text-gray-500 text-2xl font-semibold">
               Club Distances
             </h1>
             <div className="ml-auto">

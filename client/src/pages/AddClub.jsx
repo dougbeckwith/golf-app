@@ -1,7 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../context/UserContext";
 
 const AddClub = () => {
   const navigate = useNavigate();
@@ -10,10 +11,11 @@ const AddClub = () => {
   const [nameMessage, setNameMessage] = useState(false);
   const [brandMessage, setBrandMessage] = useState(false);
 
+  const { authUser } = useContext(UserContext);
+
   // Add club to database
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Check if inputs are valid
     if (inputValid(clubName) && inputValid(clubBrand)) {
       try {
@@ -25,7 +27,7 @@ const AddClub = () => {
             brand: clubBrand,
             shots: [],
             totalShots: 0,
-            avgYards: 0
+            user: authUser._id
           }
         );
 
@@ -120,6 +122,7 @@ const AddClub = () => {
                 </p>
               </div>
               <button
+                type="submit"
                 onClick={handleSubmit}
                 className="mt-4 w-full bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Add Club

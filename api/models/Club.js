@@ -6,7 +6,8 @@ const clubSchema = new Schema(
     clubName: String,
     brand: String,
     shots: Array,
-    totalShots: Number
+    totalShots: Number,
+    user: { type: mongoose.Types.ObjectId, ref: "User" }
   },
   { collection: "club-data" }
 );
