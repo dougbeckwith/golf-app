@@ -12,6 +12,8 @@ import NotFound from "./pages/NotFound";
 import Logout from "./pages/Logout";
 import Handicap from "./pages/Handicap";
 import PrivateRoute from "./components/PrivateRoute";
+import Forbidden from "./pages/Forbidden";
+import UnhandledError from "./pages/UnhandledError";
 
 const App = () => {
   return (
@@ -36,6 +38,8 @@ const App = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/error" element={<UnhandledError />} />
+        <Route path="/forbidden" element={<Forbidden />} />
 
         {/* catch any non matching routes */}
         <Route path="*" element={<NotFound />} />

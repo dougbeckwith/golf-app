@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import ClubItem from "../components/ClubItem";
 import ClubList from "../components/ClubList";
-import { sortClubsByAvgYards } from "../helpers";
+import { sortClubsByDistance } from "../helpers";
 import UserContext from "../context/UserContext";
 
 const Clubs = () => {
@@ -11,9 +11,8 @@ const Clubs = () => {
 
   const { authUser } = useContext(UserContext);
 
-  const [clubData, setClubData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [highestAvgShot, setHighestAvgShot] = useState(0);
+  const [clubs, setClubs] = useState([]);
+  const [longestTotalDistance, setlongestTotalDistance] = useState(0);
 
   useEffect(() => {
     const getAllClubData = async () => {
@@ -29,18 +28,18 @@ const Clubs = () => {
           }
         };
 
-        const response = await fetch(`http://localhost:5000/clubs`, options);
+        const response = await fetch(
+          `${process.env.REACT_APP_CYCLIC_URL}/clubs`,
+          options
+        );
         if (response.status === 200) {
           const data = await response.json();
           if (data.length !== 0) {
-            const sortedData = sortClubsByAvgYards(data);
-            let highestAvgShot = sortedData[0].avgYards;
-            setHighestAvgShot(highestAvgShot);
-            console.log(sortedData);
-            setClubData(sortedData);
-            setIsLoading(false);
-          } else {
-            setIsLoading(false);
+            const sortedClubs = sortClubsByDistance(data);
+            let longestTotalDistance = sortedClubs[0].avgYards;
+            setlongestTotalDistance(longestTotalDistance);
+            console.log(sortedClubs);
+            setClubs(sortedClubs);
           }
         } else {
           console.log(response);
@@ -56,12 +55,13 @@ const Clubs = () => {
   }, []);
 
   const handleClick = (id) => {
+    console.log(id);
     navigate(`/clubs/${id}`);
   };
 
   return (
     <>
-      <div className="px-5 lg:px-0 md:pt-7 w-full bg-dark-400 min-h-screen max-h-min">
+      <div className="px-5 lg:px-0 md:pt-7 w-full bg-dark-500  min-h-screen max-h-min">
         <div className="container m-auto">
           <div className="pb-10  hidden md:block">
             <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl ">
@@ -84,21 +84,17 @@ const Clubs = () => {
             </div>
           </div>
 
-          {isLoading ? (
-            <div>Loading</div>
-          ) : (
-            <>
-              <ClubList>
-                {clubData.map((club) => (
-                  <ClubItem
-                    key={uuidv4()}
-                    club={club}
-                    handleClick={handleClick}
-                    highestAvgShot={highestAvgShot}
-                  />
-                ))}
-              </ClubList>
-            </>
+          {clubs && (
+            <ClubList>
+              {clubs.map((club) => (
+                <ClubItem
+                  key={uuidv4()}
+                  club={club}
+                  handleClick={handleClick}
+                  longestTotalDistance={longestTotalDistance}
+                />
+              ))}
+            </ClubList>
           )}
         </div>
       </div>

@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 // GET a User
 const getUser = async (req, res) => {
   try {
-    res.status(200).json({ user: req.currentUser });
+    res.status(200).send({ user: req.currentUser });
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
@@ -27,8 +27,6 @@ const createUser = async (req, res) => {
       password: hash
     });
 
-    console.log("user created:", user);
-    // "User Email already exists"
     res.status(201).end();
   } catch (error) {
     console.log(error);

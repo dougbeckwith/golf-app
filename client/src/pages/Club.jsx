@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { GiGolfTee } from "react-icons/gi";
-import { getAverageYards } from "../helpers";
+import { getAverageTotalDistance } from "../helpers";
 import ShotList from "../components/ShotList";
 import ShotItem from "../components/ShotItem";
+import UserContext from "../context/UserContext";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Club = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [shot, setShot] = useState("");
 
+  const { authUser } = useContext(UserContext);
+
   // Navigate to clubs page
   const navigateToClubs = () => {
     navigate("/clubs");
@@ -25,11 +28,38 @@ const Club = () => {
   // GET club and set club state
   useEffect(() => {
     const fetchClub = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`
-      );
-      setClub(response.data);
-      setIsLoading(false);
+      try {
+        const encodedCredentials = btoa(
+          `${authUser.email}:${authUser.password}`
+        );
+
+        // fetch options
+        const options = {
+          method: "GET",
+          headers: {
+            Authorization: `Basic ${encodedCredentials}`
+          }
+        };
+        // send request to get club
+        const response = await fetch(
+          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+          options
+        );
+
+        if (response.status === 200) {
+          const data = await response.json();
+          setClub(data);
+          setIsLoading(false);
+        } else if (response.status === 400) {
+          navigate("/notfound");
+        } else if (response.status === 401) {
+          navigate("/forbidden");
+        } else if (response.status === 500) {
+          navigate("/error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchClub();
     // eslint-disable-next-line
@@ -132,7 +162,7 @@ const Club = () => {
                     <div className="pl-5">
                       <p className="text-gray-400 text-sm">Avg Yards</p>
                       <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{getAverageYards(club)}</span>
+                        <span>{getAverageTotalDistance(club)}</span>
                       </div>
                     </div>
                   </div>

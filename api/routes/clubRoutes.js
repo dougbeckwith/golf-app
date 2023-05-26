@@ -13,9 +13,9 @@ const { authenticateUser } = require("../middleware/user-auth");
 
 // Routes
 router.get("/", authenticateUser, getClubs);
-router.get("/:id", getClub);
-router.post("/", createClub);
-router.patch("/:id", updateClub);
-router.delete("/:id", deleteClub);
+router.get("/:id", authenticateUser, getClub);
+router.post("/", authenticateUser, createClub);
+router.patch("/:id", authenticateUser, updateClub);
+router.delete("/:id", authenticateUser, deleteClub);
 
 module.exports = router;

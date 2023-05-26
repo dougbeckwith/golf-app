@@ -26,7 +26,10 @@ export const UserProvider = (props) => {
       }
     };
     try {
-      const response = await fetch("http://localhost:5000/user", fetchOptions);
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/user`,
+        fetchOptions
+      );
       if (response.status === 200) {
         const { user } = await response.json();
         Cookies.set("authenticatedUser", JSON.stringify(user), {

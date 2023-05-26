@@ -1,18 +1,14 @@
 import React from "react";
-import { getAverageYards } from "../helpers";
+import { getAverageTotalDistance, getDistanceBarPercentage } from "../helpers";
 
-const ClubItem = ({ club, handleClick, highestAvgShot }) => {
+const ClubItem = ({ club, handleClick, longestTotalDistance }) => {
   const id = club._id;
-  let avgYards = getAverageYards(club);
+  let averageTotalDistance = getAverageTotalDistance(club);
 
-  // To dynamicly style the distance bar width
-  const getDistanceBarPercentage = (avgYards, highestAvgShot) => {
-    const percentage = (avgYards / highestAvgShot).toFixed(2) + "%";
-    if (percentage[0] === "1") {
-      return "100%";
-    } else return percentage.slice(2);
-  };
-  const widthPercentage = getDistanceBarPercentage(avgYards, highestAvgShot);
+  const widthPercentage = getDistanceBarPercentage(
+    averageTotalDistance,
+    longestTotalDistance
+  );
 
   return (
     <>
@@ -23,10 +19,10 @@ const ClubItem = ({ club, handleClick, highestAvgShot }) => {
           <p className="">{club.clubName}</p>
           <span className="px-2 hidden sm:block">-</span>
           <p className="hidden sm:block">{club.brand}</p>
-          {avgYards === 0 ? (
+          {averageTotalDistance === 0 ? (
             <p className="ml-auto pr-4">0 yrds</p>
           ) : (
-            <p className="ml-auto pr-4">{avgYards} yrds</p>
+            <p className="ml-auto pr-4">{averageTotalDistance} yrds</p>
           )}
         </div>
         <div

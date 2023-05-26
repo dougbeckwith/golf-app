@@ -18,7 +18,7 @@ const SignUp = () => {
     confirmPassword: ""
   });
 
-  // State for input
+  // State for form input
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -36,6 +36,7 @@ const SignUp = () => {
     emailInputRef.current.focus();
   }, []);
 
+  // update form state and validate form
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({
@@ -45,8 +46,10 @@ const SignUp = () => {
     validateInput(e);
   };
 
+  // validate form
   const validateInput = (e) => {
     let { name, value } = e.target;
+
     // don't show errors if nothing has been typed and blur effect goes off
     if (name === "email" && value === "") return;
     if (name === "password" && value === "") return;
@@ -120,10 +123,11 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     //set loading state to disable sign up button
     setIsloading(true);
 
-    // user credentials
+    // set credentials from form state
     const credentials = {
       email: input.email,
       password: input.confirmPassword
@@ -143,12 +147,19 @@ const SignUp = () => {
 
     // send request to create user
     try {
-      const response = await fetch(`http://localhost:5000/user`, options);
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/user`,
+        options
+      );
+
+      // if user created sign in user
       if (response.status === 201) {
         setErrors([]);
         await userContext.actions.signIn(credentials);
         navigate("/clubs");
       }
+
+      // if status 400 set errors
       if (response.status === 400) {
         const { error } = await response.json();
         setErrors(error);
