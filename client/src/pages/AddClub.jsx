@@ -159,7 +159,7 @@ const AddClub = () => {
 
   return (
     <>
-      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
+      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
             Add Club
@@ -198,7 +198,7 @@ const AddClub = () => {
                 )}
               </div>
 
-              <div className="pt-5">
+              <div className="pt-2">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="brand" className="text-lg mr-1">
                     Brand
@@ -229,7 +229,7 @@ const AddClub = () => {
                   </p>
                 )}
               </div>
-              <div className="pt-5">
+              <div className="pt-2">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="totalCarry" className="text-lg mr-1">
                     Total Carry (Yards)
@@ -261,7 +261,7 @@ const AddClub = () => {
                   </p>
                 )}
               </div>
-              <div className="pt-5">
+              <div className="pt-2">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="totalDistance" className="text-lg mr-1">
                     Total Distance (Yards)

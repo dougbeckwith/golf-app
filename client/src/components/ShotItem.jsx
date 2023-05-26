@@ -1,27 +1,50 @@
-import React from "react";
-import axios from "axios";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { MdOutlineGolfCourse } from "react-icons/md";
+import UserContext from "../context/UserContext";
 
 const ShotItem = ({ setClub, club, shot }) => {
   const params = useParams();
   const id = params.id;
 
+  const { authUser } = useContext(UserContext);
+
   // UPDATE club remove (shot)
   const deleteShot = async () => {
+    console.log("delte shot");
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+      // const response = await axios.patch(
+      //   `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+      //   {
+      //     deleteShot: true,
+      //     shotId: shot.shotId,
+      //     club: club
+      //   }
+      // );
 
-        {
+      const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+
+      // fetch options
+      const options = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${encodedCredentials}`
+        },
+        body: JSON.stringify({
           deleteShot: true,
-          shotId: shot.id,
-          club: club
-        }
+          shotId: shot.shotId
+        })
+      };
+      // send request to update club (delete shot)
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        options
       );
+      console.log(response);
       // Update club state and update avgYards state
       if (response.status === 200) {
-        setClub(response.data);
+        //remove shot here
       }
     } catch (err) {
       console.log(err);
@@ -38,9 +61,15 @@ const ShotItem = ({ setClub, club, shot }) => {
             </div>
           </div>
           <div>
-            <p className="text-gray-400 text-sm">Yards</p>
+            <p className="text-gray-400 text-sm">Total</p>
             <div className="text-blue-400 text-xl font-bold">
-              <span>{shot.yards}</span>
+              <span>{shot.totalDistance}</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-gray-400 text-sm">Carry</p>
+            <div className="text-blue-400 text-xl font-bold">
+              <span>{shot.totalCarry}</span>
             </div>
           </div>
           <button

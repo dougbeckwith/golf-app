@@ -13,6 +13,10 @@ const Clubs = () => {
 
   const [clubs, setClubs] = useState([]);
   const [longestTotalDistance, setlongestTotalDistance] = useState(0);
+  // TO DO
+  // Add longest Carry Distance state
+  // Give option to user to filter by carry or total
+  // Change what is displayed to user based on filter selection
 
   useEffect(() => {
     const getAllClubData = async () => {
@@ -35,10 +39,10 @@ const Clubs = () => {
         if (response.status === 200) {
           const data = await response.json();
           if (data.length !== 0) {
-            const sortedClubs = sortClubsByDistance(data);
-            let longestTotalDistance = sortedClubs[0].avgYards;
-            setlongestTotalDistance(longestTotalDistance);
+            const sortedClubs = sortClubsByDistance(data, "totalDistance");
             console.log(sortedClubs);
+            let longestTotalDistance = sortedClubs[0].averageDistance;
+            setlongestTotalDistance(longestTotalDistance);
             setClubs(sortedClubs);
           }
         } else {
@@ -55,7 +59,6 @@ const Clubs = () => {
   }, []);
 
   const handleClick = (id) => {
-    console.log(id);
     navigate(`/clubs/${id}`);
   };
 
@@ -63,14 +66,8 @@ const Clubs = () => {
     <>
       <div className="px-5 lg:px-0 md:pt-7 w-full bg-dark-500  min-h-screen max-h-min">
         <div className="container m-auto">
-          <div className="pb-10  hidden md:block">
-            <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl ">
-              Add clubs to track your distances.
-            </h1>
-          </div>
-
           <div className="w-full flex items-center mb-3 ">
-            <h1 className="text-gray-500 text-2xl font-semibold">
+            <h1 className="text-gray-400 text-2xl font-semibold">
               Club Distances
             </h1>
             <div className="ml-auto">
@@ -83,8 +80,12 @@ const Clubs = () => {
               </Link>
             </div>
           </div>
+          <select name="clubs" id="clubs">
+            <option value="carry">Carry</option>
+            <option value="total">Total</option>
+          </select>
 
-          {clubs && (
+          {clubs && clubs.length !== 0 ? (
             <ClubList>
               {clubs.map((club) => (
                 <ClubItem
@@ -95,6 +96,12 @@ const Clubs = () => {
                 />
               ))}
             </ClubList>
+          ) : (
+            <div className="pb-10  hidden md:block">
+              <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl ">
+                Add clubs to track your distances.
+              </h1>
+            </div>
           )}
         </div>
       </div>

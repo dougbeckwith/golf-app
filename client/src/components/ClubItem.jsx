@@ -1,9 +1,9 @@
 import React from "react";
-import { getAverageTotalDistance, getDistanceBarPercentage } from "../helpers";
+import { getAverageDistance, getDistanceBarPercentage } from "../helpers";
 
 const ClubItem = ({ club, handleClick, longestTotalDistance }) => {
   const id = club._id;
-  let averageTotalDistance = getAverageTotalDistance(club);
+  let averageTotalDistance = getAverageDistance(club, "totalDistance");
 
   const widthPercentage = getDistanceBarPercentage(
     averageTotalDistance,
@@ -14,15 +14,15 @@ const ClubItem = ({ club, handleClick, longestTotalDistance }) => {
     <>
       <div
         onClick={() => handleClick(id)}
-        className="text-gray-500 flex flex-col w-full rounded-md  mb-2 bg-dark-400 items-center justify-between hover:bg-dark-200 hover:cursor-pointer">
+        className="text-gray-500 flex flex-col w-full rounded-md  mb-2 bg-dark-400 items-center justify-between hover:bg-dark-200 hover:cursor-pointer px-2">
         <div className="flex w-full pb-2">
-          <p className="">{club.clubName}</p>
+          <p className="">{club.club}</p>
           <span className="px-2 hidden sm:block">-</span>
           <p className="hidden sm:block">{club.brand}</p>
           {averageTotalDistance === 0 ? (
             <p className="ml-auto pr-4">0 yrds</p>
           ) : (
-            <p className="ml-auto pr-4">{averageTotalDistance} yrds</p>
+            <p className="ml-auto pr-4">{averageTotalDistance} yards</p>
           )}
         </div>
         <div

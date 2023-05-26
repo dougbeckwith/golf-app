@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { GiGolfTee } from "react-icons/gi";
-import { getAverageTotalDistance } from "../helpers";
+import { getAverageDistance } from "../helpers";
 import ShotList from "../components/ShotList";
 import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -16,7 +16,23 @@ const Club = () => {
 
   const [club, setClub] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const [shot, setShot] = useState("");
+
+  // State for response errors
+  // const [errors, setErrors] = useState([]);
+
+  // State for errors
+  const [error, setError] = useState({
+    totalCarry: "",
+    totalDistance: ""
+  });
+
+  const [shot, setShot] = useState({
+    totalCarry: "",
+    totalDistance: ""
+  });
+
+  const [avgTotalCarry, setAvgTotalCarry] = useState("");
+  const [avgTotalDistance, setAvgTotalDistance] = useState("");
 
   const { authUser } = useContext(UserContext);
 
@@ -40,6 +56,7 @@ const Club = () => {
             Authorization: `Basic ${encodedCredentials}`
           }
         };
+
         // send request to get club
         const response = await fetch(
           `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
@@ -47,61 +64,185 @@ const Club = () => {
         );
 
         if (response.status === 200) {
-          const data = await response.json();
-          setClub(data);
+          const club = await response.json();
+          setClub(club);
+          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
+          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           setIsLoading(false);
-        } else if (response.status === 400) {
+        }
+
+        if (response.status === 400) {
           navigate("/notfound");
-        } else if (response.status === 401) {
+        }
+
+        if (response.status === 401) {
           navigate("/forbidden");
-        } else if (response.status === 500) {
+        }
+
+        if (response.status === 500) {
           navigate("/error");
         }
       } catch (error) {
         console.log(error);
       }
     };
+
     fetchClub();
     // eslint-disable-next-line
   }, []);
 
-  // DELETE club and navigate to clubs page
+  // DELETE club
   const handleDelete = async () => {
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+
+    // fetch options
+    const options = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`
+      }
+    };
+
+    // prompt user on delete
     const answer = prompt(
       "Are you sure you want to delete? enter delete to confirm"
     );
+
     if (answer === "delete") {
       try {
-        const response = await axios.delete(
-          `${process.env.REACT_APP_CYCLIC_URL}/api/clubs/${id}`
+        // send request to delete club
+        const response = await fetch(
+          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+          options
         );
-        if (response.status === 200) {
+
+        if (response.status === 204) {
           navigateToClubs();
         }
-      } catch (err) {
-        console.log(err);
+
+        if (response.status === 400) {
+          alert("Bad request");
+        }
+
+        if (response.status === 500) {
+          alert("Server Error");
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    setShot((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+    validateInput(e);
+  };
+
+  const validateInput = (e) => {
+    let { name, value } = e.target;
+
+    setError((prev) => {
+      const stateObj = { ...prev, [name]: "" };
+
+      switch (name) {
+        case "totalCarry":
+          if (!value) {
+            stateObj[name] = "Please enter a totalCarry.";
+          }
+          if (!/^\d+$/.test(value)) {
+            stateObj[name] = "Please enter a valid number";
+          }
+          if (+value >= 500) {
+            console.log(typeof +value);
+            stateObj[name] = "Please enter a number less than 500 yards";
+          }
+          break;
+
+        case "totalDistance":
+          if (!value) {
+            stateObj[name] = "Please enter a totalDistance.";
+          }
+          if (!/^\d+$/.test(value)) {
+            stateObj[name] = "Please enter a valid number";
+          }
+          if (+value >= 500) {
+            stateObj[name] = "Please enter a number less than 500 yards";
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      return stateObj;
+    });
+  };
+
+  const isAddShotDisabled = () => {
+    if (isLoading === true) {
+      return true;
+    }
+    if (
+      !error.totalDistance &&
+      !error.totalCarry &&
+      shot.totalDistance &&
+      shot.totalCarry
+    ) {
+      return false;
+    }
+    return true;
   };
 
   // UPDATE club (add shot)
   const handleAddShot = async (e) => {
     e.preventDefault();
+    const shotId = uuidv4();
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    // return if input invalid
-    if (shot === "0" || shot === null || shot === "") return;
+    // fetch options
+    const options = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${encodedCredentials}`
+      },
+      body: JSON.stringify({
+        addShot: true,
+        shot: { ...shot, shotId: shotId }
+      })
+    };
+    console.log(options);
+
     try {
-      // UPDATE club (add shot)
-      const response = await axios.patch(
-        `${process.env.REACT_APP_CYCLIC_URL}/api/clubs/${id}`,
-        {
-          club: club,
-          shot: { yards: parseInt(shot), id: uuidv4() }
-        }
+      // send request to update club (add shot)
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        options
       );
+      console.log(response);
+      // if success update club state to reflect the added shot
       if (response.status === 200) {
-        setClub(response.data);
-        setShot("");
+        setClub((prev) => {
+          const club = {
+            ...prev,
+            shots: [...prev.shots, { ...shot, shotId: shotId }]
+          };
+          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
+          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+          return club;
+        });
+      }
+
+      if (response.status === 400) {
+        alert("Bad request");
+      }
+
+      if (response.status === 500) {
+        alert("Server Error");
       }
     } catch (err) {
       console.log(err);
@@ -118,7 +259,7 @@ const Club = () => {
             <>
               <div className="flex md:flex-row flex-col items-center pt-3 pb-5 w-full">
                 <div className="flex items-center pb-2 text-gray-400">
-                  <p className="font-semibold text-2xl ">{club.clubName}</p>
+                  <p className="font-semibold text-2xl ">{club.club}</p>
                   <span className="px-1 text-2xl md:text-md">-</span>
                   <p className="text-2xl">{club.brand}</p>
                 </div>
@@ -137,44 +278,119 @@ const Club = () => {
               </div>
 
               <div className="">
-                <div className="w-full flex flex-col md:flex-row">
+                <div className="w-full flex flex-col lg:flex-row">
                   <form className="mb-2 w-full  flex flex-col py-5 px-6 rounded-md bg-dark-300">
-                    <label htmlFor="shot">Yards</label>
+                    <div className="pb-1 pl-1 flex items-center">
+                      <label htmlFor="totalCarry" className="text-lg mr-1">
+                        Total Carry{" "}
+                        <span className="text-xs">
+                          (<span className="ml-[2px] mr-[2px]">yards</span>)
+                        </span>
+                      </label>
+                      {error.totalCarry.length === 0 &&
+                        shot.totalCarry.length !== 0 && (
+                          <IoCheckmarkCircleOutline
+                            className={"text-green-500"}
+                          />
+                        )}
+                    </div>
+
                     <input
-                      name="shot"
-                      value={shot}
-                      onChange={(e) => setShot(e.target.value)}
-                      className="text-gray-200 w-full mb-2 bg-dark-100 p-2 rounded placeholder-gray-600 placeholder:opacity-40"
-                      type="number"
-                      placeholder="150"
+                      name="totalCarry"
+                      value={shot.totalCarry}
+                      onBlur={validateInput}
+                      onChange={onInputChange}
+                      className={`${
+                        error.totalCarry
+                          ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                          : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                      }`}
                     />
+
+                    <div className="flex items-center pt-1 pl-1">
+                      {error.totalCarry && (
+                        <p className="h-full text-pink-400 text-xs pr-1">
+                          {error.totalCarry}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="pb-1 pl-1 flex items-center">
+                      <label htmlFor="totalDistance" className="text-lg mr-1">
+                        Total Distance{" "}
+                        <span className="text-xs">
+                          (<span className="ml-[2px] mr-[2px]">yards</span>)
+                        </span>
+                      </label>
+                      {error.totalDistance.length === 0 &&
+                        shot.totalDistance.length !== 0 && (
+                          <IoCheckmarkCircleOutline
+                            className={"text-green-500"}
+                          />
+                        )}
+                    </div>
+                    <input
+                      name="totalDistance"
+                      value={shot.totalDistance}
+                      onBlur={validateInput}
+                      onChange={onInputChange}
+                      className={`${
+                        error.totalDistance
+                          ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                          : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                      }`}
+                    />
+                    <div className="flex items-center pt-1 pl-1 pb-4">
+                      {error.totalDistance && (
+                        <p className="h-full text-pink-400 text-xs pr-1">
+                          {error.totalDistance}
+                        </p>
+                      )}
+                    </div>
                     <button
+                      disabled={isAddShotDisabled()}
+                      type="submit"
                       onClick={handleAddShot}
                       className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
                       Add Shot
                     </button>
                   </form>
-
-                  <div className="w-full flex items-center pb-2 md:justify-center ">
-                    <div className="w-[75px] h-[75px] bg-blue-400 flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="white" />
+                  <div className="w-full flex items-center pb-2 lg:justify-center ">
+                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                      <GiGolfTee size={40} color="#d1d5db" />
                     </div>
                     <div className="pl-5">
-                      <p className="text-gray-400 text-sm">Avg Yards</p>
+                      <p className="text-gray-400 text-sm">
+                        Avg Carry Distance
+                      </p>
                       <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{getAverageTotalDistance(club)}</span>
+                        <span>{avgTotalCarry}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="w-full flex items-center pb-2 md:justify-center">
-                    <div className="w-[75px] h-[75px] bg-blue-400 flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="white" />
+                  <div className="w-full flex items-center pb-2 lg:justify-center ">
+                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                      <GiGolfTee size={40} color="#d1d5db" />
+                    </div>
+                    <div className="pl-5">
+                      <p className="text-gray-400 text-sm">
+                        Avg Total Distance
+                      </p>
+                      <div className="text-blue-400 text-xl font-bold flex">
+                        <span>{avgTotalDistance}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-full flex items-center pb-2 lg:justify-center">
+                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                      <GiGolfTee size={40} color="#d1d5db" />
                     </div>
                     <div className="pl-5">
                       <p className="text-gray-400 text-sm">Total Shots</p>
                       <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{club.totalShots}</span>
+                        <span>{club.shots.length}</span>
                       </div>
                     </div>
                   </div>

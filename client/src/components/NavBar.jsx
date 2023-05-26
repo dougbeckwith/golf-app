@@ -19,7 +19,7 @@ const Navbar = () => {
     //border-b-2 border-opacity-10 border-gray-200
     <nav className="w-full h-[90px] bg-dark-500 text-sm">
       <div className="h-full mx-auto flex  items-center px-3 sm:px-0">
-        <p className="sm:pl-4 text-xl sm:text-2xl md:text-3xl  font-semibold text-blue-400">
+        <p className="sm:pl-4 text-3xl  font-semibold text-blue-400">
           Golf Stats
         </p>
         {/* Desktop Links */}

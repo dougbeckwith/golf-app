@@ -25,7 +25,6 @@ const getClub = async (req, res) => {
   try {
     console.log("get single club");
     const club = await Club.findById(id);
-    console.log("club", club);
 
     if (!club) {
       res.status(400).send({ error: "No Club Found" });
@@ -76,55 +75,57 @@ const createClub = async (req, res) => {
 };
 
 const updateClub = async (req, res) => {
-  console.log("update club");
-  const id = req.params.id;
-  const { clubName, clubBrand, shot, club, deleteShot, avgYards, shotId } =
-    req.body;
+  console.log("update club started");
+  const clubId = req.params.id;
+  console.log(req.body);
 
-  if (clubName && clubBrand) {
+  const { club, deleteShot, shotId, addShot, shot } = req.body;
+  if (club) {
+    console.log("update club name and brand");
     try {
-      await Club.findByIdAndUpdate(id, {
-        clubName: clubName,
-        brand: clubBrand
+      const clubBefore = await Club.findByIdAndUpdate(clubId, {
+        name: club.name,
+        brand: club.brand
       });
-      res.status(200).send("Success");
+      console.log("club before", clubBefore);
+      res.status(200).end();
     } catch (error) {
+      console.log(error);
       res.status(400).send({ error: error.message });
     }
   }
-  if (shot) {
+  if (addShot) {
+    console.log("add shot");
     try {
-      const clubs = await Club.findOneAndUpdate(
-        { _id: id },
-        {
-          shots: [...club.shots, shot],
-          totalShots: club.totalShots + 1
-        },
-        { new: true }
-      );
-      // const clubs = await Club.findOne({_id: id})
-      res.status(200).send(clubs);
+      const club = await Club.findById(clubId);
+      club.shots = [...club.shots, { ...shot }];
+
+      await Club.findByIdAndUpdate(clubId, {
+        ...club
+      });
+      res.status(200).end();
     } catch (error) {
+      console.log(error);
       res.status(400).send({ error: error.message });
     }
   }
 
-  if (deleteShot === true) {
+  if (deleteShot) {
+    console.log("delete shot");
     try {
-      const data = await Club.findOneAndUpdate(
-        { _id: id },
+      const club = await Club.findOneAndUpdate(
+        { _id: clubId },
         {
-          shots: club.shots.filter((item) => {
-            return item.id !== shotId;
-          }),
-          avgYards: avgYards,
-          totalShots: club.totalShots - 1
+          shots: club.shots.filter((shot) => {
+            return shot.shotId !== shotId;
+          })
         },
         { new: true }
       );
-      // const data = await Club.findOne({_id: id})
-      res.status(200).send(data);
+      console.log(club);
+      res.status(200).end();
     } catch (error) {
+      console.log(error);
       res.status(400).send({ error: error.message });
     }
   }
@@ -135,12 +136,11 @@ const deleteClub = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await Club.findByIdAndDelete(id);
-    // mabey don't need to do another datbase query here instead
-    // if success we can update the clubs on the front end.
-    const clubs = await Club.find({});
-    res.status(200).send(clubs);
+    const test = await Club.findByIdAndDelete(id);
+    console.log(test);
+    res.status(204).end();
   } catch (error) {
+    console.log(error);
     res.status(400).send({ error: error.message });
   }
 };
