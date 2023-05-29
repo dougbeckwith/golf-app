@@ -1,153 +1,294 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import UserContext from "../context/UserContext";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 const EditClub = () => {
+  const navigate = useNavigate();
+  const { authUser } = useContext(UserContext);
+
   const params = useParams();
   const id = params.id;
-  const navigate = useNavigate();
 
+  const [club, setClub] = useState();
+
+  // State for button disabled if making sign up request
   const [isLoading, setIsLoading] = useState(true);
-  const [clubName, setClubName] = useState("");
-  const [clubBrand, setClubBrand] = useState("");
-  const [nameMessage, setNameMessage] = useState(false);
-  const [brandMessage, setBrandMessage] = useState(false);
 
-  // GET club from database
+  // State for response errors
+  const [errors, setErrors] = useState([]);
+
+  // State for input errors
+  const [error, setError] = useState({
+    club: "",
+    brand: ""
+  });
+
+  // State for input
+  const [input, setInput] = useState({
+    club: "",
+    brand: ""
+  });
+
+  //   // GET club and set club state
   useEffect(() => {
     const fetchClub = async () => {
-      const result = await axios.get(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`
-      );
-      setClubName(result.data.clubName);
-      setClubBrand(result.data.brand);
-      setIsLoading(false);
+      try {
+        const encodedCredentials = btoa(
+          `${authUser.email}:${authUser.password}`
+        );
+
+        // fetch options
+        const options = {
+          method: "GET",
+          headers: {
+            Authorization: `Basic ${encodedCredentials}`
+          }
+        };
+
+        // send request to get club
+        const response = await fetch(
+          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+          options
+        );
+
+        if (response.status === 200) {
+          const club = await response.json();
+          setClub(club);
+
+          setInput({
+            club: club.club,
+            brand: club.brand
+          });
+
+          setIsLoading(false);
+        }
+
+        if (response.status === 400) {
+          alert("Bad Reqeust");
+        }
+
+        if (response.status === 401) {
+          alert("/forbidden");
+        }
+
+        if (response.status === 500) {
+          navigate("/error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
+
     fetchClub();
     // eslint-disable-next-line
   }, []);
 
-  // Simple Check to see if input is empty
-  const inputValid = (input) => {
-    if (input !== "") {
-      return true;
-    } else {
-      if (input === clubBrand) {
-        setBrandMessage(true);
-      }
-      if (input === clubName) {
-        setNameMessage(true);
-      }
-      return false;
-    }
-  };
-
-  // UPDATE club in database (update clubName and clubBrand)
+  // update club in database
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (inputValid(clubName) && inputValid(clubBrand)) {
-      try {
-        await axios.patch(
-          `${process.env.REACT_APP_CYCLIC_URL}/api/clubs/${id}`,
-          {
-            clubName: clubName,
-            clubBrand: clubBrand
-          }
-        );
-        // Reset Input Fields
-        setClubName("");
-        setClubBrand("");
-        navigateToClub();
-      } catch (err) {
-        console.log(err);
+
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+
+    // fetch options
+    const options = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${encodedCredentials}`
+      },
+      body: JSON.stringify({
+        club: {
+          club: input.club,
+          brand: input.brand
+        },
+
+        user: authUser._id
+      })
+    };
+
+    try {
+      // send request to update club
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        options
+      );
+
+      // if club created display message to user
+      if (response.status === 200) {
+        setIsLoading(false);
+        setErrors([]);
+        alert("club updated!");
+        navigate(`/clubs/${id}`);
       }
+
+      if (response.status === 400) {
+        alert("Bad Reqeust");
+      }
+
+      if (response.status === 401) {
+        alert("/forbidden");
+      }
+
+      if (response.status === 500) {
+        navigate("/error");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  // Remove error message and update clubName state
-  const handleNameChange = (e) => {
-    setNameMessage(false);
-    setClubName(e.target.value);
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+    validateInput(e);
   };
 
-  // Remove error message and update clubBrand state
-  const handleBrandChange = (e) => {
-    setBrandMessage(false);
-    setClubBrand(e.target.value);
+  const validateInput = (e) => {
+    let { name, value } = e.target;
+
+    setError((prev) => {
+      const stateObj = { ...prev, [name]: "" };
+
+      switch (name) {
+        case "club":
+          if (!value) {
+            stateObj[name] = "Please enter a club.";
+          }
+          break;
+
+        case "brand":
+          if (!value) {
+            stateObj[name] = "Please enter a brand.";
+          }
+          break;
+
+        default:
+          break;
+      }
+
+      return stateObj;
+    });
   };
 
-  // Navigate back to current club page
-  const navigateToClub = () => {
+  const isEditClubDisabled = () => {
+    if (isLoading === true) {
+      return true;
+    }
+    if (!error.club && !error.brand && input.club && input.brand) {
+      return false;
+    }
+    return true;
+  };
+
+  // Go to club page
+  const navigateBack = () => {
     navigate(`/clubs/${id}`);
   };
 
   return (
     <>
-      {isLoading ? (
-        <div>Loading</div>
-      ) : (
-        <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-400">
-          <div className="container max-w-[600px]">
-            <div className="sm:bg-dark-400 border-0 md:border-2 md:border-gray-600 px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
-              <form>
-                <div>
-                  <div className="pb-1 pl-1">
-                    <label htmlFor="club" className="text-lg text-gray-400">
-                      Club
-                    </label>
-                  </div>
-                  <input
-                    id="club"
-                    type="text"
-                    onChange={handleNameChange}
-                    value={clubName}
-                    className="bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
-                    placeholder="7 Iron"
-                  />
-                  <p
-                    className={
-                      nameMessage ? "text-sm h-4 text-red" : "invisible h-4"
-                    }>
-                    Please enter a club.
-                  </p>
+      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
+        <div className="container max-w-[600px]">
+          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
+            Edit Club
+          </h2>
+          <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
+            <form>
+              <div>
+                <div className="pb-1 pl-1 flex items-center">
+                  <label htmlFor="club" className="text-lg mr-1">
+                    Club
+                  </label>
+                  {error.club.length === 0 && input.club.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
-                <div className="pt-2 pb-4">
-                  <div className="pb-2 pl-1">
-                    <label htmlFor="brand" className="text-lg">
-                      Brand
-                    </label>
-                  </div>
-                  <input
-                    id="brand"
-                    type="text"
-                    onChange={handleBrandChange}
-                    value={clubBrand}
-                    className="bg-dark-200 placeholder-opacity-60 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
-                    placeholder="TaylorMade"
-                  />
-                  <p
-                    className={
-                      brandMessage ? "text-sm h-4 text-red" : "invisible h-4"
-                    }>
-                    Please enter a brand.
+                <input
+                  name="club"
+                  type="text"
+                  onBlur={validateInput}
+                  onChange={onInputChange}
+                  placeholder="7 Iron"
+                  className={`${
+                    error.club
+                      ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600  w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                      : `bg-dark-200  placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                  }`}
+                  value={input.club}
+                />
+              </div>
+
+              <div className="flex items-center pt-1 pl-1">
+                {error.club && (
+                  <p className="h-full text-pink-400 text-xs pr-1">
+                    {error.club}
                   </p>
+                )}
+              </div>
+
+              <div className="pt-2">
+                <div className="pb-1 pl-1 flex items-center">
+                  <label htmlFor="brand" className="text-lg mr-1">
+                    Brand
+                  </label>
+                  {error.brand.length === 0 && input.brand.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
-                <button
-                  onClick={handleSubmit}
-                  className="mt-4 w-full bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                  Submit
-                </button>
-                <button
-                  onClick={navigateToClub}
-                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
-                  Cancel
-                </button>
-              </form>
-            </div>
+                <input
+                  name="brand"
+                  type="brand"
+                  onBlur={validateInput}
+                  onChange={onInputChange}
+                  placeholder="TaylorMade"
+                  className={`${
+                    error.brand
+                      ? `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                      : `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                  }`}
+                  value={input.brand}
+                />
+              </div>
+
+              <div className="flex items-center pt-1 pl-1">
+                {error.brand && (
+                  <p className="h-full text-pink-400 text-xs pr-1">
+                    {error.brand}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isEditClubDisabled()}
+                onClick={handleSubmit}
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                Update
+              </button>
+              <button
+                onClick={navigateBack}
+                className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
+                Cancel
+              </button>
+
+              {errors.length > 0 &&
+                errors.map((error, index) => {
+                  return (
+                    <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
+                      {error}
+                    </p>
+                  );
+                })}
+              <div className="flex w-full justify-center items-center pt-4"></div>
+            </form>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

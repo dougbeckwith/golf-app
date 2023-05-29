@@ -20,12 +20,13 @@ const Club = () => {
   // State for response errors
   // const [errors, setErrors] = useState([]);
 
-  // State for errors
+  // State for errors add shot form
   const [error, setError] = useState({
     totalCarry: "",
     totalDistance: ""
   });
 
+  // State for shot add shot form
   const [shot, setShot] = useState({
     totalCarry: "",
     totalDistance: ""
@@ -91,6 +92,67 @@ const Club = () => {
     // eslint-disable-next-line
   }, []);
 
+  // UPDATE club (add shot)
+  // TODO add alert for adding shot
+  const handleAddShot = async (e) => {
+    e.preventDefault();
+    const shotId = uuidv4();
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+
+    // fetch options
+    const options = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${encodedCredentials}`
+      },
+      body: JSON.stringify({
+        addShot: true,
+        shot: { ...shot, shotId: shotId }
+      })
+    };
+
+    try {
+      // send request to update club (add shot)
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        options
+      );
+
+      // if success update club state to reflect the added shot
+      if (response.status === 200) {
+        setShot({
+          totalCarry: "",
+          totalDistance: ""
+        });
+        setClub((prev) => {
+          const club = {
+            ...prev,
+            shots: [...prev.shots, { ...shot, shotId: shotId }]
+          };
+          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
+          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+          return club;
+        });
+        alert("shot added!");
+      }
+
+      if (response.status === 400) {
+        alert("Bad request");
+      }
+
+      if (response.status === 401) {
+        alert("Not Authorized");
+      }
+
+      if (response.status === 500) {
+        alert("Server Error");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // DELETE club
   const handleDelete = async () => {
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
@@ -133,6 +195,7 @@ const Club = () => {
     }
   };
 
+  // update shot state and validate input
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setShot((prev) => ({
@@ -142,6 +205,7 @@ const Club = () => {
     validateInput(e);
   };
 
+  // validates shot input
   const validateInput = (e) => {
     let { name, value } = e.target;
 
@@ -182,6 +246,7 @@ const Club = () => {
     });
   };
 
+  // controls if add shot buttons is disabled
   const isAddShotDisabled = () => {
     if (isLoading === true) {
       return true;
@@ -195,58 +260,6 @@ const Club = () => {
       return false;
     }
     return true;
-  };
-
-  // UPDATE club (add shot)
-  const handleAddShot = async (e) => {
-    e.preventDefault();
-    const shotId = uuidv4();
-    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-    // fetch options
-    const options = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`
-      },
-      body: JSON.stringify({
-        addShot: true,
-        shot: { ...shot, shotId: shotId }
-      })
-    };
-    console.log(options);
-
-    try {
-      // send request to update club (add shot)
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-        options
-      );
-      console.log(response);
-      // if success update club state to reflect the added shot
-      if (response.status === 200) {
-        setClub((prev) => {
-          const club = {
-            ...prev,
-            shots: [...prev.shots, { ...shot, shotId: shotId }]
-          };
-          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
-          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
-          return club;
-        });
-      }
-
-      if (response.status === 400) {
-        alert("Bad request");
-      }
-
-      if (response.status === 500) {
-        alert("Server Error");
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   return (
@@ -407,6 +420,8 @@ const Club = () => {
                           setClub={setClub}
                           shot={shot}
                           club={club}
+                          setAvgTotalCarry={setAvgTotalCarry}
+                          setAvgTotalDistance={setAvgTotalDistance}
                         />
                       );
                     })}

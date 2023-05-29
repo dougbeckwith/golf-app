@@ -82,12 +82,19 @@ const updateClub = async (req, res) => {
   const { club, deleteShot, shotId, addShot, shot } = req.body;
   if (club) {
     console.log("update club name and brand");
+    console.log(club.club, club.brand);
     try {
-      const clubBefore = await Club.findByIdAndUpdate(clubId, {
-        name: club.name,
-        brand: club.brand
+      const clubToUpdate = await Club.findById(clubId);
+      clubToUpdate.club = club.club;
+      clubToUpdate.brand = club.brand;
+      await Club.findByIdAndUpdate(clubId, {
+        ...clubToUpdate
       });
-      console.log("club before", clubBefore);
+
+      // const clubBefore = await Club.findByIdAndUpdate(clubId, {
+      //   name: club.name,
+      //   brand: club.brand
+      // });
       res.status(200).end();
     } catch (error) {
       console.log(error);
@@ -111,22 +118,30 @@ const updateClub = async (req, res) => {
   }
 
   if (deleteShot) {
-    console.log("delete shot");
     try {
-      const club = await Club.findOneAndUpdate(
-        { _id: clubId },
-        {
-          shots: club.shots.filter((shot) => {
-            return shot.shotId !== shotId;
-          })
-        },
-        { new: true }
-      );
-      console.log(club);
+      const club = await Club.findById(clubId);
+      club.shots = club.shots.filter((shot) => {
+        return shot.shotId !== shotId;
+      });
+      await Club.findByIdAndUpdate(clubId, {
+        ...club
+      });
+
       res.status(200).end();
     } catch (error) {
       console.log(error);
-      res.status(400).send({ error: error.message });
+      // check if any validation errors on the model
+      if (error.name === "ValidationError") {
+        let errors = [];
+
+        Object.keys(error.errors).forEach((key) => {
+          errors.push(error.errors[key].message);
+        });
+
+        res.status(400).send({ errors });
+        return;
+      }
+      res.status(500).end();
     }
   }
 };
@@ -136,8 +151,7 @@ const deleteClub = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const test = await Club.findByIdAndDelete(id);
-    console.log(test);
+    await Club.findByIdAndDelete(id);
     res.status(204).end();
   } catch (error) {
     console.log(error);

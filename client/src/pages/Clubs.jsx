@@ -37,10 +37,9 @@ const Clubs = () => {
           options
         );
         if (response.status === 200) {
-          const data = await response.json();
-          if (data.length !== 0) {
-            const sortedClubs = sortClubsByDistance(data, "totalDistance");
-            console.log(sortedClubs);
+          const clubs = await response.json();
+          if (clubs.length !== 0) {
+            const sortedClubs = sortClubsByDistance(clubs, "totalDistance");
             let longestTotalDistance = sortedClubs[0].averageDistance;
             setlongestTotalDistance(longestTotalDistance);
             setClubs(sortedClubs);
@@ -64,8 +63,8 @@ const Clubs = () => {
 
   return (
     <>
-      <div className="px-5 lg:px-0 md:pt-7 w-full bg-dark-500  min-h-screen max-h-min">
-        <div className="container m-auto">
+      <div className="px-5 lg:px-3 md:pt-7 w-full bg-dark-500 ">
+        <div className="container  m-auto">
           <div className="w-full flex items-center mb-3 ">
             <h1 className="text-gray-400 text-2xl font-semibold">
               Club Distances
@@ -80,10 +79,14 @@ const Clubs = () => {
               </Link>
             </div>
           </div>
-          <select name="clubs" id="clubs">
-            <option value="carry">Carry</option>
-            <option value="total">Total</option>
-          </select>
+          {clubs && clubs.length !== 0 ? (
+            <select name="clubs" id="clubs">
+              <option value="carry">Carry</option>
+              <option value="total">Total</option>
+            </select>
+          ) : (
+            <></>
+          )}
 
           {clubs && clubs.length !== 0 ? (
             <ClubList>
@@ -97,10 +100,14 @@ const Clubs = () => {
               ))}
             </ClubList>
           ) : (
-            <div className="pb-10  hidden md:block">
-              <h1 className="text-gray-500 text-center mx-auto max-w-4xl font-display text-3xl font-medium tracking-tight sm:text-4xl ">
-                Add clubs to track your distances.
+            <div className="pb-10">
+              <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                Start by adding clubs to track.
               </h1>
+              <p className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
+                Record each shot you make to track your average total and carry
+                distance.
+              </p>
             </div>
           )}
         </div>

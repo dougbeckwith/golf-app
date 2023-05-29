@@ -9,6 +9,11 @@ const authenticateUser = async (req, res, next) => {
 
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
+  if (!credentials) {
+    errors.push("Must have credentials");
+    res.status(401).send({ errors: errors });
+    return;
+  }
   // check for email and password
   if (!credentials.name) {
     errors.push("Please Enter Email Address");
@@ -19,7 +24,7 @@ const authenticateUser = async (req, res, next) => {
 
   // return if errors with credentials
   if (errors.length > 0) {
-    res.status(401).json({ errors: errors });
+    res.status(401).send({ errors: errors });
     return;
   }
 
@@ -33,7 +38,7 @@ const authenticateUser = async (req, res, next) => {
   if (user) {
     authenticated = bcrypt.compareSync(credentials.pass, user.password);
   } else {
-    res.status(401).json({ errors: ["Email or Password Incorrect"] });
+    res.status(401).send({ errors: ["Email or Password Incorrect"] });
     return;
   }
 
@@ -44,7 +49,7 @@ const authenticateUser = async (req, res, next) => {
     req.currentUser = user;
     next();
   } else {
-    res.status(401).json({ errors: ["Email or Password Incorrect"] });
+    res.status(401).send({ errors: ["Email or Password Incorrect"] });
   }
 };
 
