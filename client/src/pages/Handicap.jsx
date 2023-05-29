@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Clubs = () => {
-  const navigate = useNavigate();
-
   useEffect(() => {
     const getHandicapData = async () => {
       try {
@@ -17,10 +14,6 @@ const Clubs = () => {
 
     // eslint-disable-next-line
   }, []);
-
-  const handleClick = (id) => {
-    navigate(`/clubs/${id}`);
-  };
 
   return (
     <>

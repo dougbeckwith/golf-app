@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import UserContext from "../context/UserContext";
 const Navbar = () => {
   // State And Function Toggle Nav Menu

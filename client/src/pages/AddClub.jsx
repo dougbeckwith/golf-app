@@ -76,6 +76,7 @@ const AddClub = () => {
         const { error } = await response.json();
         setErrors(error);
       }
+      setIsloading(false);
     } catch (error) {
       console.log(error);
     }

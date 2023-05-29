@@ -63,6 +63,7 @@ const SignUp = () => {
           if (!value) {
             stateObj[name] = "Please enter Email Address.";
           }
+          // eslint-disable-next-line
           if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
             stateObj[name] = "Please enter valid Email Address";
           }

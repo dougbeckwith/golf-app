@@ -15,12 +15,6 @@ const SignIn = () => {
     password: ""
   });
 
-  // State for errors
-  const [error, setError] = useState({
-    email: "",
-    password: ""
-  });
-
   // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
 
@@ -46,7 +40,7 @@ const SignIn = () => {
     if (isLoading === true) {
       return true;
     }
-    if (!error.email && !error.password && input.email && input.password) {
+    if (errors.length !== 0 && input.email && input.password) {
       return false;
     } else {
       return true;
@@ -102,13 +96,6 @@ const SignIn = () => {
                   className={`bg-dark-200  text-gray-300  w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400`}
                   value={input.email}
                 />
-                <div className="flex items-center pt-1 pl-1">
-                  {error.email && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.email}
-                    </p>
-                  )}
-                </div>
               </div>
               <div className="pt-2 pb-4">
                 <div className="pb-2 pl-1">
