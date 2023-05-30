@@ -28,6 +28,7 @@ const SignIn = () => {
       ...prev,
       [name]: value
     }));
+    setErrors([]);
   };
 
   // Focus input on load
@@ -40,7 +41,7 @@ const SignIn = () => {
     if (isLoading === true) {
       return true;
     }
-    if (errors.length !== 0 && input.email && input.password) {
+    if (!errors.length > 0 && input.email && input.password) {
       return false;
     } else {
       return true;
