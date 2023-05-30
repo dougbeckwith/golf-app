@@ -35,7 +35,6 @@ const SignIn = () => {
   const inputReference = useRef(null);
   useEffect(() => {
     console.log("hello");
-    console.log("hello");
     inputReference.current.focus();
   }, []);
 
