@@ -1,9 +1,9 @@
 import React from "react";
 import { getAverageDistance, getDistanceBarPercentage } from "../helpers";
 
-const ClubItem = ({ club, handleClick, longestTotalDistance }) => {
+const ClubItem = ({ club, handleClick, longestTotalDistance, type }) => {
   const id = club._id;
-  let averageTotalDistance = getAverageDistance(club, "totalDistance");
+  let averageTotalDistance = getAverageDistance(club, type);
 
   const widthPercentage = getDistanceBarPercentage(
     averageTotalDistance,

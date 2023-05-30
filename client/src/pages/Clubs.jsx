@@ -10,13 +10,13 @@ const Clubs = () => {
   const navigate = useNavigate();
 
   const { authUser } = useContext(UserContext);
+  const [type, setType] = useState("totalDistance");
 
   const [clubs, setClubs] = useState([]);
+  const [sortedClubs, setSortedClubs] = useState([]);
   const [longestTotalDistance, setlongestTotalDistance] = useState(0);
-  // TO DO
-  // Add longest Carry Distance state
-  // Give option to user to filter by carry or total
-  // Change what is displayed to user based on filter selection
+
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getAllClubData = async () => {
@@ -38,15 +38,15 @@ const Clubs = () => {
         );
         if (response.status === 200) {
           const clubs = await response.json();
+          setClubs(clubs);
+          // sort clubs by total distance to start
           if (clubs.length !== 0) {
-            const sortedClubs = sortClubsByDistance(clubs, "totalDistance");
-            let longestTotalDistance = sortedClubs[0].averageDistance;
-            setlongestTotalDistance(longestTotalDistance);
-            setClubs(sortedClubs);
+            sortClubs(clubs, type);
           }
         } else {
           console.log(response);
         }
+        setIsLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -57,6 +57,25 @@ const Clubs = () => {
     // eslint-disable-next-line
   }, []);
 
+  // filters clubs by total or carry distance
+  const handleSelectChange = (e) => {
+    if (e.target.value === "totalDistance") {
+      setType("totalDistance");
+    } else {
+      setType("totalCarry");
+    }
+    sortClubs(clubs, e.target.value);
+  };
+
+  // sorts clubs by type (carryDistance, totalDistance)
+  const sortClubs = (clubs, type) => {
+    const sortedClubs = sortClubsByDistance(clubs, type);
+    let longestTotalDistance = sortedClubs[0].averageDistance;
+    setlongestTotalDistance(longestTotalDistance);
+    setSortedClubs(sortedClubs);
+  };
+
+  // navigates to club by id
   const handleClick = (id) => {
     navigate(`/clubs/${id}`);
   };
@@ -79,27 +98,37 @@ const Clubs = () => {
               </Link>
             </div>
           </div>
-          {clubs && clubs.length !== 0 ? (
-            <select name="clubs" id="clubs">
-              <option value="carry">Carry</option>
-              <option value="total">Total</option>
-            </select>
-          ) : (
-            <></>
-          )}
 
-          {clubs && clubs.length !== 0 ? (
+          <select
+            name="clubs"
+            id="clubs"
+            onChange={handleSelectChange}
+            className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
+            <option value="totalDistance">Total</option>
+            <option value="totalCarry">Carry</option>
+          </select>
+
+          {isLoading && (
+            <div className="pb-10">
+              <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                Loading Clubs
+              </h1>
+            </div>
+          )}
+          {sortedClubs.length !== 0 && (
             <ClubList>
-              {clubs.map((club) => (
+              {sortedClubs.map((club) => (
                 <ClubItem
                   key={uuidv4()}
                   club={club}
                   handleClick={handleClick}
+                  type={type}
                   longestTotalDistance={longestTotalDistance}
                 />
               ))}
             </ClubList>
-          ) : (
+          )}
+          {sortedClubs.length === 0 && !isLoading && (
             <div className="pb-10">
               <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                 Start by adding clubs to track.

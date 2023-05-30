@@ -1,5 +1,6 @@
 // Sory clubs by distance (type = 'carryDistance' | 'totalDistance')
 const sortClubsByDistance = (clubs, type) => {
+  console.log("type", type);
   const clubsWithAverageYards = [];
 
   clubs.forEach((club) => {
