@@ -221,7 +221,6 @@ const Club = () => {
             stateObj[name] = "Please enter a valid number";
           }
           if (+value >= 500) {
-            console.log(typeof +value);
             stateObj[name] = "Please enter a number less than 500 yards";
           }
           break;
