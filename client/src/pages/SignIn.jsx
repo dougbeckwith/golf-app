@@ -34,6 +34,7 @@ const SignIn = () => {
   // Focus input on load
   const inputReference = useRef(null);
   useEffect(() => {
+    console.log("hello");
     inputReference.current.focus();
   }, []);
 
