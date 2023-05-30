@@ -1,13 +1,21 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Forbidden = () => {
   return (
-    <main>
-      <div class="wrap">
-        <h2>Forbidden</h2>
-        <p>Oh oh! You can't access this page.</p>
+    <div className="bg-dark-400 text-gray-300 h-screen flex justify-center items-center">
+      <div className="text-center">
+        <h1 className="text-7xl mb-8">Forbidden!</h1>
+        <p className="text-4xl mb-8">Oh oh! You can't access this page.</p>
+        <Link to="/clubs">
+          <button
+            type="button"
+            className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
+            Clubs
+          </button>
+        </Link>
       </div>
-    </main>
+    </div>
   );
 };
 
