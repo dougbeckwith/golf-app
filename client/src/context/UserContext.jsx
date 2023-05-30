@@ -26,7 +26,7 @@ export const UserProvider = (props) => {
       }
     };
     try {
-      console.log(provess.env);
+      console.log(process.env);
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/user`,
         fetchOptions
