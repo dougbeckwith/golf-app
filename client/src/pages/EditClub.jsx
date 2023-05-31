@@ -99,7 +99,7 @@ const EditClub = () => {
         Authorization: `Basic ${encodedCredentials}`
       },
       body: JSON.stringify({
-        club: {
+        updateName: {
           club: input.club,
           brand: input.brand
         },

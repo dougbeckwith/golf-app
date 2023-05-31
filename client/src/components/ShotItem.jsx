@@ -36,7 +36,7 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
 
       // Update club state and update avgYards state
       if (response.status === 200) {
-        //remove shot front end probably need club state in here to do this
+        alert("shot deleted");
         setClub((prev) => {
           const club = {
             ...prev
@@ -48,6 +48,14 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           return club;
         });
+      } else if (response.status === 400) {
+        alert("Bad Request");
+      } else if (response.status === 401) {
+        alert("Not Authorized");
+      } else if (response.status === 403) {
+        alert("Forbidden");
+      } else if (response.status === 500) {
+        alert("Server Error");
       }
     } catch (err) {
       console.log(err);
@@ -82,8 +90,6 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
           </button>
         </div>
       </div>
-
-      {/*  */}
     </>
   );
 };

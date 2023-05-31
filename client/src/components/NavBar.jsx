@@ -2,8 +2,8 @@ import React, { useState, useContext } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import UserContext from "../context/UserContext";
+
 const Navbar = () => {
-  // State And Function Toggle Nav Menu
   const [isFaTimes, setIsFaTimes] = useState(false);
   const { actions } = useContext(UserContext);
 
@@ -16,7 +16,6 @@ const Navbar = () => {
   };
 
   return (
-    //border-b-2 border-opacity-10 border-gray-200
     <nav className="w-full h-[90px] bg-dark-500 text-sm">
       <div className="h-full mx-auto flex  items-center px-3 sm:px-0">
         <p className="sm:pl-4 text-3xl  font-semibold text-blue-400">
