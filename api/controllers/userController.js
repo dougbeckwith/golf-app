@@ -1,28 +1,23 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// GET a User
+// GET user
 const getUser = async (req, res) => {
-  try {
-    res.status(200).send({ user: req.currentUser });
-  } catch (error) {
-    console.log(error);
-    res.status(400).send({ error: error.message });
-  }
+  console.log("GET USER");
+  res.status(200).send({ user: req.currentUser });
 };
 
-// CREATE new user
+// CREATE user
 const createUser = async (req, res) => {
+  console.log("CREATE USER");
   try {
-    console.log("req.body", req.body);
-
     const myPlaintextPassword = req.body.password;
     const saltRounds = 10;
 
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(myPlaintextPassword, salt);
 
-    const user = await User.create({
+    await User.create({
       email: req.body.email,
       password: hash
     });
