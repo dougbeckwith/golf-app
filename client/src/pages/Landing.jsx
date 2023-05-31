@@ -1,9 +1,30 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Landing = () => {
-  const { authUser } = useContext(UserContext);
+  const { authUser, actions } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleDemoSignIn = async (e) => {
+    e.preventDefault();
+
+    const credentials = {
+      email: "demouser@gmail.com",
+      password: "password"
+    };
+
+    try {
+      const { user, errors } = await actions.signIn(credentials);
+      if (user) {
+        navigate("/clubs");
+      } else if (errors) {
+        alert(errors);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-dark-400 h-screen flex justify-center items-center">
@@ -35,18 +56,27 @@ const Landing = () => {
             </Link>
           ) : (
             <>
-              <Link to="/signin">
-                <button className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
-                  Sign In
-                </button>
-              </Link>
-              <Link to="/signup">
-                <button
-                  type="button"
-                  className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300">
-                  Sign Up
-                </button>
-              </Link>{" "}
+              <div className="flex gap-2 md:gap-6">
+                <Link to="/signin">
+                  <button className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
+                    Sign In
+                  </button>
+                </Link>
+                <Link to="/signup">
+                  <button
+                    type="button"
+                    className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300">
+                    Sign Up
+                  </button>
+                </Link>{" "}
+                <Link to="/clubs">
+                  <button
+                    onClick={handleDemoSignIn}
+                    className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
+                    Demo
+                  </button>
+                </Link>
+              </div>
             </>
           )}
         </div>

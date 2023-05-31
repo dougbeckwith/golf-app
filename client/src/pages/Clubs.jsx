@@ -41,7 +41,14 @@ const Clubs = () => {
           setClubs(clubs);
           // sort clubs by total distance to start
           if (clubs.length !== 0) {
-            sortClubs(clubs, type);
+            // check local storage to see if previous type set
+            const typeLocalStorage = getTypeLocalStorage();
+            if (typeLocalStorage) {
+              setType(typeLocalStorage);
+              sortClubs(clubs, typeLocalStorage);
+            } else {
+              sortClubs(clubs, type);
+            }
           }
         } else {
           console.log(response);
@@ -57,12 +64,26 @@ const Clubs = () => {
     // eslint-disable-next-line
   }, []);
 
+  // Get club filter type local storage
+  const getTypeLocalStorage = () => {
+    const type = JSON.parse(localStorage.getItem("type"));
+    console.log(type);
+    return type;
+  };
+
+  // Update club filter type local storage
+  const setTypeLocalStorage = (type) => {
+    localStorage.setItem("type", JSON.stringify(type));
+  };
+
   // filters clubs by total or carry distance
   const handleSelectChange = (e) => {
     if (e.target.value === "totalDistance") {
       setType("totalDistance");
+      setTypeLocalStorage("totalDistance");
     } else {
       setType("totalCarry");
+      setTypeLocalStorage("totalCarry");
     }
     sortClubs(clubs, e.target.value);
   };
@@ -79,6 +100,8 @@ const Clubs = () => {
   const handleClick = (id) => {
     navigate(`/clubs/${id}`);
   };
+
+  // state for type
 
   return (
     <>
@@ -98,16 +121,17 @@ const Clubs = () => {
               </Link>
             </div>
           </div>
-
-          <select
-            name="clubs"
-            id="clubs"
-            onChange={handleSelectChange}
-            className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
-            <option value="totalDistance">Total</option>
-            <option value="totalCarry">Carry</option>
-          </select>
-
+          {!isLoading && (
+            <select
+              name="clubs"
+              id="clubs"
+              onChange={handleSelectChange}
+              value={type}
+              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
+              <option value="totalDistance">Total</option>
+              <option value="totalCarry">Carry</option>
+            </select>
+          )}
           {isLoading && (
             <div className="pb-10">
               <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
