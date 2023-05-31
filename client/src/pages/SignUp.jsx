@@ -184,7 +184,7 @@ const SignUp = () => {
               <div>
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="email" className="text-lg mr-1">
-                    Email address
+                    Email Address
                   </label>
                   {error.email.length === 0 && input.email.length !== 0 && (
                     <IoCheckmarkCircleOutline className={"text-green-500"} />
