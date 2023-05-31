@@ -67,7 +67,6 @@ const Clubs = () => {
   // Get club filter type local storage
   const getTypeLocalStorage = () => {
     const type = JSON.parse(localStorage.getItem("type"));
-    console.log(type);
     return type;
   };
 
