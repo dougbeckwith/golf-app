@@ -161,7 +161,7 @@ const AddClub = () => {
     <>
       <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
         <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
+          <h2 className="w-full text-gray-400 text-center pb-4 text-2xl md:text-4xl">
             Add Club
           </h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">

@@ -10,7 +10,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Logout from "./pages/Logout";
-import Handicap from "./pages/Handicap";
 import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Forbidden";
 import UnhandledError from "./pages/UnhandledError";
@@ -26,10 +25,6 @@ const App = () => {
             <Route path=":id" element={<Club />} />
             <Route path="new" element={<AddClub />} />
             <Route path=":id/edit" element={<EditClub />} />
-          </Route>
-
-          <Route path="/handicap" element={<Layout />}>
-            <Route index element={<Handicap />} />
           </Route>
         </Route>
 

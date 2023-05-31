@@ -31,19 +31,12 @@ const Navbar = () => {
               Clubs
             </NavLink>
           </li>
-          <li id="nav" className="font-medium py-10 ml-2">
-            <NavLink
-              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-1 rounded-md"
-              to="/handicap">
-              Handicap
-            </NavLink>
-          </li>
         </ul>
         <button className=" px-3 font-medium py-10 ml-auto hidden md:block">
           <NavLink
             onClick={handleSignOut}
             className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
-            to="/logout">
+            to="/">
             Logout
           </NavLink>
         </button>
@@ -62,7 +55,6 @@ const Navbar = () => {
           id="nav"
           onClick={toggleIcon}
           className=" text-2xl absolute md:hidden top-[90px] left-0 w-full h-screen bg-dark-500 flex flex-col items-center z-10">
-          <li className=" px-3 font-medium py-10"></li>
           <li className=" px-3 font-medium py-10">
             <NavLink
               className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
@@ -70,13 +62,7 @@ const Navbar = () => {
               Clubs
             </NavLink>
           </li>
-          <li id="nav" className="font-medium py-10 ml-2">
-            <NavLink
-              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
-              to="/handicap">
-              Handicap
-            </NavLink>
-          </li>
+
           <li className=" px-3 font-medium py-10">
             <NavLink
               onClick={handleSignOut}
