@@ -14,11 +14,12 @@ const Club = () => {
   const params = useParams();
   const id = params.id;
 
-  const [club, setClub] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const { authUser } = useContext(UserContext);
 
-  // State for response errors
-  // const [errors, setErrors] = useState([]);
+  const [club, setClub] = useState();
+  const [avgTotalCarry, setAvgTotalCarry] = useState("");
+  const [avgTotalDistance, setAvgTotalDistance] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // State for errors add shot form
   const [error, setError] = useState({
@@ -31,11 +32,6 @@ const Club = () => {
     totalCarry: "",
     totalDistance: ""
   });
-
-  const [avgTotalCarry, setAvgTotalCarry] = useState("");
-  const [avgTotalDistance, setAvgTotalDistance] = useState("");
-
-  const { authUser } = useContext(UserContext);
 
   // Navigate to clubs page
   const navigateToClubs = () => {
@@ -70,17 +66,13 @@ const Club = () => {
           setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           setIsLoading(false);
-        }
-
-        if (response.status === 400) {
-          navigate("/notfound");
-        }
-
-        if (response.status === 401) {
+        } else if (response.status === 401) {
+          navigate("/signin");
+        } else if (response.status === 403) {
           navigate("/forbidden");
-        }
-
-        if (response.status === 500) {
+        } else if (response.status === 404) {
+          navigate("/notfound");
+        } else if (response.status === 500) {
           navigate("/error");
         }
       } catch (error) {
@@ -93,7 +85,6 @@ const Club = () => {
   }, []);
 
   // UPDATE club (add shot)
-  // TODO add alert for adding shot
   const handleAddShot = async (e) => {
     e.preventDefault();
     const shotId = uuidv4();
@@ -135,17 +126,13 @@ const Club = () => {
           return club;
         });
         alert("shot added!");
-      }
-
-      if (response.status === 400) {
+      } else if (response.status === 400) {
         alert("Bad request");
-      }
-
-      if (response.status === 401) {
+      } else if (response.status === 401) {
         alert("Not Authorized");
-      }
-
-      if (response.status === 500) {
+      } else if (response.status === 403) {
+        navigate("/forbidden");
+      } else if (response.status === 500) {
         alert("Server Error");
       }
     } catch (err) {
@@ -179,14 +166,15 @@ const Club = () => {
         );
 
         if (response.status === 204) {
+          alert("Club Deleted");
           navigateToClubs();
-        }
-
-        if (response.status === 400) {
-          alert("Bad request");
-        }
-
-        if (response.status === 500) {
+        } else if (response.status === 400) {
+          alert("Bad Request");
+        } else if (response.status === 401) {
+          alert("Not Authorized");
+        } else if (response.status === 403) {
+          alert("Forbidden");
+        } else if (response.status === 500) {
           alert("Server Error");
         }
       } catch (error) {

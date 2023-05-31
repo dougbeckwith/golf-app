@@ -5,13 +5,13 @@ const getClubs = async (req, res) => {
   try {
     console.log("get all clubs");
     const clubs = await Club.find({ user: req.currentUser._id });
-    console.log("clubs", clubs);
+    console.log("clubs:", clubs);
 
     if (!clubs) {
-      res.status(400).send({ error: "No Clubs Found" });
-      return;
+      res.status(404).end();
+    } else {
+      res.status(200).send(clubs);
     }
-    res.status(200).send(clubs);
   } catch (error) {
     console.log(error);
     res.status(500).end();
@@ -21,19 +21,29 @@ const getClubs = async (req, res) => {
 // GET a single club
 const getClub = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
 
   try {
     console.log("get single club");
-    const club = await Club.findById(id);
 
+    // find club using the id params
+    const club = await Club.findById(id);
+    console.log("club:", club);
     if (!club) {
-      res.status(400).send({ error: "No Club Found" });
-      return;
+      res.status(404).end();
+    } else if (!club.user.equals(req.currentUser._id)) {
+      res.status(403).end();
+    } else {
+      res.status(200).send(club);
     }
-    res.status(200).send(club);
   } catch (error) {
     console.log(error);
-    res.status(500).end;
+    // if error type CastError (id params can't be turned into objectid)
+    if (error.name === "CastError") {
+      res.status(404).end();
+    } else {
+      res.status(500).end();
+    }
   }
 };
 
@@ -53,13 +63,13 @@ const createClub = async (req, res) => {
       ],
       user: req.body.user
     });
-    console.log("club created", club);
+    console.log("club created:", club);
 
     res.status(201).end();
   } catch (error) {
     console.log(error);
 
-    // check if any validation errors on the model
+    // check error was ValidationError
     if (error.name === "ValidationError") {
       let errors = [];
 
@@ -68,21 +78,18 @@ const createClub = async (req, res) => {
       });
 
       res.status(400).send({ errors });
-      return;
+    } else {
+      res.status(500).end();
     }
-    res.status(500).end();
   }
 };
 
 const updateClub = async (req, res) => {
   console.log("update club started");
   const clubId = req.params.id;
-  console.log(req.body);
 
   const { club, deleteShot, shotId, addShot, shot } = req.body;
   if (club) {
-    console.log("update club name and brand");
-    console.log(club.club, club.brand);
     try {
       const clubToUpdate = await Club.findById(clubId);
       clubToUpdate.club = club.club;
@@ -91,14 +98,10 @@ const updateClub = async (req, res) => {
         ...clubToUpdate
       });
 
-      // const clubBefore = await Club.findByIdAndUpdate(clubId, {
-      //   name: club.name,
-      //   brand: club.brand
-      // });
       res.status(200).end();
     } catch (error) {
       console.log(error);
-      res.status(400).send({ error: error.message });
+      res.status(400).end();
     }
   }
   if (addShot) {
@@ -151,11 +154,25 @@ const deleteClub = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await Club.findByIdAndDelete(id);
-    res.status(204).end();
+    console.log("delete single club");
+
+    // find club using the id params
+    const club = await Club.findById(id);
+
+    if (!club) {
+      res.status(404).end();
+    } else if (!club.user.equals(req.currentUser._id)) {
+      res.status(403).end();
+    } else {
+      res.status(204).end();
+    }
   } catch (error) {
-    console.log(error);
-    res.status(400).send({ error: error.message });
+    // if error type CastError
+    if (error.name === "CastError") {
+      res.status(404).end();
+    } else {
+      res.status(500).end();
+    }
   }
 };
 
