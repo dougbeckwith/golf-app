@@ -128,8 +128,8 @@ const Clubs = () => {
               onChange={handleSelectChange}
               value={type}
               className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
-              <option value="totalDistance">Total</option>
-              <option value="totalCarry">Carry</option>
+              <option value="totalDistance">Total Distance</option>
+              <option value="totalCarry">Carry Distance</option>
             </select>
           )}
           {isLoading && (
