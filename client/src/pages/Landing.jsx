@@ -27,7 +27,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="bg-dark-400 h-screen flex justify-center items-center">
+    <div className="bg-dark-500 h-screen flex justify-center items-center">
       <div className="pt-20 pb-16 text-center text-gray-400 lg:pt-32 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h1 className="mx-auto max-w-4xl font-display text-4xl font-medium tracking-tight text-slate-900 sm:text-5xl md:7xl">
           Golf stats{" "}
@@ -51,7 +51,7 @@ const Landing = () => {
           {authUser ? (
             <Link to="/clubs">
               <button className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300">
-                Clubs
+                Home Page
               </button>
             </Link>
           ) : (
@@ -69,17 +69,24 @@ const Landing = () => {
                     Sign Up
                   </button>
                 </Link>{" "}
-                <Link to="/clubs">
-                  <button
-                    onClick={handleDemoSignIn}
-                    className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
-                    Demo
-                  </button>
-                </Link>
               </div>
             </>
           )}
         </div>
+        {!authUser && (
+          <>
+            <p className="pt-4 pb-3 mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-500">
+              Please allow 30 seconds for the server to spin up.
+            </p>
+            <Link to="/clubs">
+              <button
+                onClick={handleDemoSignIn}
+                className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
+                Try Demo
+              </button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

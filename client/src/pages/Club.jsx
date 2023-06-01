@@ -263,7 +263,7 @@ const Club = () => {
 
   return (
     <>
-      <div className="w-full bg-dark-400 text-gray-500 min-h-screen max-h-min ">
+      <div className="w-full bg-dark-500 text-gray-500 min-h-screen max-h-min ">
         <div className="container m-auto pt-4 xl:pt-16 px-3 sm:px-0">
           {isLoading ? (
             <div>Loading</div>
