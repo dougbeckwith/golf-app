@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import Alert from "../components/Alert";
 
 const EditClub = () => {
   const navigate = useNavigate();
@@ -30,6 +31,15 @@ const EditClub = () => {
     club: "",
     brand: ""
   });
+
+  // State for edit club alert after submit
+  const [show, setShow] = useState(false);
+
+  // State for alert message
+  const [message, setMessage] = useState("");
+
+  // State for nav to
+  const [navTo, setNavTo] = useState("");
 
   //   // GET club and set club state
   useEffect(() => {
@@ -63,17 +73,13 @@ const EditClub = () => {
           });
 
           setIsLoading(false);
-        }
-
-        if (response.status === 400) {
-          alert("Bad Reqeust");
-        }
-
-        if (response.status === 401) {
-          alert("/forbidden");
-        }
-
-        if (response.status === 500) {
+        } else if (response.status === 401) {
+          navigate("/signin");
+        } else if (response.status === 403) {
+          navigate("/forbidden");
+        } else if (response.status === 404) {
+          navigate("/notfound");
+        } else {
           navigate("/error");
         }
       } catch (error) {
@@ -115,25 +121,34 @@ const EditClub = () => {
         options
       );
 
-      // if club created display message to user
+      // if club updated display alert message to user
+      // on alert close nav to /clubs
       if (response.status === 200) {
-        setIsLoading(false);
         setErrors([]);
-        alert("club updated!");
-        navigate(`/clubs/${id}`);
+        setInput({
+          club: "",
+          brand: "",
+          totalDistance: "",
+          totalCarry: ""
+        });
+        setMessage("Success! Club Updated");
+        setNavTo("/clubs");
+        setShow(true);
       }
-
-      if (response.status === 400) {
-        alert("Bad Reqeust");
+      // if not success lets just display a alert message to user
+      // with error message description
+      else if (response.status === 400) {
+        setMessage("Bad Reqeust");
+      } else if (response.status === 401) {
+        setMessage("Unauthorized");
+      } else if (response.status === 403) {
+        setMessage("Forbidden");
+      } else if (response.status === 404) {
+        setMessage("Club Not Found");
+      } else if (response.status === 500) {
+        setMessage("Server Error");
       }
-
-      if (response.status === 401) {
-        alert("/forbidden");
-      }
-
-      if (response.status === 500) {
-        navigate("/error");
-      }
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -293,6 +308,7 @@ const EditClub = () => {
           </div>
         </div>
       </div>
+      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

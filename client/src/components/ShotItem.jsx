@@ -4,7 +4,14 @@ import { MdOutlineGolfCourse } from "react-icons/md";
 import UserContext from "../context/UserContext";
 import { getAverageDistance } from "../helpers";
 
-const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
+const ShotItem = ({
+  setClub,
+  setAvgTotalDistance,
+  setAvgTotalCarry,
+  shot,
+  setShow,
+  setMessage
+}) => {
   const params = useParams();
   const id = params.id;
 
@@ -36,7 +43,8 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
 
       // Update club state and update avgYards state
       if (response.status === 200) {
-        alert("shot deleted");
+        setMessage("Success! Show Deleted");
+        setShow(true);
         setClub((prev) => {
           const club = {
             ...prev
@@ -49,13 +57,15 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgTotalCarry, shot }) => {
           return club;
         });
       } else if (response.status === 400) {
-        alert("Bad Request");
+        setMessage("Bad Reqeust");
       } else if (response.status === 401) {
-        alert("Not Authorized");
+        setMessage("Unauthorized");
       } else if (response.status === 403) {
-        alert("Forbidden");
+        setMessage("Forbidden");
+      } else if (response.status === 404) {
+        setMessage("Club Not Found");
       } else if (response.status === 500) {
-        alert("Server Error");
+        setMessage("Server Error");
       }
     } catch (err) {
       console.log(err);

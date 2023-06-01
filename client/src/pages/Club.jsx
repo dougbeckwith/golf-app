@@ -8,6 +8,7 @@ import ShotList from "../components/ShotList";
 import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import Alert from "../components/Alert";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -33,10 +34,14 @@ const Club = () => {
     totalDistance: ""
   });
 
-  // Navigate to clubs page
-  const navigateToClubs = () => {
-    navigate("/clubs");
-  };
+  // State for edit club alert after submit
+  const [show, setShow] = useState(false);
+
+  // State for alert message
+  const [message, setMessage] = useState("");
+
+  // State for nav to
+  const [navTo, setNavTo] = useState("");
 
   // GET club and set club state
   useEffect(() => {
@@ -125,15 +130,18 @@ const Club = () => {
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           return club;
         });
-        alert("shot added!");
+        setMessage("Success! Shot Added");
+        setShow(true);
       } else if (response.status === 400) {
-        alert("Bad request");
+        setMessage("Bad Reqeust");
       } else if (response.status === 401) {
-        alert("Not Authorized");
+        setMessage("Unauthorized");
       } else if (response.status === 403) {
-        navigate("/forbidden");
+        setMessage("Forbidden");
+      } else if (response.status === 404) {
+        setMessage("Club Not Found");
       } else if (response.status === 500) {
-        alert("Server Error");
+        setMessage("Server Error");
       }
     } catch (err) {
       console.log(err);
@@ -152,34 +160,30 @@ const Club = () => {
       }
     };
 
-    // prompt user on delete
-    const answer = prompt(
-      "Are you sure you want to delete? enter delete to confirm"
-    );
+    try {
+      // send request to delete club
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        options
+      );
 
-    if (answer === "delete") {
-      try {
-        // send request to delete club
-        const response = await fetch(
-          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-          options
-        );
-
-        if (response.status === 204) {
-          alert("Club Deleted");
-          navigateToClubs();
-        } else if (response.status === 400) {
-          alert("Bad Request");
-        } else if (response.status === 401) {
-          alert("Not Authorized");
-        } else if (response.status === 403) {
-          alert("Forbidden");
-        } else if (response.status === 500) {
-          alert("Server Error");
-        }
-      } catch (error) {
-        console.log(error);
+      if (response.status === 204) {
+        setMessage("Success! Club Deleted");
+        setNavTo("/clubs");
+        setShow(true);
+      } else if (response.status === 400) {
+        setMessage("Bad Reqeust");
+      } else if (response.status === 401) {
+        setMessage("Unauthorized");
+      } else if (response.status === 403) {
+        setMessage("Forbidden");
+      } else if (response.status === 404) {
+        setMessage("Club Not Found");
+      } else if (response.status === 500) {
+        setMessage("Server Error");
       }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -409,6 +413,8 @@ const Club = () => {
                           club={club}
                           setAvgTotalCarry={setAvgTotalCarry}
                           setAvgTotalDistance={setAvgTotalDistance}
+                          setShow={setShow}
+                          setMessage={setMessage}
                         />
                       );
                     })}
@@ -419,6 +425,7 @@ const Club = () => {
           )}
         </div>
       </div>
+      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

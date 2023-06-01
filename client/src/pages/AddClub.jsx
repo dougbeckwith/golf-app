@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { v4 as uuidv4 } from "uuid";
+import Alert from "../components/Alert";
 
 const AddClub = () => {
   const navigate = useNavigate();
@@ -30,6 +31,15 @@ const AddClub = () => {
     totalDistance: "",
     totalCarry: ""
   });
+
+  // State for add club alert after submit
+  const [show, setShow] = useState(false);
+
+  // State for alert message
+  const [message, setMessage] = useState("");
+
+  // State for nav to
+  const [navTo, setNavTo] = useState("");
 
   // Add club to database
   const handleSubmit = async (e) => {
@@ -63,18 +73,30 @@ const AddClub = () => {
 
       // if club created display message to user
       if (response.status === 201) {
-        alert("club created");
-        // TO DO
-        // add alert message club created
-        // with close button that navigates to /clubs
+        setInput({
+          club: "",
+          brand: "",
+          totalDistance: "",
+          totalCarry: ""
+        });
+        setMessage("Success! Club Created");
+        setNavTo("/clubs");
+        setShow(true);
         setErrors([]);
-        navigate("/clubs");
+        // navigate("/clubs");
       }
 
-      // if status 400 set errors
-      if (response.status === 400) {
-        const { error } = await response.json();
-        setErrors(error);
+      // if not success use error object to dispay message to user
+      else if (response.status === 400) {
+        setMessage("Bad Reqeust");
+      } else if (response.status === 401) {
+        setMessage("Unauthorized");
+      } else if (response.status === 403) {
+        setMessage("Forbidden");
+      } else if (response.status === 404) {
+        setMessage("Club Not Found");
+      } else if (response.status === 500) {
+        setMessage("Server Error");
       }
       setIsloading(false);
     } catch (error) {
@@ -146,7 +168,14 @@ const AddClub = () => {
     if (isLoading === true) {
       return true;
     }
-    if (!error.club && !error.brand && input.club && input.brand) {
+    if (
+      !error.club &&
+      !error.brand &&
+      input.club &&
+      input.brand &&
+      input.totalCarry &&
+      input.totalDistance
+    ) {
       return false;
     }
     return true;
@@ -320,6 +349,7 @@ const AddClub = () => {
           </div>
         </div>
       </div>
+      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

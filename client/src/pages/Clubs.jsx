@@ -50,8 +50,14 @@ const Clubs = () => {
               sortClubs(clubs, type);
             }
           }
+        } else if (response.status === 401) {
+          navigate("/signin");
+        } else if (response.status === 403) {
+          navigate("/forbidden");
+        } else if (response.status === 404) {
+          navigate("/notfound");
         } else {
-          console.log(response);
+          navigate("/error");
         }
         setIsLoading(false);
       } catch (err) {
