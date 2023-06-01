@@ -130,18 +130,21 @@ const Club = () => {
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           return club;
         });
-        setMessage("Success! Shot Added");
-        setShow(true);
       } else if (response.status === 400) {
         setMessage("Bad Reqeust");
+        setShow(true);
       } else if (response.status === 401) {
         setMessage("Unauthorized");
+        setShow(true);
       } else if (response.status === 403) {
         setMessage("Forbidden");
+        setShow(true);
       } else if (response.status === 404) {
         setMessage("Club Not Found");
+        setShow(true);
       } else if (response.status === 500) {
         setMessage("Server Error");
+        setShow(true);
       }
     } catch (err) {
       console.log(err);
@@ -173,14 +176,19 @@ const Club = () => {
         setShow(true);
       } else if (response.status === 400) {
         setMessage("Bad Reqeust");
+        setShow(true);
       } else if (response.status === 401) {
         setMessage("Unauthorized");
+        setShow(true);
       } else if (response.status === 403) {
         setMessage("Forbidden");
+        setShow(true);
       } else if (response.status === 404) {
         setMessage("Club Not Found");
+        setShow(true);
       } else if (response.status === 500) {
         setMessage("Server Error");
+        setShow(true);
       }
     } catch (error) {
       console.log(error);

@@ -43,8 +43,6 @@ const ShotItem = ({
 
       // Update club state and update avgYards state
       if (response.status === 200) {
-        setMessage("Success! Show Deleted");
-        setShow(true);
         setClub((prev) => {
           const club = {
             ...prev
@@ -57,14 +55,19 @@ const ShotItem = ({
           return club;
         });
       } else if (response.status === 400) {
+        setShow(true);
         setMessage("Bad Reqeust");
       } else if (response.status === 401) {
+        setShow(true);
         setMessage("Unauthorized");
       } else if (response.status === 403) {
+        setShow(true);
         setMessage("Forbidden");
       } else if (response.status === 404) {
+        setShow(true);
         setMessage("Club Not Found");
       } else if (response.status === 500) {
+        setShow(true);
         setMessage("Server Error");
       }
     } catch (err) {

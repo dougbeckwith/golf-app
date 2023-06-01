@@ -83,20 +83,24 @@ const AddClub = () => {
         setNavTo("/clubs");
         setShow(true);
         setErrors([]);
-        // navigate("/clubs");
       }
 
       // if not success use error object to dispay message to user
       else if (response.status === 400) {
         setMessage("Bad Reqeust");
+        setShow(true);
       } else if (response.status === 401) {
         setMessage("Unauthorized");
+        setShow(true);
       } else if (response.status === 403) {
         setMessage("Forbidden");
+        setShow(true);
       } else if (response.status === 404) {
         setMessage("Club Not Found");
+        setShow(true);
       } else if (response.status === 500) {
         setMessage("Server Error");
+        setShow(true);
       }
       setIsloading(false);
     } catch (error) {

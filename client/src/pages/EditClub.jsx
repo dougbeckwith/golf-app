@@ -125,12 +125,6 @@ const EditClub = () => {
       // on alert close nav to /clubs
       if (response.status === 200) {
         setErrors([]);
-        setInput({
-          club: "",
-          brand: "",
-          totalDistance: "",
-          totalCarry: ""
-        });
         setMessage("Success! Club Updated");
         setNavTo("/clubs");
         setShow(true);
@@ -139,14 +133,19 @@ const EditClub = () => {
       // with error message description
       else if (response.status === 400) {
         setMessage("Bad Reqeust");
+        setShow(true);
       } else if (response.status === 401) {
         setMessage("Unauthorized");
+        setShow(true);
       } else if (response.status === 403) {
         setMessage("Forbidden");
+        setShow(true);
       } else if (response.status === 404) {
         setMessage("Club Not Found");
+        setShow(true);
       } else if (response.status === 500) {
         setMessage("Server Error");
+        setShow(true);
       }
       setIsLoading(false);
     } catch (error) {
