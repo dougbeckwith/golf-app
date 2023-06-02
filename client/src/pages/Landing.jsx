@@ -1,14 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Landing = () => {
   const { authUser, actions } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDemoSignIn = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     const credentials = {
       email: "demouser@gmail.com",
       password: "password"
@@ -21,8 +22,17 @@ const Landing = () => {
       } else if (errors) {
         alert(errors);
       }
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const isButtonsDisabled = () => {
+    if (isLoading) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -58,13 +68,15 @@ const Landing = () => {
             <>
               <div className="flex gap-2 md:gap-6">
                 <Link to="/signin">
-                  <button className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
+                  <button
+                    disabled={isButtonsDisabled()}
+                    className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
                     Sign In
                   </button>
                 </Link>
                 <Link to="/signup">
                   <button
-                    type="button"
+                    disabled={isButtonsDisabled()}
                     className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300">
                     Sign Up
                   </button>
@@ -75,11 +87,16 @@ const Landing = () => {
         </div>
         {!authUser && (
           <>
-            <p className="pt-4 pb-3 mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-500">
-              Please allow 30 seconds for the server to spin up.
+            <p className="pt-10 mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-500">
+              After clicking Try Demo please allow 30 seconds for the server to
+              spin up.
+            </p>
+            <p className=" pb-3 mx-auto max-w-2xl text-lg tracking-tight text-gray-500">
+              After 30 roughly seconds it will take you into the demo account.
             </p>
             <Link to="/clubs">
               <button
+                disabled={isButtonsDisabled()}
                 onClick={handleDemoSignIn}
                 className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
                 Try Demo
