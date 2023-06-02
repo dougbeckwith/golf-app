@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
@@ -6,6 +6,26 @@ const Landing = () => {
   const { authUser, actions } = useContext(UserContext);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isServerAwake, setIsServerAwake] = useState(false);
+
+  useEffect(() => {
+    const startBackend = async () => {
+      try {
+        // send request right away to wake up server
+        const response = await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        setIsServerAwake(true);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (authUser) {
+      setIsServerAwake(true);
+    } else {
+      startBackend();
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleDemoSignIn = async (e) => {
     e.preventDefault();
@@ -16,6 +36,10 @@ const Landing = () => {
     };
 
     try {
+      if (!isServerAwake) {
+        alert("waiting for server to wake up");
+      }
+
       const { user, errors } = await actions.signIn(credentials);
       if (user) {
         navigate("/clubs");

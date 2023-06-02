@@ -37,6 +37,25 @@ const SignIn = () => {
     inputReference.current.focus();
   }, []);
 
+  const [isServerAwake, setIsServerAwake] = useState(false);
+
+  useEffect(() => {
+    const startBackend = async () => {
+      try {
+        // send request right away to wake up server
+        const response = await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        setIsServerAwake(true);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    startBackend();
+
+    // eslint-disable-next-line
+  }, []);
+
   const isSignInButtonDisabled = () => {
     if (isLoading === true) {
       return true;
@@ -59,6 +78,9 @@ const SignIn = () => {
     };
 
     try {
+      if (!isServerAwake) {
+        alert("waiting for server to wake up");
+      }
       const { user, errors } = await userContext.actions.signIn(credentials);
       if (user) {
         setErrors([]);

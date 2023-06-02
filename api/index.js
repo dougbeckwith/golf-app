@@ -20,6 +20,15 @@ connectDataBase();
 
 app.use(cors());
 app.use(express.json());
+
+// Free Server when deployed goes to sleep after 15 mins of inactivity
+// added this to start the wake up process right away
+// to give users better experience
+app.use("/", () => {
+  console.log("Route To Wake Up Server");
+  res.status(200).send("Started Serer");
+});
+
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
 
