@@ -37,6 +37,7 @@ const Landing = () => {
 
     try {
       if (!isServerAwake) {
+        console.log("server asleep");
         alert("waiting for server to wake up");
       }
 
