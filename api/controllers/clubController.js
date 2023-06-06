@@ -91,14 +91,12 @@ const updateClub = async (req, res) => {
   try {
     const club = await Club.findById(clubId);
 
-    // return 404 if club not found
     if (!club) {
-      res.status(404);
+      res.status(404).end();
       return;
     }
 
     if (club && updateName) {
-      // use the input updateName to update the club
       club.club = updateName.club;
       club.brand = updateName.brand;
       await Club.findByIdAndUpdate(clubId, {
