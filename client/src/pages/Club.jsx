@@ -34,24 +34,19 @@ const Club = () => {
     totalDistance: ""
   });
 
-  // State for edit club alert after submit
-  const [show, setShow] = useState(false);
-
   // State for alert message
+  const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
-
-  // State for nav to
   const [navTo, setNavTo] = useState("");
 
   // GET club and set club state
   useEffect(() => {
-    const fetchClub = async () => {
+    const getClub = async () => {
       try {
         const encodedCredentials = btoa(
           `${authUser.email}:${authUser.password}`
         );
 
-        // fetch options
         const options = {
           method: "GET",
           headers: {
@@ -59,7 +54,6 @@ const Club = () => {
           }
         };
 
-        // send request to get club
         const response = await fetch(
           `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
           options
@@ -85,17 +79,15 @@ const Club = () => {
       }
     };
 
-    fetchClub();
+    getClub();
     // eslint-disable-next-line
   }, []);
 
-  // UPDATE club (add shot)
   const handleAddShot = async (e) => {
     e.preventDefault();
     const shotId = uuidv4();
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    // fetch options
     const options = {
       method: "PATCH",
       headers: {
@@ -109,13 +101,11 @@ const Club = () => {
     };
 
     try {
-      // send request to update club (add shot)
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
         options
       );
 
-      // if success update club state to reflect the added shot
       if (response.status === 200) {
         setShot({
           totalCarry: "",
@@ -151,11 +141,9 @@ const Club = () => {
     }
   };
 
-  // DELETE club
-  const handleDelete = async () => {
+  const handleDeleteClub = async () => {
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    // fetch options
     const options = {
       method: "DELETE",
       headers: {
@@ -164,7 +152,6 @@ const Club = () => {
     };
 
     try {
-      // send request to delete club
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
         options
@@ -195,7 +182,6 @@ const Club = () => {
     }
   };
 
-  // update shot state and validate input
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setShot((prev) => ({
@@ -205,7 +191,6 @@ const Club = () => {
     validateInput(e);
   };
 
-  // validates shot input
   const validateInput = (e) => {
     let { name, value } = e.target;
 
@@ -245,7 +230,6 @@ const Club = () => {
     });
   };
 
-  // controls if add shot buttons is disabled
   const isAddShotDisabled = () => {
     if (isLoading === true) {
       return true;
@@ -282,13 +266,12 @@ const Club = () => {
                     </button>
                   </Link>
                   <button
-                    onClick={handleDelete}
+                    onClick={handleDeleteClub}
                     className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 ">
                     Delete Club
                   </button>
                 </div>
               </div>
-
               <div className="">
                 <div className="w-full flex flex-col lg:flex-row">
                   <form className="mb-2 w-full  flex flex-col py-5 px-6 rounded-md bg-dark-300">
@@ -306,7 +289,6 @@ const Club = () => {
                           />
                         )}
                     </div>
-
                     <input
                       name="totalCarry"
                       value={shot.totalCarry}
@@ -318,7 +300,6 @@ const Club = () => {
                           : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                       }`}
                     />
-
                     <div className="flex items-center pt-1 pl-1">
                       {error.totalCarry && (
                         <p className="h-full text-pink-400 text-xs pr-1">
@@ -326,7 +307,6 @@ const Club = () => {
                         </p>
                       )}
                     </div>
-
                     <div className="pb-1 pl-1 flex items-center">
                       <label htmlFor="totalDistance" className="text-lg mr-1">
                         Total Distance{" "}
@@ -380,7 +360,6 @@ const Club = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="w-full flex items-center pb-2 lg:justify-center ">
                     <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
                       <GiGolfTee size={40} color="#d1d5db" />
@@ -394,7 +373,6 @@ const Club = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="w-full flex items-center pb-2 lg:justify-center">
                     <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
                       <GiGolfTee size={40} color="#d1d5db" />

@@ -19,7 +19,7 @@ export const UserProvider = (props) => {
       `${credentials.email}:${credentials.password}`
     );
 
-    const fetchOptions = {
+    const options = {
       method: "GET",
       headers: {
         Authorization: `Basic ${encodedCredentials}`
@@ -28,7 +28,7 @@ export const UserProvider = (props) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/user`,
-        fetchOptions
+        options
       );
       if (response.status === 200) {
         const { user } = await response.json();
@@ -54,7 +54,6 @@ export const UserProvider = (props) => {
     }
   };
 
-  // sign out method sets user to null and removes user cookies
   const signOut = () => {
     setAuthUser(null);
     Cookies.remove("authenticatedUser");

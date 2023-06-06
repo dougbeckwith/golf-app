@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const Landing = () => {
-  const { authUser, actions } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const { authUser, actions } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [isServerAwake, setIsServerAwake] = useState(false);
 
@@ -12,9 +13,8 @@ const Landing = () => {
     const startBackend = async () => {
       try {
         // send request right away to wake up server
-        const response = await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
         setIsServerAwake(true);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -30,6 +30,7 @@ const Landing = () => {
   const handleDemoSignIn = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     const credentials = {
       email: "demouser@gmail.com",
       password: "password"
@@ -37,23 +38,26 @@ const Landing = () => {
 
     try {
       if (!isServerAwake) {
-        console.log("server asleep");
-        alert("waiting for server to wake up");
+        alert(
+          "Waiting for server to wake up. Please allow 30-45 seconds to sign in."
+        );
       }
 
       const { user, errors } = await actions.signIn(credentials);
+
       if (user) {
         navigate("/clubs");
       } else if (errors) {
         alert(errors);
       }
+
       setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const isButtonsDisabled = () => {
+  const isButtonDisabled = () => {
     if (isLoading) {
       return true;
     } else {
@@ -94,14 +98,14 @@ const Landing = () => {
               <div className="flex gap-2 md:gap-6">
                 <Link to="/signin">
                   <button
-                    disabled={isButtonsDisabled()}
+                    disabled={isButtonDisabled()}
                     className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
                     Sign In
                   </button>
                 </Link>
                 <Link to="/signup">
                   <button
-                    disabled={isButtonsDisabled()}
+                    disabled={isButtonDisabled()}
                     className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300">
                     Sign Up
                   </button>
@@ -112,16 +116,13 @@ const Landing = () => {
         </div>
         {!authUser && (
           <>
-            <p className="pt-10 mx-auto mt-6 max-w-2xl text-lg tracking-tight text-gray-500">
-              After clicking Try Demo please allow 30 seconds for the server to
-              spin up.
-            </p>
-            <p className=" pb-3 mx-auto max-w-2xl text-lg tracking-tight text-gray-500">
-              After 30 roughly seconds it will take you into the demo account.
+            <p className="pt-10 pb-3 mx-auto max-w-2xl text-lg tracking-tight text-gray-500">
+              Warning server may be sleeping and may take some time to sign in.
+              After 30-45 seconds it will take you to the demo account.
             </p>
             <Link to="/clubs">
               <button
-                disabled={isButtonsDisabled()}
+                disabled={isButtonDisabled()}
                 onClick={handleDemoSignIn}
                 className="px-4 py-2 md:px-7 text-sm font-medium rounded-md shadow-sm text-dark-400 bg-gray-500 hover:bg-gray-400">
                 Try Demo

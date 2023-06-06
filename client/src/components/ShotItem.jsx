@@ -17,12 +17,10 @@ const ShotItem = ({
 
   const { authUser } = useContext(UserContext);
 
-  // UPDATE club remove (shot)
   const deleteShot = async () => {
     try {
       const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-      // fetch options
       const options = {
         method: "PATCH",
         headers: {
@@ -35,13 +33,11 @@ const ShotItem = ({
         })
       };
 
-      // send request to update club (delete shot)
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
         options
       );
 
-      // Update club state and update avgYards state
       if (response.status === 200) {
         setClub((prev) => {
           const club = {
@@ -55,23 +51,23 @@ const ShotItem = ({
           return club;
         });
       } else if (response.status === 400) {
-        setShow(true);
         setMessage("Bad Reqeust");
+        setShow(true);
       } else if (response.status === 401) {
-        setShow(true);
         setMessage("Unauthorized");
+        setShow(true);
       } else if (response.status === 403) {
-        setShow(true);
         setMessage("Forbidden");
+        setShow(true);
       } else if (response.status === 404) {
-        setShow(true);
         setMessage("Club Not Found");
-      } else if (response.status === 500) {
         setShow(true);
+      } else if (response.status === 500) {
         setMessage("Server Error");
+        setShow(true);
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 

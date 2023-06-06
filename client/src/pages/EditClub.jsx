@@ -13,8 +13,6 @@ const EditClub = () => {
   const id = params.id;
 
   const [club, setClub] = useState(null);
-
-  // State for button disabled if making sign up request
   const [isLoading, setIsLoading] = useState(true);
 
   // State for response errors
@@ -26,30 +24,23 @@ const EditClub = () => {
     brand: ""
   });
 
-  // State for input
   const [input, setInput] = useState({
     club: "",
     brand: ""
   });
 
-  // State for edit club alert after submit
+  // State for edit club alert message
   const [show, setShow] = useState(false);
-
-  // State for alert message
   const [message, setMessage] = useState("");
-
-  // State for nav to
   const [navTo, setNavTo] = useState("");
 
-  //   // GET club and set club state
   useEffect(() => {
-    const fetchClub = async () => {
+    const getClub = async () => {
       try {
         const encodedCredentials = btoa(
           `${authUser.email}:${authUser.password}`
         );
 
-        // fetch options
         const options = {
           method: "GET",
           headers: {
@@ -57,7 +48,6 @@ const EditClub = () => {
           }
         };
 
-        // send request to get club
         const response = await fetch(
           `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
           options
@@ -87,17 +77,15 @@ const EditClub = () => {
       }
     };
 
-    fetchClub();
+    getClub();
     // eslint-disable-next-line
   }, []);
 
-  // update club in database
-  const handleSubmit = async (e) => {
+  const handleUpdateClub = async (e) => {
     e.preventDefault();
 
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    // fetch options
     const options = {
       method: "PATCH",
       headers: {
@@ -109,29 +97,22 @@ const EditClub = () => {
           club: input.club,
           brand: input.brand
         },
-
         user: authUser._id
       })
     };
 
     try {
-      // send request to update club
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
         options
       );
 
-      // if club updated display alert message to user
-      // on alert close nav to /clubs
       if (response.status === 200) {
         setErrors([]);
         setMessage("Success! Club Updated");
         setNavTo("/clubs");
         setShow(true);
-      }
-      // if not success lets just display a alert message to user
-      // with error message description
-      else if (response.status === 400) {
+      } else if (response.status === 400) {
         setMessage("Bad Reqeust");
         setShow(true);
       } else if (response.status === 401) {
@@ -189,7 +170,7 @@ const EditClub = () => {
     });
   };
 
-  const isEditClubDisabled = () => {
+  const isUpdateClubButtonDisabled = () => {
     if (isLoading === true) {
       return true;
     }
@@ -200,7 +181,7 @@ const EditClub = () => {
   };
 
   // Go to club page
-  const navigateBack = () => {
+  const handleNavToClub = () => {
     navigate(`/clubs/${id}`);
   };
 
@@ -280,13 +261,13 @@ const EditClub = () => {
 
                 <button
                   type="submit"
-                  disabled={isEditClubDisabled()}
-                  onClick={handleSubmit}
+                  disabled={isUpdateClubButtonDisabled()}
+                  onClick={handleUpdateClub}
                   className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                   Update
                 </button>
                 <button
-                  onClick={navigateBack}
+                  onClick={handleNavToClub}
                   className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
                   Cancel
                 </button>

@@ -1,13 +1,13 @@
 import React from "react";
 import { getAverageDistance, getDistanceBarPercentage } from "../helpers";
 
-const ClubItem = ({ club, handleClick, longestTotalDistance, type }) => {
+const ClubItem = ({ club, handleClick, longestShot, filterShotsBy }) => {
   const id = club._id;
-  let averageTotalDistance = getAverageDistance(club, type);
+  let averageDistance = getAverageDistance(club, filterShotsBy);
 
   const widthPercentage = getDistanceBarPercentage(
-    averageTotalDistance,
-    longestTotalDistance
+    averageDistance,
+    longestShot
   );
 
   return (
@@ -19,10 +19,10 @@ const ClubItem = ({ club, handleClick, longestTotalDistance, type }) => {
           <p className="">{club.club}</p>
           <span className="px-2 hidden sm:block">-</span>
           <p className="hidden sm:block">{club.brand}</p>
-          {averageTotalDistance === 0 ? (
+          {averageDistance === 0 ? (
             <p className="ml-auto pr-4">0 yrds</p>
           ) : (
-            <p className="ml-auto pr-4">{averageTotalDistance} yards</p>
+            <p className="ml-auto pr-4">{averageDistance} yards</p>
           )}
         </div>
         <div

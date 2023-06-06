@@ -10,16 +10,17 @@ const Clubs = () => {
   const navigate = useNavigate();
 
   const { authUser } = useContext(UserContext);
-  const [type, setType] = useState("totalDistance");
-
   const [clubs, setClubs] = useState([]);
   const [sortedClubs, setSortedClubs] = useState([]);
-  const [longestTotalDistance, setlongestTotalDistance] = useState(0);
-
+  const [filterShotsBy, setFilterShotsBy] = useState("totalDistance");
+  const [longestShot, setLongestShot] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getAllClubData = async () => {
+      let clubData = [];
+      let filterShotsByLocalStorage = false;
+
       try {
         const encodedCredentials = btoa(
           `${authUser.email}:${authUser.password}`
@@ -36,20 +37,10 @@ const Clubs = () => {
           `${process.env.REACT_APP_CYCLIC_URL}/clubs`,
           options
         );
+
         if (response.status === 200) {
-          const clubs = await response.json();
-          setClubs(clubs);
-          // sort clubs by total distance to start
-          if (clubs.length !== 0) {
-            // check local storage to see if previous type set
-            const typeLocalStorage = getTypeLocalStorage();
-            if (typeLocalStorage) {
-              setType(typeLocalStorage);
-              sortClubs(clubs, typeLocalStorage);
-            } else {
-              sortClubs(clubs, type);
-            }
-          }
+          clubData = await response.json();
+          setClubs(clubData);
         } else if (response.status === 401) {
           navigate("/signin");
         } else if (response.status === 403) {
@@ -59,6 +50,18 @@ const Clubs = () => {
         } else {
           navigate("/error");
         }
+
+        if (clubData.length !== 0) {
+          filterShotsByLocalStorage = getFilterShotsByLocalStorage();
+        }
+
+        if (filterShotsByLocalStorage) {
+          setFilterShotsBy(filterShotsByLocalStorage);
+          sortClubs(clubData, filterShotsByLocalStorage);
+        } else {
+          sortClubs(clubData, filterShotsBy);
+        }
+
         setIsLoading(false);
       } catch (err) {
         console.log(err);
@@ -70,34 +73,32 @@ const Clubs = () => {
     // eslint-disable-next-line
   }, []);
 
-  // Get club filter type local storage
-  const getTypeLocalStorage = () => {
-    const type = JSON.parse(localStorage.getItem("type"));
-    return type;
+  const getFilterShotsByLocalStorage = () => {
+    return JSON.parse(localStorage.getItem("filterBy"));
   };
 
-  // Update club filter type local storage
-  const setTypeLocalStorage = (type) => {
-    localStorage.setItem("type", JSON.stringify(type));
+  const setFilterShotsByLocalStorage = (filterBy) => {
+    localStorage.setItem("filterBy", JSON.stringify(filterBy));
   };
 
   // filters clubs by total or carry distance
-  const handleSelectChange = (e) => {
+  const handleFilterShotsBy = (e) => {
     if (e.target.value === "totalDistance") {
-      setType("totalDistance");
-      setTypeLocalStorage("totalDistance");
+      setFilterShotsBy("totalDistance");
+      setFilterShotsByLocalStorage("totalDistance");
     } else {
-      setType("totalCarry");
-      setTypeLocalStorage("totalCarry");
+      setFilterShotsBy("totalCarry");
+      setFilterShotsByLocalStorage("totalCarry");
     }
     sortClubs(clubs, e.target.value);
   };
 
-  // sorts clubs by type (carryDistance, totalDistance)
-  const sortClubs = (clubs, type) => {
-    const sortedClubs = sortClubsByDistance(clubs, type);
-    let longestTotalDistance = sortedClubs[0].averageDistance;
-    setlongestTotalDistance(longestTotalDistance);
+  // sorts clubs by shotType (carryDistance, totalDistance)
+  const sortClubs = (clubs, shotType) => {
+    const sortedClubs = sortClubsByDistance(clubs, shotType);
+    const longestShot = sortedClubs[0].averageDistance;
+
+    setLongestShot(longestShot);
     setSortedClubs(sortedClubs);
   };
 
@@ -105,8 +106,6 @@ const Clubs = () => {
   const handleClick = (id) => {
     navigate(`/clubs/${id}`);
   };
-
-  // state for type
 
   return (
     <>
@@ -130,8 +129,8 @@ const Clubs = () => {
             <select
               name="clubs"
               id="clubs"
-              onChange={handleSelectChange}
-              value={type}
+              onChange={handleFilterShotsBy}
+              value={filterShotsBy}
               className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
               <option value="totalDistance">Total Distance</option>
               <option value="totalCarry">Carry Distance</option>
@@ -151,8 +150,8 @@ const Clubs = () => {
                   key={uuidv4()}
                   club={club}
                   handleClick={handleClick}
-                  type={type}
-                  longestTotalDistance={longestTotalDistance}
+                  filterShotsBy={filterShotsBy}
+                  longestShot={longestShot}
                 />
               ))}
             </ClubList>

@@ -9,13 +9,11 @@ const SignIn = () => {
   // State for response errors
   const [errors, setErrors] = useState([]);
 
-  // State for input
   const [input, setInput] = useState({
     email: "",
     password: ""
   });
-
-  // State for button disabled if making sign up request
+  const [isServerAwake, setIsServerAwake] = useState(false);
   const [isLoading, setIsloading] = useState(false);
 
   const navigateToSignUp = () => {
@@ -31,21 +29,16 @@ const SignIn = () => {
     setErrors([]);
   };
 
-  // Focus input on load
-  const inputReference = useRef(null);
+  const emailInputRef = useRef(null);
   useEffect(() => {
-    inputReference.current.focus();
+    emailInputRef.current.focus();
   }, []);
-
-  const [isServerAwake, setIsServerAwake] = useState(false);
 
   useEffect(() => {
     const startBackend = async () => {
       try {
-        // send request right away to wake up server
-        const response = await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
         setIsServerAwake(true);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -79,7 +72,9 @@ const SignIn = () => {
 
     try {
       if (!isServerAwake) {
-        alert("waiting for server to wake up");
+        alert(
+          "Waiting for server to wake up. Please allow 30-45 seconds to sign in"
+        );
       }
       const { user, errors } = await userContext.actions.signIn(credentials);
       if (user) {
@@ -112,7 +107,7 @@ const SignIn = () => {
                   </label>
                 </div>
                 <input
-                  ref={inputReference}
+                  ref={emailInputRef}
                   name="email"
                   type="text"
                   onChange={onInputChange}

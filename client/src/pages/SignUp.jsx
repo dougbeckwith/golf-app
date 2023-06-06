@@ -5,7 +5,6 @@ import UserContext from "../context/UserContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  // User Context
   const userContext = useContext(UserContext);
 
   // State for response errors
@@ -25,26 +24,19 @@ const SignUp = () => {
     confirmPassword: ""
   });
 
-  // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
+  const [isServerAwake, setIsServerAwake] = useState(false);
 
-  // State for email input
   const emailInputRef = useRef(null);
-
   useEffect(() => {
-    // On component load focus email input
     emailInputRef.current.focus();
   }, []);
-
-  const [isServerAwake, setIsServerAwake] = useState(false);
 
   useEffect(() => {
     const startBackend = async () => {
       try {
-        // send request right away to wake up server
-        const response = await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
         setIsServerAwake(true);
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -55,7 +47,6 @@ const SignUp = () => {
     // eslint-disable-next-line
   }, []);
 
-  // update form state and validate form
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({
@@ -65,7 +56,6 @@ const SignUp = () => {
     validateInput(e);
   };
 
-  // validate form
   const validateInput = (e) => {
     let { name, value } = e.target;
 
@@ -144,16 +134,13 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //set loading state to disable sign up button
     setIsloading(true);
 
-    // set credentials from form state
     const credentials = {
       email: input.email,
       password: input.confirmPassword
     };
 
-    // fetch options
     const options = {
       method: "POST",
       headers: {
@@ -165,24 +152,22 @@ const SignUp = () => {
       })
     };
 
-    // send request to create user
     try {
       if (!isServerAwake) {
         alert("waiting for server to wake up");
       }
+
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/user`,
         options
       );
 
-      // if user created sign in user
       if (response.status === 201) {
         setErrors([]);
         await userContext.actions.signIn(credentials);
         navigate("/clubs");
       }
 
-      // if status 400 set errors
       if (response.status === 400) {
         const { error } = await response.json();
         setErrors(error);
@@ -226,7 +211,6 @@ const SignUp = () => {
                   value={input.email}
                 />
               </div>
-
               <div className="flex items-center pt-1 pl-1">
                 {error.email && (
                   <p className="h-full text-pink-400 text-xs pr-1">
@@ -234,7 +218,6 @@ const SignUp = () => {
                   </p>
                 )}
               </div>
-
               <div className="pt-5">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="password" className="text-lg mr-1">
@@ -258,7 +241,6 @@ const SignUp = () => {
                   value={input.password}
                 />
               </div>
-
               <div className="flex items-center pt-1 pl-1">
                 {error.password && (
                   <p className="h-full text-pink-400 text-xs pr-1">
@@ -266,7 +248,6 @@ const SignUp = () => {
                   </p>
                 )}
               </div>
-
               <div className="pt-5">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="confirmPassword" className="text-lg mr-1">
@@ -290,7 +271,6 @@ const SignUp = () => {
                   value={input.confirmPassword}
                 />
               </div>
-
               <div className="flex items-center pt-1 pl-1">
                 {error.confirmPassword && (
                   <p className="h-full text-pink-400 text-xs pr-1">
@@ -298,7 +278,6 @@ const SignUp = () => {
                   </p>
                 )}
               </div>
-
               <button
                 disabled={isSignUpButtonDisabled()}
                 onClick={handleSubmit}

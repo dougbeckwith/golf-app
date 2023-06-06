@@ -1,12 +1,11 @@
-// Sory clubs by distance (type = 'carryDistance' | 'totalDistance')
-const sortClubsByDistance = (clubs, type) => {
+// shotType = 'carryDistance' | 'totalDistance'
+const sortClubsByDistance = (clubs, shotType) => {
   const clubsWithAverageYards = [];
-
   clubs.forEach((club) => {
     if (club.shots.length === 0) {
       clubsWithAverageYards.push({ ...club, averageTotalDistance: 0 });
     } else {
-      const averageDistance = getAverageDistance(club, type);
+      const averageDistance = getAverageDistance(club, shotType);
       clubsWithAverageYards.push({
         ...club,
         averageDistance: averageDistance
@@ -21,22 +20,19 @@ const sortClubsByDistance = (clubs, type) => {
   return sortedClubs;
 };
 
-//Get the average distance of the club (type = 'carryDistance' | 'totalDistance')
-const getAverageDistance = (club, type) => {
+const getAverageDistance = (club, shotType) => {
   let totalYards = 0;
   let totalShots = club.shots.length;
-
   if (totalShots === 0) {
     return 0;
   }
 
   club.shots.forEach((shot) => {
-    totalYards = totalYards + +shot[type];
+    totalYards = totalYards + +shot[shotType];
   });
 
-  const avgerageDistance = Math.round(totalYards / totalShots);
-
-  return avgerageDistance;
+  const averageDistance = Math.round(totalYards / totalShots);
+  return averageDistance;
 };
 
 const findClubById = (id, clubData) => {
@@ -46,7 +42,7 @@ const findClubById = (id, clubData) => {
   return club;
 };
 
-// To dynamicly style the distance bar width
+// To dynamically style the distance bar width
 const getDistanceBarPercentage = (averageDistance, longestDistance) => {
   const percentage = (averageDistance / longestDistance).toFixed(2) + "%";
   if (percentage[0] === "1") {

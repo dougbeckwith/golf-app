@@ -10,7 +10,6 @@ const AddClub = () => {
   const navigate = useNavigate();
   const { authUser } = useContext(UserContext);
 
-  // State for button disabled if making sign up request
   const [isLoading, setIsloading] = useState(false);
 
   // State for response errors
@@ -24,7 +23,6 @@ const AddClub = () => {
     totalCarry: ""
   });
 
-  // State for input
   const [input, setInput] = useState({
     club: "",
     brand: "",
@@ -32,22 +30,16 @@ const AddClub = () => {
     totalCarry: ""
   });
 
-  // State for add club alert after submit
+  // State for add club alert message after submit
   const [show, setShow] = useState(false);
-
-  // State for alert message
   const [message, setMessage] = useState("");
-
-  // State for nav to
   const [navTo, setNavTo] = useState("");
 
-  // Add club to database
-  const handleSubmit = async (e) => {
+  const handleAddClub = async (e) => {
     e.preventDefault();
 
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    // fetch options
     const options = {
       method: "POST",
       headers: {
@@ -64,14 +56,12 @@ const AddClub = () => {
       })
     };
 
-    // send request to create club
     try {
       const response = await fetch(
         `${process.env.REACT_APP_CYCLIC_URL}/clubs`,
         options
       );
 
-      // if club created display message to user
       if (response.status === 201) {
         setInput({
           club: "",
@@ -83,10 +73,7 @@ const AddClub = () => {
         setNavTo("/clubs");
         setShow(true);
         setErrors([]);
-      }
-
-      // if not success use error object to dispay message to user
-      else if (response.status === 400) {
+      } else if (response.status === 400) {
         setMessage("Bad Reqeust");
         setShow(true);
       } else if (response.status === 401) {
@@ -185,7 +172,6 @@ const AddClub = () => {
     return true;
   };
 
-  // Go to club page
   const navigateToClubs = () => {
     navigate("/clubs");
   };
@@ -330,7 +316,7 @@ const AddClub = () => {
               <button
                 type="submit"
                 disabled={isAddClubDisabled()}
-                onClick={handleSubmit}
+                onClick={handleAddClub}
                 className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Add Club
               </button>
