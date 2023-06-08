@@ -97,6 +97,8 @@ const Clubs = () => {
 
   // sorts clubs by shotType (carryDistance, totalDistance)
   const sortClubs = (clubs, shotType) => {
+    if (clubs.length === 0) return;
+
     const sortedClubs = sortClubsByDistance(clubs, shotType);
     const longestShot = sortedClubs[0].averageDistance;
 
