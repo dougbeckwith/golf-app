@@ -50,10 +50,12 @@ const Clubs = () => {
         } else {
           navigate("/error");
         }
-
-        if (clubData.length !== 0) {
-          filterShotsByLocalStorage = getFilterShotsByLocalStorage();
+        if (clubData.length === 0) {
+          setIsLoading(false);
+          return;
         }
+
+        filterShotsByLocalStorage = getFilterShotsByLocalStorage();
 
         if (filterShotsByLocalStorage) {
           setFilterShotsBy(filterShotsByLocalStorage);
