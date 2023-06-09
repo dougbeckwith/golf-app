@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import Logout from "./pages/Logout";
 import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Forbidden";
+import Puts from "./pages/Puts";
 import UnhandledError from "./pages/UnhandledError";
 
 const App = () => {
@@ -25,6 +26,10 @@ const App = () => {
             <Route path=":id" element={<Club />} />
             <Route path="new" element={<AddClub />} />
             <Route path=":id/edit" element={<EditClub />} />
+          </Route>
+          <Route path="/puts" element={<Layout />}>
+            <Route index element={<Puts />} />
+            <Route path="new" element={<AddClub />} />
           </Route>
         </Route>
 
