@@ -1,13 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-// GET user
 const getUser = async (req, res) => {
   console.log("GET USER");
   res.status(200).send({ user: req.currentUser });
 };
 
-// CREATE user
 const createUser = async (req, res) => {
   console.log("CREATE USER");
   try {

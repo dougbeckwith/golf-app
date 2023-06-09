@@ -1,20 +1,21 @@
 const Club = require("../models/Club");
 
-// GET one club
 const getClub = async (req, res) => {
   console.log("GET SINGLE CLUB");
   const { id } = req.params;
 
   try {
     const club = await Club.findById(id);
-    // check if club exists
+
     if (!club) {
       res.status(404).end();
     }
+
     // check if client owns the club
     else if (!club.user.equals(req.currentUser._id)) {
       res.status(403).end();
     }
+
     // client owns the club send back the resource
     else {
       res.status(200).send(club);
@@ -30,11 +31,11 @@ const getClub = async (req, res) => {
   }
 };
 
-// GET all clubs
 const getClubs = async (req, res) => {
   console.log("GET ALL CLUBS");
   try {
     const clubs = await Club.find({ user: req.currentUser._id });
+
     if (!clubs) {
       res.status(404).end();
     } else {
@@ -46,7 +47,6 @@ const getClubs = async (req, res) => {
   }
 };
 
-// CREATE one club
 const createClub = async (req, res) => {
   console.log("CREATE CLUB");
   try {
@@ -62,6 +62,7 @@ const createClub = async (req, res) => {
       ],
       user: req.body.user
     });
+
     res.status(201).end();
   } catch (error) {
     console.log(error);
@@ -150,13 +151,11 @@ const updateClub = async (req, res) => {
   }
 };
 
-// DELETE one club
 const deleteClub = async (req, res) => {
   console.log("DELETE CLUB");
   const { id } = req.params;
 
   try {
-    // find club using the id params
     const club = await Club.findById(id);
 
     if (!club) {
