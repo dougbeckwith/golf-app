@@ -22,13 +22,20 @@ const Navbar = () => {
           Golf Stats
         </p>
         {/* Desktop Links */}
-        <ul className="hidden md:flex">
-          <li id="nav" className="font-medium py-10 ml-2">
+        <ul id="nav" className="hidden md:flex">
+          <li className="font-medium py-10 ml-2">
             <NavLink
               className="text-gray-400  hover:bg-dark-200 hover:text-white ml-8 px-3 py-1 rounded-md"
               to="/clubs"
               end>
               Clubs
+            </NavLink>
+          </li>
+          <li className=" px-3 font-medium py-10">
+            <NavLink
+              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-1 rounded-md"
+              to="/puts">
+              Puts
             </NavLink>
           </li>
         </ul>
@@ -60,6 +67,13 @@ const Navbar = () => {
               className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
               to="/clubs">
               Clubs
+            </NavLink>
+          </li>
+          <li className=" px-3 font-medium py-10">
+            <NavLink
+              className="text-gray-400  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
+              to="/puts">
+              Puts
             </NavLink>
           </li>
 
