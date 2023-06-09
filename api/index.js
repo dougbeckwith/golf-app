@@ -1,12 +1,15 @@
 const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
 require("dotenv").config();
+const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+
+const app = express();
 const port = 5000;
+
 const clubRoutes = require("./routes/clubRoutes");
 const userRoutes = require("./routes/userRoutes");
-const path = require("path");
+const putRoutes = require("./routes/putRoutes");
 
 const connectDataBase = async () => {
   try {
@@ -16,6 +19,7 @@ const connectDataBase = async () => {
     console.log(err);
   }
 };
+
 connectDataBase();
 
 app.use(cors());
@@ -28,8 +32,8 @@ app.get("/", (req, res) => {
 
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
+app.use("/puts", putRoutes);
 
-// send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
     message: "Route Not Found"

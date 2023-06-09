@@ -11,9 +11,13 @@ const clubSchema = new Schema(
       type: String,
       required: [true, "Brand is required"]
     },
+    // future mabey look at seperating shots into a seperate schema/model and associate club with a list of shots.
+    // Then we could seperate end points to just delete shot instead of updating a club
     shots: {
-      type: Array // [{totalDistance:Number, totalCarry:Number, shotId: Number}]
+      // Array Of Objects: [{totalDistance:Number, totalCarry:Number, shotId: Number}]
+      type: Array
     },
+
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User"
