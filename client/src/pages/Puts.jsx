@@ -1,13 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import UserContext from "../context/UserContext";
 import { GiGolfTee } from "react-icons/gi";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import Chart from "../components/Chart";
 import PutList from "../components/PutList";
 import PutItem from "../components/PutItem";
-import { getDummyDataPuts, getAveragePutsPerRound } from "../helpers";
+import { getAveragePutsPerRound, isNumeric } from "../helpers";
+import { useCurrentWidth } from "../hooks/Width";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -16,18 +16,13 @@ const Puts = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [putsPerRound, setPutsPerRound] = useState("");
-  const [averagePutsPerRound, setAvgPutsPerRound] = useState([]);
+  const [averagePutsPerRound, setAvgPutsPerRound] = useState(0);
   const [putData, setPutData] = useState([]);
+  const [error, setError] = useState("");
 
-  const [error, setError] = useState({
-    totalPuts: ""
-  });
+  const width = useCurrentWidth();
 
   useEffect(() => {
-    const rounds = getDummyDataPuts();
-    setPutData(rounds);
-    setAvgPutsPerRound(getAveragePutsPerRound(rounds));
-
     const getAllPuts = async () => {
       try {
         let putsData = [];
@@ -49,7 +44,8 @@ const Puts = () => {
         );
 
         if (response.status === 200) {
-          // set puts state here
+          putsData = await response.json();
+          setPutData(putsData);
         } else if (response.status === 401) {
           navigate("/signin");
         } else if (response.status === 403) {
@@ -59,11 +55,9 @@ const Puts = () => {
         } else {
           navigate("/error");
         }
-        if (putsData.length === 0) {
-          setIsLoading(false);
-          return;
-        } else {
-          // calcuate average puts per round
+
+        if (putsData.length !== 0) {
+          setAvgPutsPerRound(getAveragePutsPerRound(putsData));
         }
 
         setIsLoading(false);
@@ -77,13 +71,12 @@ const Puts = () => {
     // eslint-disable-next-line
   }, []);
 
-  const hanldeCreateRoundOfPuts = async (e) => {
+  const handleCreateRoundOfPuts = async (e) => {
     e.preventDefault();
 
-    const putId = uuidv4();
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    let date = new Date().toLocaleDateString("en-US", {
+    let dateCreated = new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit"
@@ -96,7 +89,9 @@ const Puts = () => {
         Authorization: `Basic ${encodedCredentials}`
       },
       body: JSON.stringify({
-        round: { puts: putsPerRound, dateCreated: date }
+        puts: +putsPerRound,
+        dateCreated,
+        user: authUser._id
       })
     };
 
@@ -105,9 +100,33 @@ const Puts = () => {
         `${process.env.REACT_APP_CYCLIC_URL}/puts`,
         options
       );
-      console.log(response);
-    } catch (err) {
-      console.log(err);
+
+      if (response.status === 201) {
+        const { putId } = await response.json();
+
+        setPutData((prev) => {
+          const puts = [
+            ...prev,
+            {
+              puts: +putsPerRound,
+              dateCreated,
+              user: authUser._id,
+              _id: putId
+            }
+          ];
+          const average = getAveragePutsPerRound(puts);
+          setAvgPutsPerRound(average);
+          return puts;
+        });
+        setPutsPerRound("");
+      } else if (response.status === 400) {
+        const { errors } = await response.json();
+        setError(errors[0]);
+      } else if (response.status === 500) {
+        setError("Server Error");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -118,120 +137,178 @@ const Puts = () => {
   };
 
   const validateInput = (e) => {
-    let { name, value } = e.target;
+    let { value } = e.target;
+    const isNumber = isNumeric(value);
 
-    setError((prev) => {
-      const stateObj = { ...prev, [name]: "" };
-      switch (name) {
-        case "putsPerRound":
-          if (!value) {
-            stateObj[name] = "Please enter a number of puts.";
-          }
-          if (!/^\d+$/.test(value)) {
-            stateObj[name] = "Please enter a valid number.";
-          }
-          if (+value >= 100) {
-            stateObj[name] = "Please enter a number less than 100.";
-          }
-          break;
+    if (value === "") {
+      setError("");
+      return;
+    }
 
-        default:
-          break;
+    if (!isNumber) {
+      setError("Please enter a valid number");
+      return;
+    }
+
+    if (+value > 70) {
+      setError("Please enter a number less than 70");
+      return;
+    }
+
+    if (+value < 1) {
+      setError("Please enter a number greater than 1");
+      return;
+    }
+    setError("");
+  };
+
+  const handleDeletePut = async (id) => {
+    console.log(id);
+    try {
+      const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+
+      const options = {
+        method: "DELETE",
+        headers: {
+          Authorization: `Basic ${encodedCredentials}`
+        }
+      };
+
+      const response = await fetch(
+        `${process.env.REACT_APP_CYCLIC_URL}/puts/${id}`,
+        options
+      );
+      console.log(response);
+
+      if (response.status === 204) {
+        setPutData((prev) => {
+          let puts = [...prev];
+
+          puts = puts.filter((item) => {
+            return item._id !== id;
+          });
+
+          const average = getAveragePutsPerRound(puts);
+          if (puts.length !== 0) {
+            setAvgPutsPerRound(average);
+          } else {
+            setAvgPutsPerRound(0);
+          }
+
+          return puts;
+        });
+      } else {
+        setError("Server Error");
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      return stateObj;
-    });
+  const isAddRoundDisabled = () => {
+    //to do disable button if
   };
 
   return (
     <>
       <div className="w-full bg-dark-500 text-gray-500 min-h-screen max-h-min ">
-        <div className="container m-auto pt-4 xl:pt-16 px-3 sm:px-0">
+        <div className="container m-auto xl:pt-16 px-3">
           {isLoading ? (
             <div>Loading</div>
           ) : (
             <>
-              <div className="flex md:flex-row flex-col items-center pt-3 pb-5 w-full">
-                <div className="flex items-center pb-2 text-gray-400">
-                  <h1 className="text-gray-400 text-2xl font-semibold">
-                    Putting
-                  </h1>
-                </div>
+              <div className="flex md:flex-row flex-col md:items-center pt-3 pb-5 w-full">
+                <h1 className="text-gray-400 text-2xl font-semibold">Puts</h1>
               </div>
-              <Chart putData={putData} className="w-[500px]" />
-              <div className="pt-10">
-                <div className="w-full flex flex-col sm:flex-row">
-                  <form className=" min-w-[400px] mb-2  flex flex-col py-5 px-6 rounded-md bg-dark-300">
-                    <div className="pb-1 pl-1 flex items-center">
-                      <label htmlFor="totalCarry" className="text-lg mr-1">
-                        Total Puts{" "}
-                        <span className="text-xs">
-                          (<span className="ml-[2px] mr-[2px]">18 Holes</span>)
-                        </span>
-                      </label>
-                      {error.totalPuts.length === 0 && putsPerRound !== "" && (
-                        <IoCheckmarkCircleOutline
-                          className={"text-green-500"}
-                        />
-                      )}
-                    </div>
-                    <input
-                      name="putsPerRound"
-                      value={putsPerRound}
-                      onBlur={validateInput}
-                      onChange={onInputChange}
-                      className={`${
-                        error.totalPuts
-                          ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                          : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                      }`}
-                    />
-                    <div className="flex items-center pt-1 pl-1">
-                      {error.totalPuts && (
-                        <p className="h-full text-pink-400 text-xs pr-1">
-                          {error.totalPuts}
-                        </p>
-                      )}
-                    </div>
-
-                    <button
-                      // disabled={isAddShotDisabled()}
-                      type="submit"
-                      onClick={hanldeCreateRoundOfPuts}
-                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
-                      Add Round
-                    </button>
-                  </form>
-                  <div className="w-full flex items-center pb-2 lg:justify-center ">
-                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="#d1d5db" />
-                    </div>
-                    <div className="pl-5">
-                      <p className="text-gray-400 text-sm">
-                        Avg Puts Per Round
-                      </p>
-                      <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{averagePutsPerRound}</span>
-                      </div>
+              <div className="flex flex-col xl:flex-row">
+                {width < 1000 ? (
+                  <Chart putData={putData} />
+                ) : (
+                  <div
+                    style={{
+                      width: "1000px",
+                      height: "auto",
+                      flexShrink: 0
+                    }}>
+                    <Chart putData={putData} />
+                  </div>
+                )}
+                <div className="w-full flex items-center pb-2  mt-10 xl:mt-0">
+                  <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                    <GiGolfTee size={40} color="#d1d5db" />
+                  </div>
+                  <div className="pl-5">
+                    <p className="text-gray-400 text-sm">Average Puts</p>
+                    <div className="text-blue-400 text-xl font-bold flex">
+                      <span>{averagePutsPerRound}</span>
                     </div>
                   </div>
                 </div>
-                <h1 className="pt-10 text-2xl text-gray-400">Putting Rounds</h1>
-                {isLoading ? (
-                  <div>Loading Puts</div>
-                ) : (
-                  <PutList>
-                    {putData.map((round) => {
-                      return <PutItem key={uuidv4()} round={round} />;
-                    })}
-                  </PutList>
-                )}
+                <div className="w-full flex items-center pb-2 ">
+                  <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                    <GiGolfTee size={40} color="#d1d5db" />
+                  </div>
+                  <div className="pl-5">
+                    <p className="text-gray-400 text-sm">Total Rounds</p>
+                    <div className="text-blue-400 text-xl font-bold flex">
+                      <span>{putData.length}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              <div className="w-full flex flex-col sm:flex-row">
+                <form className="mb-2 flex flex-col py-5 px-6 rounded-md bg-dark-300">
+                  <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="totalCarry" className="text-lg mr-1">
+                      Total Puts{" "}
+                      <span className="text-xs">
+                        (<span className="ml-[2px] mr-[2px]">18 Holes</span>)
+                      </span>
+                    </label>
+                  </div>
+                  <input
+                    name="totalPuts"
+                    value={putsPerRound}
+                    onBlur={validateInput}
+                    onChange={onInputChange}
+                    className={`${
+                      error
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400 `
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400 `
+                    }`}
+                  />
+                  {error ? (
+                    <p className="text-pink-400 text-xs pr-1 my-2">{error}</p>
+                  ) : (
+                    <p className="text-pink-400 text-xs pr-1 my-2 h-[20px]"></p>
+                  )}
+
+                  <button
+                    disabled={isAddRoundDisabled()}
+                    type="submit"
+                    onClick={handleCreateRoundOfPuts}
+                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
+                    Add Round
+                  </button>
+                </form>
+              </div>
+              <h1 className="pt-10 text-2xl text-gray-400">Putting Rounds</h1>
+              <PutList>
+                {putData.map((round) => {
+                  return (
+                    <PutItem
+                      key={uuidv4()}
+                      round={round}
+                      handleDeletePut={handleDeletePut}
+                    />
+                  );
+                })}
+              </PutList>
             </>
           )}
         </div>
       </div>
-      {/* <Alert show={show} setShow={setShow} message={message} navTo={navTo} /> */}
     </>
   );
 };

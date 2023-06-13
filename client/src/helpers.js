@@ -44,7 +44,7 @@ const findClubById = (id, clubData) => {
   return club;
 };
 
-// To dynamically style the distance bar width
+// To dynamically style the club distance bar width
 const getDistanceBarPercentage = (averageDistance, longestDistance) => {
   const percentage = (averageDistance / longestDistance).toFixed(2) + "%";
   if (percentage[0] === "1") {
@@ -54,13 +54,16 @@ const getDistanceBarPercentage = (averageDistance, longestDistance) => {
 
 const getAveragePutsPerRound = (rounds) => {
   let totalPuts = 0;
+  let avgPuts = null;
   const totalRounds = rounds.length;
 
   rounds.forEach((round) => {
     totalPuts += round.puts;
   });
 
-  return totalPuts / totalRounds;
+  avgPuts = totalPuts / totalRounds;
+  avgPuts = roundToOneDecimal(avgPuts, 1);
+  return avgPuts;
 };
 
 // temp data for putting chart
@@ -101,11 +104,22 @@ const getDummyDataPuts = () => {
   };
   return createPutRounds();
 };
+
+const roundToOneDecimal = (value, precision) => {
+  let multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+};
+
+const isNumeric = (value) => {
+  return /^\d+$/.test(value);
+};
+
 export {
   getAverageDistance,
   getDistanceBarPercentage,
   sortClubsByDistance,
   findClubById,
   getDummyDataPuts,
-  getAveragePutsPerRound
+  getAveragePutsPerRound,
+  isNumeric
 };

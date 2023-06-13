@@ -13,15 +13,16 @@ const Graph = ({ putData }) => {
         return [...prevList, round.puts];
       });
       setDateList((prevList) => {
-        return [...prevList, round.date];
+        return [...prevList, round.dateCreated];
       });
     });
   };
 
   useEffect(() => {
+    setDateList([]);
+    setPutsList([]);
     sortData(putData);
-    // eslint-disable-next-line
-  }, []);
+  }, [putData]);
 
   const options = {
     scales: {
@@ -29,6 +30,10 @@ const Graph = ({ putData }) => {
         grid: {
           display: false
         }
+      },
+      y: {
+        min: 0,
+        max: 80
       }
     },
     hover: {
@@ -38,7 +43,10 @@ const Graph = ({ putData }) => {
       tooltip: {
         intersect: false
       }
-    }
+    },
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 2
   };
 
   const chartData = {

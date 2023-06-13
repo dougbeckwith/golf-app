@@ -1,23 +1,7 @@
-// import React, { useContext } from "react";
 import React from "react";
-// import { useParams } from "react-router-dom";
 import { MdOutlineGolfCourse } from "react-icons/md";
-// import UserContext from "../context/UserContext";
 
-const PutItem = ({ round, handleDeleteRoundOfPuts }) => {
-  // const { authUser } = useContext(UserContext);
-
-  const handleDeletePut = async () => {
-    try {
-      console.log(round.roundId);
-      console.log("delete put");
-      // To Do
-      // delete put
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+const PutItem = ({ round, handleDeletePut }) => {
   return (
     <>
       <div className="py-2 rounded-md px-2 bg-dark-300">
@@ -32,8 +16,8 @@ const PutItem = ({ round, handleDeleteRoundOfPuts }) => {
             </div>
           </div>
           <button
-            onClick={handleDeletePut}
-            className="h-[40px] px-2 py-1 text-sm font-medium rounded-md shadow-sm text-dark-500 bg-gray-500 hover:bg-red ">
+            onClick={() => handleDeletePut(round._id)}
+            className="ml-auto h-[40px] px-2 py-1 text-sm font-medium rounded-md shadow-sm text-dark-500 bg-gray-500 hover:bg-red ">
             Delete
           </button>
         </div>
