@@ -1,31 +1,95 @@
 const Puts = require("../models/Puts");
+const {
+  isDocumentOwner,
+  isOwnerOfAllDocuments
+} = require("../helpers/helpers");
 
 const getPuts = async (req, res) => {
   console.log("GET PUTS");
+
+  const userId = req.currentUser._id;
+
   try {
-    res.status(200).send();
+    const puts = await Puts.find({ user: req.currentUser._id });
+
+    if (!puts) {
+      res.status(404).end();
+      return;
+    }
+
+    if (!isOwnerOfAllDocuments(puts, userId)) {
+      res.status(403).end();
+      return;
+    }
+
+    res.status(200).send(puts);
   } catch (error) {
     console.log(error);
+
     res.status(500).end();
   }
 };
 
 const createPut = async (req, res) => {
   console.log("CREATE PUT");
+
+  const { puts, dateCreated, user } = req.body;
+
   try {
-    res.status(201).end();
+    const put = await Puts.create({
+      puts,
+      dateCreated,
+      user
+    });
+
+    res.status(201).send({ putId: put._id });
   } catch (error) {
     console.log(error);
+
+    // check error was ValidationError
+    if (error.name === "ValidationError") {
+      let errors = [];
+
+      Object.keys(error.errors).forEach((key) => {
+        errors.push(error.errors[key].message);
+      });
+
+      res.status(400).send({ errors });
+      return;
+    }
     res.status(500).end();
   }
 };
 
 const deletePut = async (req, res) => {
   console.log("DELETE PUT");
+
+  const { id } = req.params;
+  const userId = req.currentUser._id;
+
   try {
+    const put = await Puts.findById(id);
+
+    if (!put) {
+      res.status(404).end();
+      return;
+    }
+
+    if (!isDocumentOwner(put, userId)) {
+      res.status(403).end();
+      return;
+    }
+
+    await Puts.findByIdAndDelete(id);
+
     res.status(204).end();
   } catch (error) {
     console.log(error);
+
+    if (error.name === "CastError") {
+      res.status(404).end();
+      return;
+    }
     res.status(500).end();
   }
 };

@@ -5,7 +5,9 @@ const putSchema = new Schema(
   {
     puts: {
       type: Number,
-      required: true
+      min: [1, "Please enter a number greater than 1"],
+      max: [70, "Please enter a number less than 70"],
+      required: [true, "Please enter a valid number"]
     },
     dateCreated: {
       type: String,
