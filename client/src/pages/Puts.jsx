@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import UserContext from "../context/UserContext";
 import { GiGolfTee } from "react-icons/gi";
@@ -7,7 +7,6 @@ import Chart from "../components/Chart";
 import PutList from "../components/PutList";
 import PutItem from "../components/PutItem";
 import { getAveragePutsPerRound, isNumeric } from "../helpers";
-import { useCurrentWidth } from "../hooks/Width";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -19,8 +18,6 @@ const Puts = () => {
   const [averagePutsPerRound, setAvgPutsPerRound] = useState(0);
   const [putData, setPutData] = useState([]);
   const [error, setError] = useState("");
-
-  const width = useCurrentWidth();
 
   useEffect(() => {
     const getAllPuts = async () => {
@@ -221,18 +218,9 @@ const Puts = () => {
                 <h1 className="text-gray-400 text-2xl font-semibold">Puts</h1>
               </div>
               <div className="flex flex-col xl:flex-row">
-                {width < 1000 ? (
-                  <Chart putData={putData} />
-                ) : (
-                  <div
-                    style={{
-                      width: "1000px",
-                      height: "auto",
-                      flexShrink: 0
-                    }}>
-                    <Chart putData={putData} />
-                  </div>
-                )}
+                <div className="w-full min-h-[300px] shrink-0 lg:w-[500px] lg:h-[300px] xl:w-[700px] xl:h-[350px]">
+                  <Chart putData={putData} className={"shrink-0"} />
+                </div>
                 <div className="w-full flex items-center pb-2  mt-10 xl:mt-0">
                   <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
                     <GiGolfTee size={40} color="#d1d5db" />
@@ -257,7 +245,7 @@ const Puts = () => {
                 </div>
               </div>
 
-              <div className="w-full flex flex-col sm:flex-row">
+              <div className="w-full flex flex-col sm:flex-row xl:mt-10">
                 <form className="mb-2 flex flex-col py-5 px-6 rounded-md bg-dark-300">
                   <div className="pb-1 pl-1 flex items-center">
                     <label htmlFor="totalCarry" className="text-lg mr-1">

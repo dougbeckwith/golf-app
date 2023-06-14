@@ -28,25 +28,22 @@ const Graph = ({ putData }) => {
     scales: {
       x: {
         grid: {
-          display: false
+          color: "#3e3e42"
         }
       },
       y: {
         min: 0,
-        max: 80
+        max: 80,
+        grid: {
+          color: "#3e3e42"
+        }
       }
     },
     hover: {
       intersect: false
     },
-    plugins: {
-      tooltip: {
-        intersect: false
-      }
-    },
     responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 2
+    maintainAspectRatio: false
   };
 
   const chartData = {
