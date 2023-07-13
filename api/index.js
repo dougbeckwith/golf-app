@@ -1,25 +1,27 @@
 const express = require("express");
-require("dotenv").config();
+const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
-
-const app = express();
-const port = 5000;
 
 const clubRoutes = require("./routes/clubRoutes");
 const userRoutes = require("./routes/userRoutes");
 const putRoutes = require("./routes/putRoutes");
 
+if (process.env.NODE_ENV === "development") {
+  require("dotenv").config();
+}
+
+const dbUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/golf-app";
 const connectDataBase = async () => {
   try {
-    await mongoose.connect(`${process.env.MONGO_URL}`);
-    console.log("Connected to database");
+    console.log("Connecting to database...");
+    await mongoose.connect(dbUrl);
+    console.log("Database connected");
   } catch (err) {
     console.log(err);
   }
 };
-
 connectDataBase();
 
 app.use(cors());
@@ -46,10 +48,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/build", "index.html"));
 });
 
-app.listen(process.env.PORT || port, () => {
-  if (process.env.PORT) {
-    console.log(`Server listening ${process.env.PORT}`);
-  } else {
-    console.log(`Server listening ${port}`);
-  }
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`Server listening on port: ${port}`);
 });
