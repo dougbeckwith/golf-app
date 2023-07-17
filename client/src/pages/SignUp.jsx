@@ -25,26 +25,10 @@ const SignUp = () => {
   });
 
   const [isLoading, setIsloading] = useState(false);
-  const [isServerAwake, setIsServerAwake] = useState(false);
 
   const emailInputRef = useRef(null);
   useEffect(() => {
     emailInputRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    const startBackend = async () => {
-      try {
-        await fetch(`${process.env.REACT_APP_URL}`);
-        setIsServerAwake(true);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    startBackend();
-
-    // eslint-disable-next-line
   }, []);
 
   const onInputChange = (e) => {
@@ -152,10 +136,6 @@ const SignUp = () => {
     };
 
     try {
-      if (!isServerAwake) {
-        alert("waiting for server to wake up");
-      }
-
       const response = await fetch(`${process.env.REACT_APP_URL}/user`, options);
 
       if (response.status === 201) {

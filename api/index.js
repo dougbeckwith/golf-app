@@ -15,7 +15,7 @@ const { DB_DEV_URL } = require("./constants");
 const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
 connectDB(dbUrl);
 
-app.use(morgan("tiny"));
+app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 

@@ -7,25 +7,6 @@ const Landing = () => {
 
   const { authUser, actions } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [isServerAwake, setIsServerAwake] = useState(false);
-
-  useEffect(() => {
-    const startBackend = async () => {
-      try {
-        // send request right away to wake up server
-        await fetch(`${process.env.REACT_APP_URL}`);
-        setIsServerAwake(true);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (authUser) {
-      setIsServerAwake(true);
-    } else {
-      startBackend();
-    }
-    // eslint-disable-next-line
-  }, []);
 
   const handleDemoSignIn = async (e) => {
     e.preventDefault();
@@ -37,10 +18,6 @@ const Landing = () => {
     };
 
     try {
-      if (!isServerAwake) {
-        alert("Waiting for server to wake up. Please allow 30-45 seconds to sign in.");
-      }
-
       const { user, errors } = await actions.signIn(credentials);
 
       if (user) {

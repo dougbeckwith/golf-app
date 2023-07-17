@@ -34,21 +34,6 @@ const SignIn = () => {
     emailInputRef.current.focus();
   }, []);
 
-  useEffect(() => {
-    const startBackend = async () => {
-      try {
-        await fetch(`${process.env.REACT_APP_URL}`);
-        setIsServerAwake(true);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    startBackend();
-
-    // eslint-disable-next-line
-  }, []);
-
   const isSignInButtonDisabled = () => {
     if (isLoading === true) {
       return true;
