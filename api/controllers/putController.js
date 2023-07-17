@@ -2,8 +2,6 @@ const Put = require("../models/put");
 const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/document");
 
 const getPuts = async (req, res) => {
-  console.log("GET PUTS");
-
   const userId = req.currentUser._id;
 
   try {
@@ -28,8 +26,6 @@ const getPuts = async (req, res) => {
 };
 
 const createPut = async (req, res) => {
-  console.log("CREATE PUT");
-
   const { puts, dateCreated, user } = req.body;
 
   try {
@@ -59,8 +55,6 @@ const createPut = async (req, res) => {
 };
 
 const deletePut = async (req, res) => {
-  console.log("DELETE PUT");
-
   const { id } = req.params;
   const userId = req.currentUser._id;
 

@@ -1,7 +1,6 @@
 const Club = require("../models/club");
 
 const getClub = async (req, res) => {
-  console.log("GET SINGLE CLUB");
   const { id } = req.params;
 
   try {
@@ -32,7 +31,6 @@ const getClub = async (req, res) => {
 };
 
 const getClubs = async (req, res) => {
-  console.log("GET ALL CLUBS");
   try {
     const clubs = await Club.find({ user: req.currentUser._id });
 
@@ -48,7 +46,6 @@ const getClubs = async (req, res) => {
 };
 
 const createClub = async (req, res) => {
-  console.log("CREATE CLUB");
   try {
     await Club.create({
       club: req.body.club,
@@ -84,8 +81,6 @@ const createClub = async (req, res) => {
 
 // UPDATE one club (deleteShot, addShot, updateName)
 const updateClub = async (req, res) => {
-  console.log("UPDATE CLUB");
-
   const clubId = req.params.id;
   const { addShot, deleteShot, updateName, shotId, shot } = req.body;
 
@@ -152,7 +147,6 @@ const updateClub = async (req, res) => {
 };
 
 const deleteClub = async (req, res) => {
-  console.log("DELETE CLUB");
   const { id } = req.params;
 
   try {

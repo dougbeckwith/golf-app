@@ -2,12 +2,10 @@ const User = require("../models/user");
 const { hashPw } = require("../helpers/password");
 
 const getUser = async (req, res) => {
-  console.log("GET USER");
   res.status(200).send({ user: req.currentUser });
 };
 
 const createUser = async (req, res) => {
-  console.log("CREATE USER");
   try {
     const hashedPw = hashPw(req.body.password);
 

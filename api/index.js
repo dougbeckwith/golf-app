@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 
 const cors = require("cors");
 const path = require("path");
@@ -14,6 +15,7 @@ const { DB_DEV_URL } = require("./constants");
 const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
 connectDB(dbUrl);
 
+app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
