@@ -9,23 +9,13 @@ const userRoutes = require("./routes/userRoutes");
 const putRoutes = require("./routes/putRoutes");
 
 const { connectDB } = require("./helpers/database");
-
 const { DB_DEV_URL } = require("./constants");
-
-if (process.env.NODE_ENV === "development") {
-  require("dotenv").config();
-}
 
 const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
 connectDB(dbUrl);
 
 app.use(cors());
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  console.log("Route To Wake Up Server");
-  res.status(200).end();
-});
 
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
