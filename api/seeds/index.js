@@ -10,14 +10,18 @@ const mongoose = require("mongoose");
 
 const createUser = async (user) => {
   const newUser = await User.create(user);
-  console.log(`User created: ${newUser.email}`);
+  console.log(`User created: ${newUser}`);
 };
 
 const clearDB = async () => {
-  await deleteUsers();
-  await deleteClubs();
-  await deletePuts();
-  console.log("Database cleared.");
+  try {
+    await deleteUsers();
+    await deleteClubs();
+    await deletePuts();
+    console.log("Database cleared.");
+  } catch (error) {
+    throw error;
+  }
 };
 
 const deleteUsers = async () => {
@@ -41,7 +45,11 @@ const createClub = async (club) => {
 
 const createClubs = async (clubs) => {
   for (let club of clubs) {
-    await createClub(club);
+    try {
+      await createClub(club);
+    } catch (error) {
+      throw error;
+    }
   }
   console.log("Clubs created.");
 };
@@ -52,7 +60,11 @@ const createPut = async (put) => {
 
 const createPuts = async (puts) => {
   for (let put of puts) {
-    await createPut(put);
+    try {
+      await createPut(put);
+    } catch (error) {
+      throw error;
+    }
   }
   console.log("Puts created.");
 };
@@ -69,10 +81,11 @@ const seedDB = async () => {
     await createUser(user);
     await createClubs(clubs);
     await createPuts(puts);
-    console.log("Seeding complete.");
+    console.log("Seeding complete!!!");
     closeConnection();
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    closeConnection();
   }
 };
 
