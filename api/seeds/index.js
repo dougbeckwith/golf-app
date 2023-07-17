@@ -84,7 +84,7 @@ const seedDB = async () => {
     console.log("Seeding complete!!!");
     closeConnection();
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     closeConnection();
   }
 };
