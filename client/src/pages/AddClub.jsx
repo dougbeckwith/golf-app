@@ -57,10 +57,7 @@ const AddClub = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/clubs`, options);
 
       if (response.status === 201) {
         setInput({
@@ -180,9 +177,7 @@ const AddClub = () => {
     <>
       <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
         <div className="container max-w-[600px]">
-          <h2 className="w-full text-gray-400 text-center pb-4 text-2xl md:text-4xl">
-            Add Club
-          </h2>
+          <h2 className="w-full text-gray-400 text-center pb-4 text-2xl md:text-4xl">Add Club</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
             <form>
               <div>
@@ -210,11 +205,7 @@ const AddClub = () => {
               </div>
 
               <div className="flex items-center pt-1 pl-1">
-                {error.club && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.club}
-                  </p>
-                )}
+                {error.club && <p className="h-full text-pink-400 text-xs pr-1">{error.club}</p>}
               </div>
 
               <div className="pt-2">
@@ -242,21 +233,16 @@ const AddClub = () => {
               </div>
 
               <div className="flex items-center pt-1 pl-1">
-                {error.brand && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.brand}
-                  </p>
-                )}
+                {error.brand && <p className="h-full text-pink-400 text-xs pr-1">{error.brand}</p>}
               </div>
               <div className="pt-2">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="totalCarry" className="text-lg mr-1">
                     Total Carry (Yards)
                   </label>
-                  {error.totalCarry.length === 0 &&
-                    input.totalCarry.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
+                  {error.totalCarry.length === 0 && input.totalCarry.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
                 <input
                   name="totalCarry"
@@ -275,9 +261,7 @@ const AddClub = () => {
 
               <div className="flex items-center pt-1 pl-1">
                 {error.totalCarry && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.totalCarry}
-                  </p>
+                  <p className="h-full text-pink-400 text-xs pr-1">{error.totalCarry}</p>
                 )}
               </div>
               <div className="pt-2">
@@ -285,10 +269,9 @@ const AddClub = () => {
                   <label htmlFor="totalDistance" className="text-lg mr-1">
                     Total Distance (Yards)
                   </label>
-                  {error.totalDistance.length === 0 &&
-                    input.totalDistance.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
+                  {error.totalDistance.length === 0 && input.totalDistance.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
                 <input
                   name="totalDistance"
@@ -307,9 +290,7 @@ const AddClub = () => {
 
               <div className="flex items-center pt-1 pl-1">
                 {error.totalDistance && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.totalDistance}
-                  </p>
+                  <p className="h-full text-pink-400 text-xs pr-1">{error.totalDistance}</p>
                 )}
               </div>
 
@@ -317,12 +298,14 @@ const AddClub = () => {
                 type="submit"
                 disabled={isAddClubDisabled()}
                 onClick={handleAddClub}
-                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
+              >
                 Add Club
               </button>
               <button
                 onClick={navigateToClubs}
-                className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
+                className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600"
+              >
                 Cancel
               </button>
 

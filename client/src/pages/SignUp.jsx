@@ -35,7 +35,7 @@ const SignUp = () => {
   useEffect(() => {
     const startBackend = async () => {
       try {
-        await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        await fetch(`${process.env.REACT_APP_URL}`);
         setIsServerAwake(true);
       } catch (error) {
         console.log(error);
@@ -86,8 +86,7 @@ const SignUp = () => {
             stateObj[name] = "Password must be at least 6 characters long.";
           }
           if (input.confirmPassword && value !== input.confirmPassword) {
-            stateObj["confirmPassword"] =
-              "Password and Confirm Password does not match.";
+            stateObj["confirmPassword"] = "Password and Confirm Password does not match.";
           } else {
             stateObj["confirmPassword"] = "";
           }
@@ -157,10 +156,7 @@ const SignUp = () => {
         alert("waiting for server to wake up");
       }
 
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/user`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/user`, options);
 
       if (response.status === 201) {
         setErrors([]);
@@ -183,9 +179,7 @@ const SignUp = () => {
     <>
       <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
         <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
-            Create Account
-          </h2>
+          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Create Account</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
             <form>
               <div>
@@ -212,21 +206,16 @@ const SignUp = () => {
                 />
               </div>
               <div className="flex items-center pt-1 pl-1">
-                {error.email && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.email}
-                  </p>
-                )}
+                {error.email && <p className="h-full text-pink-400 text-xs pr-1">{error.email}</p>}
               </div>
               <div className="pt-5">
                 <div className="pb-1 pl-1 flex items-center">
                   <label htmlFor="password" className="text-lg mr-1">
                     Password
                   </label>
-                  {error.password.length === 0 &&
-                    input.password.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
+                  {error.password.length === 0 && input.password.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
                 <input
                   name="password"
@@ -243,9 +232,7 @@ const SignUp = () => {
               </div>
               <div className="flex items-center pt-1 pl-1">
                 {error.password && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.password}
-                  </p>
+                  <p className="h-full text-pink-400 text-xs pr-1">{error.password}</p>
                 )}
               </div>
               <div className="pt-5">
@@ -253,10 +240,9 @@ const SignUp = () => {
                   <label htmlFor="confirmPassword" className="text-lg mr-1">
                     Confirm Password
                   </label>
-                  {error.confirmPassword.length === 0 &&
-                    input.confirmPassword.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
+                  {error.confirmPassword.length === 0 && input.confirmPassword.length !== 0 && (
+                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                  )}
                 </div>
                 <input
                   name="confirmPassword"
@@ -273,16 +259,15 @@ const SignUp = () => {
               </div>
               <div className="flex items-center pt-1 pl-1">
                 {error.confirmPassword && (
-                  <p className="h-full text-pink-400 text-xs pr-1">
-                    {error.confirmPassword}
-                  </p>
+                  <p className="h-full text-pink-400 text-xs pr-1">{error.confirmPassword}</p>
                 )}
               </div>
               <button
                 disabled={isSignUpButtonDisabled()}
                 onClick={handleSubmit}
                 type={"submit"}
-                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
+              >
                 Sign Up
               </button>
               {errors.length > 0 &&
@@ -298,7 +283,8 @@ const SignUp = () => {
                 <button
                   onClick={navigateToSignIn}
                   type={"button"}
-                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
+                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200"
+                >
                   Sign In
                 </button>
               </div>

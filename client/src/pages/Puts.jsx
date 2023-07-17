@@ -24,9 +24,7 @@ const Puts = () => {
       try {
         let putsData = [];
 
-        const encodedCredentials = btoa(
-          `${authUser.email}:${authUser.password}`
-        );
+        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const options = {
           method: "GET",
@@ -35,10 +33,7 @@ const Puts = () => {
           }
         };
 
-        const response = await fetch(
-          `${process.env.REACT_APP_CYCLIC_URL}/puts`,
-          options
-        );
+        const response = await fetch(`${process.env.REACT_APP_URL}/puts`, options);
 
         if (response.status === 200) {
           putsData = await response.json();
@@ -93,10 +88,7 @@ const Puts = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/puts`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/puts`, options);
 
       if (response.status === 201) {
         const { putId } = await response.json();
@@ -171,10 +163,7 @@ const Puts = () => {
         }
       };
 
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/puts/${id}`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/puts/${id}`, options);
       console.log(response);
 
       if (response.status === 204) {
@@ -276,7 +265,8 @@ const Puts = () => {
                     disabled={isAddRoundDisabled()}
                     type="submit"
                     onClick={handleCreateRoundOfPuts}
-                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
+                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 "
+                  >
                     Add Round
                   </button>
                 </form>
@@ -284,13 +274,7 @@ const Puts = () => {
               <h1 className="pt-10 text-2xl text-gray-400">Putting Rounds</h1>
               <PutList>
                 {putData.map((round) => {
-                  return (
-                    <PutItem
-                      key={uuidv4()}
-                      round={round}
-                      handleDeletePut={handleDeletePut}
-                    />
-                  );
+                  return <PutItem key={uuidv4()} round={round} handleDeletePut={handleDeletePut} />;
                 })}
               </PutList>
             </>

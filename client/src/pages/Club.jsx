@@ -43,9 +43,7 @@ const Club = () => {
   useEffect(() => {
     const getClub = async () => {
       try {
-        const encodedCredentials = btoa(
-          `${authUser.email}:${authUser.password}`
-        );
+        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const options = {
           method: "GET",
@@ -54,10 +52,7 @@ const Club = () => {
           }
         };
 
-        const response = await fetch(
-          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-          options
-        );
+        const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
 
         if (response.status === 200) {
           const club = await response.json();
@@ -101,10 +96,7 @@ const Club = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
 
       if (response.status === 200) {
         setShot({
@@ -152,10 +144,7 @@ const Club = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
 
       if (response.status === 204) {
         setMessage("Success! Club Deleted");
@@ -234,12 +223,7 @@ const Club = () => {
     if (isLoading === true) {
       return true;
     }
-    if (
-      !error.totalDistance &&
-      !error.totalCarry &&
-      shot.totalDistance &&
-      shot.totalCarry
-    ) {
+    if (!error.totalDistance && !error.totalCarry && shot.totalDistance && shot.totalCarry) {
       return false;
     }
     return true;
@@ -267,7 +251,8 @@ const Club = () => {
                   </Link>
                   <button
                     onClick={handleDeleteClub}
-                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 ">
+                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 "
+                  >
                     Delete Club
                   </button>
                 </div>
@@ -282,12 +267,9 @@ const Club = () => {
                           (<span className="ml-[2px] mr-[2px]">yards</span>)
                         </span>
                       </label>
-                      {error.totalCarry.length === 0 &&
-                        shot.totalCarry.length !== 0 && (
-                          <IoCheckmarkCircleOutline
-                            className={"text-green-500"}
-                          />
-                        )}
+                      {error.totalCarry.length === 0 && shot.totalCarry.length !== 0 && (
+                        <IoCheckmarkCircleOutline className={"text-green-500"} />
+                      )}
                     </div>
                     <input
                       name="totalCarry"
@@ -302,9 +284,7 @@ const Club = () => {
                     />
                     <div className="flex items-center pt-1 pl-1">
                       {error.totalCarry && (
-                        <p className="h-full text-pink-400 text-xs pr-1">
-                          {error.totalCarry}
-                        </p>
+                        <p className="h-full text-pink-400 text-xs pr-1">{error.totalCarry}</p>
                       )}
                     </div>
                     <div className="pb-1 pl-1 flex items-center">
@@ -314,12 +294,9 @@ const Club = () => {
                           (<span className="ml-[2px] mr-[2px]">yards</span>)
                         </span>
                       </label>
-                      {error.totalDistance.length === 0 &&
-                        shot.totalDistance.length !== 0 && (
-                          <IoCheckmarkCircleOutline
-                            className={"text-green-500"}
-                          />
-                        )}
+                      {error.totalDistance.length === 0 && shot.totalDistance.length !== 0 && (
+                        <IoCheckmarkCircleOutline className={"text-green-500"} />
+                      )}
                     </div>
                     <input
                       name="totalDistance"
@@ -334,16 +311,15 @@ const Club = () => {
                     />
                     <div className="flex items-center pt-1 pl-1 pb-4">
                       {error.totalDistance && (
-                        <p className="h-full text-pink-400 text-xs pr-1">
-                          {error.totalDistance}
-                        </p>
+                        <p className="h-full text-pink-400 text-xs pr-1">{error.totalDistance}</p>
                       )}
                     </div>
                     <button
                       disabled={isAddShotDisabled()}
                       type="submit"
                       onClick={handleAddShot}
-                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
+                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 "
+                    >
                       Add Shot
                     </button>
                   </form>
@@ -352,9 +328,7 @@ const Club = () => {
                       <GiGolfTee size={40} color="#d1d5db" />
                     </div>
                     <div className="pl-5">
-                      <p className="text-gray-400 text-sm">
-                        Avg Carry Distance
-                      </p>
+                      <p className="text-gray-400 text-sm">Avg Carry Distance</p>
                       <div className="text-blue-400 text-xl font-bold flex">
                         <span>{avgTotalCarry}</span>
                       </div>
@@ -365,9 +339,7 @@ const Club = () => {
                       <GiGolfTee size={40} color="#d1d5db" />
                     </div>
                     <div className="pl-5">
-                      <p className="text-gray-400 text-sm">
-                        Avg Total Distance
-                      </p>
+                      <p className="text-gray-400 text-sm">Avg Total Distance</p>
                       <div className="text-blue-400 text-xl font-bold flex">
                         <span>{avgTotalDistance}</span>
                       </div>

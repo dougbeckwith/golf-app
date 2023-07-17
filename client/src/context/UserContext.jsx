@@ -15,9 +15,7 @@ export const UserProvider = (props) => {
      else returns error object 
   */
   const signIn = async (credentials) => {
-    const encodedCredentials = btoa(
-      `${credentials.email}:${credentials.password}`
-    );
+    const encodedCredentials = btoa(`${credentials.email}:${credentials.password}`);
 
     const options = {
       method: "GET",
@@ -26,10 +24,7 @@ export const UserProvider = (props) => {
       }
     };
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/user`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/user`, options);
       if (response.status === 200) {
         const { user } = await response.json();
         Cookies.set("authenticatedUser", JSON.stringify(user), {
@@ -67,7 +62,8 @@ export const UserProvider = (props) => {
           signIn: signIn,
           signOut: signOut
         }
-      }}>
+      }}
+    >
       {props.children}
     </UserContext.Provider>
   );

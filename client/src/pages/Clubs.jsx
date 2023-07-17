@@ -22,9 +22,7 @@ const Clubs = () => {
       let filterShotsByLocalStorage = false;
 
       try {
-        const encodedCredentials = btoa(
-          `${authUser.email}:${authUser.password}`
-        );
+        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const options = {
           method: "GET",
@@ -33,10 +31,7 @@ const Clubs = () => {
           }
         };
 
-        const response = await fetch(
-          `${process.env.REACT_APP_CYCLIC_URL}/clubs`,
-          options
-        );
+        const response = await fetch(`${process.env.REACT_APP_URL}/clubs`, options);
 
         if (response.status === 200) {
           clubData = await response.json();
@@ -116,14 +111,13 @@ const Clubs = () => {
       <div className="px-5 lg:px-3 md:pt-7 w-full bg-dark-500 ">
         <div className="container  m-auto">
           <div className="w-full flex items-center mb-3 ">
-            <h1 className="text-gray-400 text-2xl font-semibold">
-              Club Distances
-            </h1>
+            <h1 className="text-gray-400 text-2xl font-semibold">Club Distances</h1>
             <div className="ml-auto">
               <Link to="/clubs/new">
                 <button
                   type="button"
-                  className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 ">
+                  className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 "
+                >
                   Add Club
                 </button>
               </Link>
@@ -135,7 +129,8 @@ const Clubs = () => {
               id="clubs"
               onChange={handleFilterShotsBy}
               value={filterShotsBy}
-              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
+              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer"
+            >
               <option value="totalDistance">Total Distance</option>
               <option value="totalCarry">Carry Distance</option>
             </select>
@@ -166,8 +161,7 @@ const Clubs = () => {
                 Start by adding clubs to track.
               </h1>
               <p className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
-                Record each shot you make to track your average total and carry
-                distance.
+                Record each shot you make to track your average total and carry distance.
               </p>
             </div>
           )}

@@ -37,9 +37,7 @@ const EditClub = () => {
   useEffect(() => {
     const getClub = async () => {
       try {
-        const encodedCredentials = btoa(
-          `${authUser.email}:${authUser.password}`
-        );
+        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const options = {
           method: "GET",
@@ -48,10 +46,7 @@ const EditClub = () => {
           }
         };
 
-        const response = await fetch(
-          `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-          options
-        );
+        const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
 
         if (response.status === 200) {
           const club = await response.json();
@@ -102,10 +97,7 @@ const EditClub = () => {
     };
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
-        options
-      );
+      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
 
       if (response.status === 200) {
         setErrors([]);
@@ -189,9 +181,7 @@ const EditClub = () => {
     <>
       <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
         <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
-            Edit Club
-          </h2>
+          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Edit Club</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
             {club && (
               <form>
@@ -220,11 +210,7 @@ const EditClub = () => {
                 </div>
 
                 <div className="flex items-center pt-1 pl-1">
-                  {error.club && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.club}
-                    </p>
-                  )}
+                  {error.club && <p className="h-full text-pink-400 text-xs pr-1">{error.club}</p>}
                 </div>
 
                 <div className="pt-2">
@@ -253,9 +239,7 @@ const EditClub = () => {
 
                 <div className="flex items-center pt-1 pl-1">
                   {error.brand && (
-                    <p className="h-full text-pink-400 text-xs pr-1">
-                      {error.brand}
-                    </p>
+                    <p className="h-full text-pink-400 text-xs pr-1">{error.brand}</p>
                   )}
                 </div>
 
@@ -263,21 +247,21 @@ const EditClub = () => {
                   type="submit"
                   disabled={isUpdateClubButtonDisabled()}
                   onClick={handleUpdateClub}
-                  className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                  className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
+                >
                   Update
                 </button>
                 <button
                   onClick={handleNavToClub}
-                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
+                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600"
+                >
                   Cancel
                 </button>
 
                 {errors.length > 0 &&
                   errors.map((error, index) => {
                     return (
-                      <p
-                        key={index}
-                        className="text-pink-400 text-sm pt-1 pr-1">
+                      <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
                         {error}
                       </p>
                     );

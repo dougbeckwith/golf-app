@@ -34,7 +34,7 @@ const ShotItem = ({
       };
 
       const response = await fetch(
-        `${process.env.REACT_APP_CYCLIC_URL}/clubs/${id}`,
+        `${process.env.REACT_APP_URL}/clubs/${id}`,
         options
       );
 

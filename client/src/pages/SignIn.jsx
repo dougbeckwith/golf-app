@@ -37,7 +37,7 @@ const SignIn = () => {
   useEffect(() => {
     const startBackend = async () => {
       try {
-        await fetch(`${process.env.REACT_APP_CYCLIC_URL}`);
+        await fetch(`${process.env.REACT_APP_URL}`);
         setIsServerAwake(true);
       } catch (error) {
         console.log(error);
@@ -72,9 +72,7 @@ const SignIn = () => {
 
     try {
       if (!isServerAwake) {
-        alert(
-          "Waiting for server to wake up. Please allow 30-45 seconds to sign in"
-        );
+        alert("Waiting for server to wake up. Please allow 30-45 seconds to sign in");
       }
       const { user, errors } = await userContext.actions.signIn(credentials);
       if (user) {
@@ -95,9 +93,7 @@ const SignIn = () => {
     <>
       <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
         <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">
-            Sign In
-          </h2>
+          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Sign In</h2>
           <div className="sm:bg-dark-400 px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
             <form>
               <div>
@@ -143,7 +139,8 @@ const SignIn = () => {
                 disabled={isSignInButtonDisabled()}
                 onClick={handleSubmit}
                 type={"submit"}
-                className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
+              >
                 Sign in to account
               </button>
               <div className="flex w-full justify-center items-center pt-4">
@@ -151,7 +148,8 @@ const SignIn = () => {
                 <button
                   type={"button"}
                   onClick={navigateToSignUp}
-                  className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
+                  className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200"
+                >
                   Sign Up
                 </button>
               </div>
