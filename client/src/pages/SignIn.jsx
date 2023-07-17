@@ -13,7 +13,6 @@ const SignIn = () => {
     email: "",
     password: ""
   });
-  const [isServerAwake, setIsServerAwake] = useState(false);
   const [isLoading, setIsloading] = useState(false);
 
   const navigateToSignUp = () => {
@@ -56,9 +55,6 @@ const SignIn = () => {
     };
 
     try {
-      if (!isServerAwake) {
-        alert("Waiting for server to wake up. Please allow 30-45 seconds to sign in");
-      }
       const { user, errors } = await userContext.actions.signIn(credentials);
       if (user) {
         setErrors([]);
