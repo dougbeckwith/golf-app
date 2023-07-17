@@ -1,8 +1,5 @@
-const Puts = require("../models/Puts");
-const {
-  isDocumentOwner,
-  isOwnerOfAllDocuments
-} = require("../helpers/helpers");
+const Put = require("../models/put");
+const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/document");
 
 const getPuts = async (req, res) => {
   console.log("GET PUTS");
@@ -10,7 +7,7 @@ const getPuts = async (req, res) => {
   const userId = req.currentUser._id;
 
   try {
-    const puts = await Puts.find({ user: req.currentUser._id });
+    const puts = await Put.find({ user: req.currentUser._id });
 
     if (!puts) {
       res.status(404).end();
@@ -36,7 +33,7 @@ const createPut = async (req, res) => {
   const { puts, dateCreated, user } = req.body;
 
   try {
-    const put = await Puts.create({
+    const put = await Put.create({
       puts,
       dateCreated,
       user
@@ -68,7 +65,7 @@ const deletePut = async (req, res) => {
   const userId = req.currentUser._id;
 
   try {
-    const put = await Puts.findById(id);
+    const put = await Put.findById(id);
 
     if (!put) {
       res.status(404).end();

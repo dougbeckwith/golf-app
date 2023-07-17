@@ -1,4 +1,4 @@
-const Club = require("../models/Club");
+const Club = require("../models/club");
 
 const getClub = async (req, res) => {
   console.log("GET SINGLE CLUB");

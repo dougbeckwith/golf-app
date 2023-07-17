@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
+
 const cors = require("cors");
 const path = require("path");
 
@@ -8,21 +8,16 @@ const clubRoutes = require("./routes/clubRoutes");
 const userRoutes = require("./routes/userRoutes");
 const putRoutes = require("./routes/putRoutes");
 
+const { connectDB } = require("./helpers/database");
+
+const { DB_DEV_URL } = require("./constants");
+
 if (process.env.NODE_ENV === "development") {
   require("dotenv").config();
 }
 
-const dbUrl = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/golf-app";
-const connectDataBase = async () => {
-  try {
-    console.log("Connecting to database...");
-    await mongoose.connect(dbUrl);
-    console.log("Database connected");
-  } catch (err) {
-    console.log(err);
-  }
-};
-connectDataBase();
+const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
+connectDB(dbUrl);
 
 app.use(cors());
 app.use(express.json());

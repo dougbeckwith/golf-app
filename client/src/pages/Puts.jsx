@@ -17,6 +17,7 @@ const Puts = () => {
   const [putsPerRound, setPutsPerRound] = useState("");
   const [averagePutsPerRound, setAvgPutsPerRound] = useState(0);
   const [putData, setPutData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -37,7 +38,9 @@ const Puts = () => {
 
         if (response.status === 200) {
           putsData = await response.json();
+
           setPutData(putsData);
+          setChartData(putsData.slice(0, 30));
         } else if (response.status === 401) {
           navigate("/signin");
         } else if (response.status === 403) {
@@ -208,7 +211,7 @@ const Puts = () => {
               </div>
               <div className="flex flex-col xl:flex-row">
                 <div className="w-full min-h-[300px] shrink-0 lg:w-[500px] lg:h-[300px] xl:w-[700px] xl:h-[350px]">
-                  <Chart putData={putData} className={"shrink-0"} />
+                  <Chart putData={chartData} className={"shrink-0"} />
                 </div>
                 <div className="w-full flex items-center pb-2  mt-10 xl:mt-0">
                   <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">

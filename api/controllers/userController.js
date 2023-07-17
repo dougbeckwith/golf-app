@@ -1,5 +1,5 @@
-const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const User = require("../models/user");
+const { hashPw } = require("../helpers/password");
 
 const getUser = async (req, res) => {
   console.log("GET USER");
@@ -9,15 +9,11 @@ const getUser = async (req, res) => {
 const createUser = async (req, res) => {
   console.log("CREATE USER");
   try {
-    const myPlaintextPassword = req.body.password;
-    const saltRounds = 10;
-
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(myPlaintextPassword, salt);
+    const hashedPw = hashPw(req.body.password);
 
     await User.create({
       email: req.body.email,
-      password: hash
+      password: hashedPw
     });
 
     res.status(201).end();

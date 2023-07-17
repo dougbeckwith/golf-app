@@ -21,5 +21,5 @@ const putSchema = new Schema(
   { collection: "Puts" }
 );
 
-const Puts = mongoose.model("Puts", putSchema);
-module.exports = Puts;
+const Put = mongoose.model("Put", putSchema);
+module.exports = Put;

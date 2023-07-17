@@ -32,8 +32,8 @@ const Graph = ({ putData }) => {
         }
       },
       y: {
-        min: 0,
-        max: 80,
+        min: 10,
+        max: 60,
         grid: {
           color: "#3e3e42"
         }
