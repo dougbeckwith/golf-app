@@ -1,8 +1,25 @@
-const { USER_ID } = require("../constants");
+const Put = require("../models/put");
 const { createDateWithRandomDay } = require("../helpers/dates");
 const { randomInt } = require("../helpers/randomNumbers");
+const { USER_ID } = require("../constants");
 
-const createPuts = (numPuts) => {
+const createPuts = async (puts) => {
+  for (let put of puts) {
+    try {
+      await Put.create(put);
+    } catch (error) {
+      throw error;
+    }
+  }
+  console.log("Puts created.");
+};
+
+const deletePuts = async () => {
+  console.log("Deleting puts...");
+  await Put.deleteMany({});
+};
+
+const generatePuts = (numPuts) => {
   const puts = [];
   for (let i = 0; i < numPuts; i++) {
     puts.push({
@@ -14,6 +31,6 @@ const createPuts = (numPuts) => {
   return puts;
 };
 
-const puts = createPuts(100);
+const puts = generatePuts(100);
 
-module.exports = [...puts];
+module.exports = { puts, deletePuts, createPuts };

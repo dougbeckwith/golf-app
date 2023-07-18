@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const clubSchema = new Schema(
   {
-    club: {
+    name: {
       type: String,
       required: [true, "Club is required"]
     },
@@ -12,11 +12,11 @@ const clubSchema = new Schema(
       required: [true, "Brand is required"]
     },
     shots: {
-      type: Array //[{totalDistance:Number, totalCarry:Number, shotId: uuid}]
+      type: [Schema.Types.ObjectId],
+      ref: "Shot"
     },
-
     user: {
-      type: mongoose.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User"
     }
   },

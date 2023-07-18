@@ -1,32 +1,24 @@
 const Club = require("../models/club");
+const AppError = require("../helpers/AppError");
 
 const getClub = async (req, res) => {
   const { id } = req.params;
+  const userId = req.currentUser._id;
 
   try {
     const club = await Club.findById(id);
 
     if (!club) {
-      res.status(404).end();
+      throw new AppError("Club Not Found");
     }
 
-    // check if client owns the club
-    else if (!club.user.equals(req.currentUser._id)) {
-      res.status(403).end();
+    if (!isDocumentOwner(club, userId)) {
+      throw new AppError("Not Authorized");
     }
 
-    // client owns the club send back the resource
-    else {
-      res.status(200).send(club);
-    }
+    res.status(200).send(club);
   } catch (error) {
-    console.log(error);
-    // if error type CastError the id sent wasn't type Object Id mongoose
-    if (error.name === "CastError") {
-      res.status(404).end();
-    } else {
-      res.status(500).end();
-    }
+    next(error);
   }
 };
 
@@ -35,13 +27,14 @@ const getClubs = async (req, res) => {
     const clubs = await Club.find({ user: req.currentUser._id });
 
     if (!clubs) {
-      res.status(404).end();
-    } else {
-      res.status(200).send(clubs);
+      // res.status(404).end();
+      throw new AppError("Clubs Not Found");
     }
+    res.status(200).send(clubs);
   } catch (error) {
-    console.log(error);
-    res.status(500).end();
+    // console.log(error);
+    // res.status(500).end();
+    next(error);
   }
 };
 
@@ -62,20 +55,21 @@ const createClub = async (req, res) => {
 
     res.status(201).end();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
-    // check error was ValidationError
-    if (error.name === "ValidationError") {
-      let errors = [];
+    // // check error was ValidationError
+    // if (error.name === "ValidationError") {
+    //   let errors = [];
 
-      Object.keys(error.errors).forEach((key) => {
-        errors.push(error.errors[key].message);
-      });
+    //   Object.keys(error.errors).forEach((key) => {
+    //     errors.push(error.errors[key].message);
+    //   });
 
-      res.status(400).send({ errors });
-    } else {
-      res.status(500).end();
-    }
+    //   res.status(400).send({ errors });
+    // } else {
+    //   res.status(500).end();
+    // }
+    next(error);
   }
 };
 

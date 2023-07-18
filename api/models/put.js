@@ -14,7 +14,7 @@ const putSchema = new Schema(
       required: true
     },
     user: {
-      type: mongoose.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User"
     }
   },
