@@ -53,7 +53,7 @@ const EditClub = () => {
           setClub(club);
 
           setInput({
-            club: club.club,
+            club: club.name,
             brand: club.brand
           });
 

@@ -35,6 +35,7 @@ const Clubs = () => {
 
         if (response.status === 200) {
           clubData = await response.json();
+          console.log(clubData);
           setClubs(clubData);
         } else if (response.status === 401) {
           navigate("/signin");

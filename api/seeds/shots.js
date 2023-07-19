@@ -1,12 +1,15 @@
 const Shot = require("../models/shot");
+const Club = require("../models/club");
 const { USER_ID } = require("../constants");
 const { addShotsToClub } = require("./clubs");
 
-const associateShotsToClubs = async (clubs) => {
+const associateShotsToClubs = async () => {
   try {
+    const clubs = await Club.find({});
     const shots = await Shot.find({});
-    for (let club of clubs) {
-      addShotsToClub(club, shots);
+    for (let item of clubs) {
+      const club = await Club.findOne({ name: item.name });
+      await addShotsToClub(club, shots);
     }
   } catch (error) {
     throw error;
@@ -19,7 +22,11 @@ const createShots = async (clubs) => {
     for (let i = 0; i < clubs.length; i++) {
       const generatedShots = generateShots(5, distance);
       await Shot.create({ shots: generatedShots, user: USER_ID });
-      distance = distance - 15;
+      if (i > 5) {
+        distance = distance - 12;
+      } else {
+        distance = distance - 25;
+      }
     }
   } catch (error) {
     throw error;
@@ -33,7 +40,7 @@ const deleteShots = async () => {
 
 const generateShots = (numShots, distance) => {
   let totalDistance = distance;
-  let totalCarry = distance - 20;
+  let totalCarry = distance - 15;
   const shots = [];
 
   for (let i = 0; i < numShots; i++) {
@@ -41,8 +48,6 @@ const generateShots = (numShots, distance) => {
       totalDistance,
       totalCarry
     });
-    totalDistance = totalDistance - 20;
-    totalCarry = totalCarry - 20;
   }
   return shots;
 };

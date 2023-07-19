@@ -239,7 +239,7 @@ const Club = () => {
             <>
               <div className="flex md:flex-row flex-col items-center pt-3 pb-5 w-full">
                 <div className="flex items-center pb-2 text-gray-400">
-                  <p className="font-semibold text-2xl ">{club.club}</p>
+                  <p className="font-semibold text-2xl ">{club.name}</p>
                   <span className="px-1 text-2xl md:text-md">-</span>
                   <p className="text-2xl">{club.brand}</p>
                 </div>

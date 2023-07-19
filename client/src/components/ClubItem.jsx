@@ -5,18 +5,16 @@ const ClubItem = ({ club, handleClick, longestShot, filterShotsBy }) => {
   const id = club._id;
   let averageDistance = getAverageDistance(club, filterShotsBy);
 
-  const widthPercentage = getDistanceBarPercentage(
-    averageDistance,
-    longestShot
-  );
+  const widthPercentage = getDistanceBarPercentage(averageDistance, longestShot);
 
   return (
     <>
       <div
         onClick={() => handleClick(id)}
-        className="text-gray-500 flex flex-col w-full rounded-md  mb-2 bg-dark-400 items-center justify-between hover:bg-dark-200 hover:cursor-pointer px-2">
+        className="text-gray-500 flex flex-col w-full rounded-md  mb-2 bg-dark-400 items-center justify-between hover:bg-dark-200 hover:cursor-pointer px-2"
+      >
         <div className="flex w-full pb-2">
-          <p className="">{club.club}</p>
+          <p className="">{club.name}</p>
           <span className="px-2 hidden sm:block">-</span>
           <p className="hidden sm:block">{club.brand}</p>
           {averageDistance === 0 ? (
@@ -27,7 +25,8 @@ const ClubItem = ({ club, handleClick, longestShot, filterShotsBy }) => {
         </div>
         <div
           style={{ width: widthPercentage }}
-          className={`mr-auto bg-gradient-to-r from-dark-200 to-blue-400 rounded-full h-4 mb-1 dark:bg-gray-700`}></div>
+          className={`mr-auto bg-gradient-to-r from-dark-200 to-blue-400 rounded-full h-4 mb-1 dark:bg-gray-700`}
+        ></div>
       </div>
     </>
   );

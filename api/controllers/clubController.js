@@ -1,7 +1,8 @@
 const Club = require("../models/club");
 const AppError = require("../helpers/AppError");
+const { isDocumentOwner } = require("../helpers/document");
 
-const getClub = async (req, res) => {
+const getClub = async (req, res, next) => {
   const { id } = req.params;
   const userId = req.currentUser._id;
 
@@ -22,9 +23,9 @@ const getClub = async (req, res) => {
   }
 };
 
-const getClubs = async (req, res) => {
+const getClubs = async (req, res, next) => {
   try {
-    const clubs = await Club.find({ user: req.currentUser._id });
+    const clubs = await Club.find({ user: req.currentUser._id }).populate("shots");
 
     if (!clubs) {
       // res.status(404).end();
@@ -87,7 +88,7 @@ const updateClub = async (req, res) => {
     }
 
     if (club && updateName) {
-      club.club = updateName.club;
+      club.name = updateName.club;
       club.brand = updateName.brand;
       await Club.findByIdAndUpdate(clubId, {
         ...club
