@@ -7,7 +7,7 @@ const { deleteShots, createShots, associateShotsToClubs } = require("./shots");
 const { puts, deletePuts, createPuts } = require("./puts");
 const { DB_DEV_URL } = require("../constants");
 
-const closeConnection = () => {
+const closeDbConnection = () => {
   mongoose.connection.close();
   console.log("Database connection closed.");
 };
@@ -31,13 +31,13 @@ const seedDB = async () => {
     await createUser(user);
     await createClubs(clubs);
     await createPuts(puts);
-    await createShots(clubs);
+    await createShots();
     await associateShotsToClubs(clubs);
     console.log("Seeding complete!!!");
-    closeConnection();
+    closeDbConnection();
   } catch (error) {
     console.log(error);
-    closeConnection();
+    closeDbConnection();
   }
 };
 

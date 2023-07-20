@@ -1,28 +1,23 @@
 const Club = require("../models/club");
 const { USER_ID } = require("../constants");
 
-const addShotsToClub = async (club, shots) => {
-  console.log(club);
-  console.log(shots);
-  try {
-    for (let shot of shots) {
-      // console.log("club", club);
-      // const clubFound = await Club.findOne({ _id: club._id }).exec();
-      // console.log("clubfound before", clubFound);
-      // if (clubFound.shots) clubFound.shots = [...clubFound.shots, item._id];
-      // else clubFound.shots = [item._id];
-      // console.log("clbfound after", clubFound);
-      // await clubFound.save();
+// since we generated 5 shots per club.
+// each time we call this function we update the startIndex.
+// to match the shots in the shots array.
+const addShotsToClub = async (club, shots, startIndex) => {
+  let index = startIndex;
+
+  for (let i = index; i < index + 5; i++) {
+    try {
       if (club.shots) {
-        club.shots = [...club.shots, shot._id];
+        club.shots = [...club.shots, shots[i]._id];
       } else {
-        club.shots = [shot._id];
+        club.shots = [shots[i]._id];
       }
-      // console.log("clbfound after", club);
       await club.save();
+    } catch (error) {
+      throw error;
     }
-  } catch (error) {
-    throw error;
   }
 };
 
@@ -105,4 +100,9 @@ const clubs = [
   }
 ];
 
-module.exports = { clubs, addShotsToClub, deleteClubs, createClubs };
+module.exports = {
+  clubs,
+  addShotsToClub,
+  deleteClubs,
+  createClubs
+};

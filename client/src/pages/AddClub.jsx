@@ -17,17 +17,13 @@ const AddClub = () => {
 
   // State for input errors
   const [error, setError] = useState({
-    club: "",
-    brand: "",
-    totalDistance: "",
-    totalCarry: ""
+    name: "",
+    brand: ""
   });
 
   const [input, setInput] = useState({
-    club: "",
-    brand: "",
-    totalDistance: "",
-    totalCarry: ""
+    name: "",
+    brand: ""
   });
 
   // State for add club alert message after submit
@@ -47,11 +43,8 @@ const AddClub = () => {
         Authorization: `Basic ${encodedCredentials}`
       },
       body: JSON.stringify({
-        club: input.club,
+        name: input.name,
         brand: input.brand,
-        totalDistance: input.totalDistance,
-        totalCarry: input.totalCarry,
-        shotId: uuidv4(),
         user: authUser._id
       })
     };
@@ -61,10 +54,8 @@ const AddClub = () => {
 
       if (response.status === 201) {
         setInput({
-          club: "",
-          brand: "",
-          totalDistance: "",
-          totalCarry: ""
+          name: "",
+          brand: ""
         });
         setMessage("Success! Club Created");
         setNavTo("/clubs");
@@ -156,14 +147,7 @@ const AddClub = () => {
     if (isLoading === true) {
       return true;
     }
-    if (
-      !error.club &&
-      !error.brand &&
-      input.club &&
-      input.brand &&
-      input.totalCarry &&
-      input.totalDistance
-    ) {
+    if (!error.name && !error.brand && input.name && input.brand) {
       return false;
     }
     return true;
@@ -182,30 +166,30 @@ const AddClub = () => {
             <form>
               <div>
                 <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="club" className="text-lg mr-1">
+                  <label htmlFor="name" className="text-lg mr-1">
                     Club
                   </label>
-                  {error.club.length === 0 && input.club.length !== 0 && (
+                  {error.name.length === 0 && input.name.length !== 0 && (
                     <IoCheckmarkCircleOutline className={"text-green-500"} />
                   )}
                 </div>
                 <input
-                  name="club"
+                  name="name"
                   type="text"
                   onBlur={validateInput}
                   onChange={onInputChange}
                   placeholder="7 Iron"
                   className={`${
-                    error.club
+                    error.name
                       ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600  w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
                       : `bg-dark-200  placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                   }`}
-                  value={input.club}
+                  value={input.name}
                 />
               </div>
 
               <div className="flex items-center pt-1 pl-1">
-                {error.club && <p className="h-full text-pink-400 text-xs pr-1">{error.club}</p>}
+                {error.name && <p className="h-full text-pink-400 text-xs pr-1">{error.name}</p>}
               </div>
 
               <div className="pt-2">
@@ -234,64 +218,6 @@ const AddClub = () => {
 
               <div className="flex items-center pt-1 pl-1">
                 {error.brand && <p className="h-full text-pink-400 text-xs pr-1">{error.brand}</p>}
-              </div>
-              <div className="pt-2">
-                <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="totalCarry" className="text-lg mr-1">
-                    Total Carry (Yards)
-                  </label>
-                  {error.totalCarry.length === 0 && input.totalCarry.length !== 0 && (
-                    <IoCheckmarkCircleOutline className={"text-green-500"} />
-                  )}
-                </div>
-                <input
-                  name="totalCarry"
-                  type="totalCarry"
-                  onBlur={validateInput}
-                  onChange={onInputChange}
-                  placeholder="150"
-                  className={`${
-                    error.totalCarry
-                      ? `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                  }`}
-                  value={input.totalCarry}
-                />
-              </div>
-
-              <div className="flex items-center pt-1 pl-1">
-                {error.totalCarry && (
-                  <p className="h-full text-pink-400 text-xs pr-1">{error.totalCarry}</p>
-                )}
-              </div>
-              <div className="pt-2">
-                <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="totalDistance" className="text-lg mr-1">
-                    Total Distance (Yards)
-                  </label>
-                  {error.totalDistance.length === 0 && input.totalDistance.length !== 0 && (
-                    <IoCheckmarkCircleOutline className={"text-green-500"} />
-                  )}
-                </div>
-                <input
-                  name="totalDistance"
-                  type="totalDistance"
-                  onBlur={validateInput}
-                  onChange={onInputChange}
-                  placeholder="165"
-                  className={`${
-                    error.totalDistance
-                      ? `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                  }`}
-                  value={input.totalDistance}
-                />
-              </div>
-
-              <div className="flex items-center pt-1 pl-1">
-                {error.totalDistance && (
-                  <p className="h-full text-pink-400 text-xs pr-1">{error.totalDistance}</p>
-                )}
               </div>
 
               <button

@@ -11,13 +11,16 @@ const clubSchema = new Schema(
       type: String,
       required: [true, "Brand is required"]
     },
-    shots: {
-      type: [Schema.Types.ObjectId],
-      ref: "Shot"
-    },
+    shots: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Shot"
+      }
+    ],
     user: {
       type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
+      required: true
     }
   },
   { collection: "Clubs" }

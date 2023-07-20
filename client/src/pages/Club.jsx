@@ -53,7 +53,6 @@ const Club = () => {
         };
 
         const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
-
         if (response.status === 200) {
           const club = await response.json();
           setClub(club);
@@ -80,25 +79,23 @@ const Club = () => {
 
   const handleAddShot = async (e) => {
     e.preventDefault();
-    const shotId = uuidv4();
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
     const options = {
-      method: "PATCH",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Basic ${encodedCredentials}`
       },
       body: JSON.stringify({
-        addShot: true,
-        shot: { ...shot, shotId: shotId }
+        ...shot
       })
     };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
-
-      if (response.status === 200) {
+      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}/shots`, options);
+      const { shotId } = await response.json();
+      if (response.status === 201) {
         setShot({
           totalCarry: "",
           totalDistance: ""
@@ -106,7 +103,7 @@ const Club = () => {
         setClub((prev) => {
           const club = {
             ...prev,
-            shots: [...prev.shots, { ...shot, shotId: shotId }]
+            shots: [...prev.shots, { ...shot, _id: shotId }]
           };
           setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));

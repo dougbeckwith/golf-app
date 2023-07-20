@@ -2,30 +2,42 @@ const Shot = require("../models/shot");
 const Club = require("../models/club");
 const { USER_ID } = require("../constants");
 const { addShotsToClub } = require("./clubs");
+const { randomInt } = require("../helpers/randomNumbers");
 
+// loop over clubs
+// update each club to include 5 shots
 const associateShotsToClubs = async () => {
   try {
+    let shotIndex = 0;
     const clubs = await Club.find({});
     const shots = await Shot.find({});
     for (let item of clubs) {
       const club = await Club.findOne({ name: item.name });
-      await addShotsToClub(club, shots);
+      await addShotsToClub(club, shots, shotIndex);
+      shotIndex = shotIndex + 5;
     }
   } catch (error) {
     throw error;
   }
 };
 
-const createShots = async (clubs) => {
-  let distance = 300;
+// create 5 shots for each club
+// every 5 shots created remove some yardage
+// for the following 5 shots
+const createShots = async () => {
+  let baseDistance = 300;
   try {
+    const clubs = await Club.find();
     for (let i = 0; i < clubs.length; i++) {
-      const generatedShots = generateShots(5, distance);
-      await Shot.create({ shots: generatedShots, user: USER_ID });
+      const generatedShots = generateShots(5, baseDistance);
+      for (let j = 0; j < generatedShots.length; j++) {
+        const { totalCarry, totalDistance } = generatedShots[j];
+        await Shot.create({ totalCarry, totalDistance, user: USER_ID, club: clubs[i]._id });
+      }
       if (i > 5) {
-        distance = distance - 12;
+        baseDistance = baseDistance - 12;
       } else {
-        distance = distance - 25;
+        baseDistance = baseDistance - 25;
       }
     }
   } catch (error) {
@@ -38,15 +50,15 @@ const deleteShots = async () => {
   await Shot.deleteMany({});
 };
 
-const generateShots = (numShots, distance) => {
-  let totalDistance = distance;
-  let totalCarry = distance - 15;
+const generateShots = (numShots, baseDistance) => {
+  let totalDistance = baseDistance;
+  let totalCarry = totalDistance - 15;
   const shots = [];
 
   for (let i = 0; i < numShots; i++) {
     shots.push({
-      totalDistance,
-      totalCarry
+      totalDistance: totalDistance - randomInt(1, 7),
+      totalCarry: totalCarry - randomInt(1, 7)
     });
   }
   return shots;

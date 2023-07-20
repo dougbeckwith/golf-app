@@ -20,12 +20,12 @@ const EditClub = () => {
 
   // State for input errors
   const [error, setError] = useState({
-    club: "",
+    name: "",
     brand: ""
   });
 
   const [input, setInput] = useState({
-    club: "",
+    name: "",
     brand: ""
   });
 
@@ -50,10 +50,11 @@ const EditClub = () => {
 
         if (response.status === 200) {
           const club = await response.json();
+          console.log(club);
           setClub(club);
 
           setInput({
-            club: club.name,
+            name: club.name,
             brand: club.brand
           });
 
@@ -88,17 +89,15 @@ const EditClub = () => {
         Authorization: `Basic ${encodedCredentials}`
       },
       body: JSON.stringify({
-        updateName: {
-          club: input.club,
-          brand: input.brand
-        },
+        name: input.name,
+        brand: input.brand,
         user: authUser._id
       })
     };
 
     try {
       const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
-
+      console.log(response);
       if (response.status === 200) {
         setErrors([]);
         setMessage("Success! Club Updated");
@@ -166,7 +165,7 @@ const EditClub = () => {
     if (isLoading === true) {
       return true;
     }
-    if (!error.club && !error.brand && input.club && input.brand) {
+    if (!error.name && !error.brand && input.name && input.brand) {
       return false;
     }
     return true;
@@ -187,30 +186,29 @@ const EditClub = () => {
               <form>
                 <div>
                   <div className="pb-1 pl-1 flex items-center">
-                    <label htmlFor="club" className="text-lg mr-1">
+                    <label htmlFor="name" className="text-lg mr-1">
                       Club
                     </label>
-                    {error.club.length === 0 && input.club.length !== 0 && (
+                    {error.name.length === 0 && input.name.length !== 0 && (
                       <IoCheckmarkCircleOutline className={"text-green-500"} />
                     )}
                   </div>
                   <input
-                    name="club"
+                    name="name"
                     type="text"
                     onBlur={validateInput}
                     onChange={onInputChange}
-                    placeholder="7 Iron"
                     className={`${
-                      error.club
+                      error.name
                         ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600  w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
                         : `bg-dark-200  placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
                     }`}
-                    value={input.club}
+                    value={input.name}
                   />
                 </div>
 
                 <div className="flex items-center pt-1 pl-1">
-                  {error.club && <p className="h-full text-pink-400 text-xs pr-1">{error.club}</p>}
+                  {error.name && <p className="h-full text-pink-400 text-xs pr-1">{error.name}</p>}
                 </div>
 
                 <div className="pt-2">

@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const shotSchema = new Schema({
-  totalDistance: {
-    type: Number,
-    required: true
-  },
-  totalCarry: {
-    type: Number,
-    required: true
-  }
-});
-
-const shotsSchema = new Schema(
+const shotSchema = new Schema(
   {
-    shots: {
-      type: [shotSchema],
+    totalDistance: {
+      type: Number,
       required: true
+    },
+    totalCarry: {
+      type: Number,
+      required: true
+    },
+    club: {
+      type: Schema.Types.ObjectId,
+      ref: "Club"
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -26,5 +23,5 @@ const shotsSchema = new Schema(
   { collection: "Shots" }
 );
 
-const Shot = mongoose.model("Shot", shotsSchema);
+const Shot = mongoose.model("Shot", shotSchema);
 module.exports = Shot;

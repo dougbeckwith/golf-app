@@ -8,6 +8,7 @@ const isOwnerOfAllDocuments = (documents, id) => {
   documents.forEach((document) => {
     if (!document.user.equals(id)) {
       isOwnerOfAllDocuments = false;
+      return;
     }
   });
   return isOwnerOfAllDocuments ? true : false;
