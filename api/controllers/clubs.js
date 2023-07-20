@@ -18,18 +18,16 @@ const deleteClub = async (req, res, next) => {
   }
 };
 
-const getClub = async (req, res, next) => {
+const sendClub = async (req, res, next) => {
   try {
-    // const club = await Club.findById(req.params.id).populate("shots").exec();
     res.status(200).send(req.club);
   } catch (error) {
     next(error);
   }
 };
 
-const getClubs = async (req, res, next) => {
+const sendClubs = async (req, res, next) => {
   try {
-    // const clubs = await Club.find({ user: req.currentUser._id }).populate("shots").exec();
     res.status(200).send(req.clubs);
   } catch (error) {
     next(error);
@@ -51,7 +49,7 @@ const updateClub = async (req, res, next) => {
 module.exports = {
   createClub,
   deleteClub,
-  getClub,
-  getClubs,
+  sendClub,
+  sendClubs,
   updateClub
 };

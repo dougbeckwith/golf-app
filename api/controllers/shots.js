@@ -1,23 +1,10 @@
 const Club = require("../models/club");
 const Shot = require("../models/shot");
-const AppError = require("../helpers/AppError");
-const { isDocumentOwner } = require("../helpers/documents");
 
 const createShot = async (req, res, next) => {
-  const userId = req.currentUser._id;
-  const clubId = req.params.id;
-
+  const { club } = req.club;
   try {
-    const club = await Club.findById(clubId);
-
-    if (!club) {
-      return next(new AppError("Club Not Found", 404));
-    }
-    if (!isDocumentOwner(club, userId)) {
-      return next(new AppError("Not Authorized", 403));
-    }
-
-    const shot = await Shot.create({ user: userId, club: clubId, ...req.body });
+    const shot = await Shot.create({ user: req.currentUser._id, club: req.params.id, ...req.body });
 
     if (club.shots) club.shots = [...club.shots, shot._id];
     else club.shots = [shot._id];
@@ -30,31 +17,11 @@ const createShot = async (req, res, next) => {
 };
 
 const deleteShot = async (req, res) => {
-  const userId = req.currentUser._id;
-  const clubId = req.params.id;
-  const shotId = req.params.shotId;
+  await Shot.findByIdAndDelete(req.params.shotId);
 
-  const club = await Club.findById(clubId).populate("shots");
-  const shot = await Shot.findById(shotId);
-
-  if (!club) {
-    return next(new AppError("Club Not Found", 404));
-  }
-  if (!isDocumentOwner(club, userId)) {
-    return next(new AppError("Not Authorized", 403));
-  }
-
-  if (!shot) {
-    return next(new AppError("Shot Not Found", 404));
-  }
-  if (!isDocumentOwner(shot, userId)) {
-    return next(new AppError("Not Authorized", 403));
-  }
-
-  await Shot.findByIdAndDelete(shotId);
-
+  const club = await Club.findById(req.params.id).populate("shots");
   const shots = club.shots.filter((shot) => {
-    return shot._id !== shotId;
+    return shot._id !== req.params.shotId;
   });
 
   club.shots = shots;

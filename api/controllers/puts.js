@@ -1,13 +1,10 @@
-const AppError = require("../helpers/AppError");
 const Put = require("../models/put");
-const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/documents");
 
 const createPut = async (req, res, next) => {
-  const { puts, dateCreated, user } = req.body;
+  const { dateCreated, puts, user } = req.body;
 
   try {
-    const put = await Put.create({ puts, dateCreated, user });
-
+    const put = await Put.create({ dateCreated, puts, user });
     res.status(201).send({ putId: put._id });
   } catch (error) {
     next(error);
@@ -15,41 +12,17 @@ const createPut = async (req, res, next) => {
 };
 
 const deletePut = async (req, res, next) => {
-  const putId = req.params.id;
-  const userId = req.currentUser._id;
-
   try {
-    const put = await Put.findById(putId);
-
-    if (!put) {
-      throw new AppError("Put Not Found", 404);
-    }
-    if (!isDocumentOwner(put, userId)) {
-      throw new AppError("Not Authorized", 403);
-    }
-
-    await Put.findByIdAndDelete(putId);
-
+    await Put.findByIdAndDelete(req.params.id);
     res.status(204).end();
   } catch (error) {
     next(error);
   }
 };
 
-const getPuts = async (req, res, next) => {
-  const userId = req.currentUser._id;
-
+const sendPuts = async (req, res, next) => {
   try {
-    const puts = await Put.find({ user: userId });
-
-    if (!puts) {
-      throw new AppError("Put Not Found", 404);
-    }
-    if (!isOwnerOfAllDocuments(puts, userId)) {
-      throw new AppError("Not Authorized", 403);
-    }
-
-    res.status(200).send(puts);
+    res.status(200).send(req.puts);
   } catch (error) {
     next(error);
   }
@@ -58,5 +31,5 @@ const getPuts = async (req, res, next) => {
 module.exports = {
   createPut,
   deletePut,
-  getPuts
+  sendPuts
 };
