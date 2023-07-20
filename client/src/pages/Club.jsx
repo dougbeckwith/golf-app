@@ -55,6 +55,7 @@ const Club = () => {
         const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
         if (response.status === 200) {
           const club = await response.json();
+          console.log(club);
           setClub(club);
           setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
@@ -248,8 +249,7 @@ const Club = () => {
                   </Link>
                   <button
                     onClick={handleDeleteClub}
-                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 "
-                  >
+                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 ">
                     Delete Club
                   </button>
                 </div>
@@ -315,8 +315,7 @@ const Club = () => {
                       disabled={isAddShotDisabled()}
                       type="submit"
                       onClick={handleAddShot}
-                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 "
-                    >
+                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
                       Add Shot
                     </button>
                   </form>

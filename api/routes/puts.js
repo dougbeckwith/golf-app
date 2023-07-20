@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { authenticateUser } = require("../middleware/userAuth");
-const { getPuts, createPut, deletePut } = require("../controllers/putController");
+const { getPuts, createPut, deletePut } = require("../controllers/puts");
 
 router.get("/", authenticateUser, getPuts);
 router.post("/", authenticateUser, createPut);

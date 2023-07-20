@@ -2,7 +2,7 @@ const isDocumentOwner = (document, id) => {
   return document.user.equals(id);
 };
 
-const isOwnerOfAllDocuments = (documents, id) => {
+const isDocumentsOwner = (documents, id) => {
   let isOwnerOfAllDocuments = true;
 
   documents.forEach((document) => {
@@ -16,5 +16,5 @@ const isOwnerOfAllDocuments = (documents, id) => {
 
 module.exports = {
   isDocumentOwner,
-  isOwnerOfAllDocuments
+  isDocumentsOwner
 };

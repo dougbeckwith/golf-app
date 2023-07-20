@@ -3,17 +3,17 @@ const { Schema } = mongoose;
 
 const shotSchema = new Schema(
   {
-    totalDistance: {
-      type: Number,
-      required: true
+    club: {
+      type: Schema.Types.ObjectId,
+      ref: "Club"
     },
     totalCarry: {
       type: Number,
       required: true
     },
-    club: {
-      type: Schema.Types.ObjectId,
-      ref: "Club"
+    totalDistance: {
+      type: Number,
+      required: true
     },
     user: {
       type: Schema.Types.ObjectId,

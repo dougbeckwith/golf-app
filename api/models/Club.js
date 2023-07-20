@@ -3,13 +3,13 @@ const { Schema } = mongoose;
 
 const clubSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: [true, "Club is required"]
-    },
     brand: {
       type: String,
       required: [true, "Brand is required"]
+    },
+    name: {
+      type: String,
+      required: [true, "Club is required"]
     },
     shots: [
       {
