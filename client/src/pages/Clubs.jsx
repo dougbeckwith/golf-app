@@ -117,8 +117,7 @@ const Clubs = () => {
               <Link to="/clubs/new">
                 <button
                   type="button"
-                  className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 "
-                >
+                  className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 ">
                   Add Club
                 </button>
               </Link>
@@ -130,8 +129,7 @@ const Clubs = () => {
               id="clubs"
               onChange={handleFilterShotsBy}
               value={filterShotsBy}
-              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer"
-            >
+              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
               <option value="totalDistance">Total Distance</option>
               <option value="totalCarry">Carry Distance</option>
             </select>

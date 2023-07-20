@@ -15,14 +15,18 @@ const isClub = async (req, res, next) => {
 };
 
 const isClubs = async (req, res, next) => {
-  const clubs = await Club.find({ user: req.currentUser._id }).populate("shots").exec();
+  try {
+    const clubs = await Club.find({ user: req.currentUser._id }).populate("shots").exec();
 
-  if (!clubs) {
-    return next(new AppError("Clubs Not Found", 404));
+    if (!clubs) {
+      return next(new AppError("Clubs Not Found", 404));
+    }
+
+    req.clubs = clubs;
+    next();
+  } catch (err) {
+    next(err);
   }
-
-  req.clubs = clubs;
-  next();
 };
 
 const isPut = async (req, res, next) => {

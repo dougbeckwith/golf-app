@@ -25,8 +25,7 @@ app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
 app.use("*", (req, res, next) => {
-  console.log("* Page not found error");
-  next(new AppError("Page Not Found", 404));
+  next(new AppError("Bad Reqeust", 400));
 });
 
 app.use((err, req, res, next) => {

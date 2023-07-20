@@ -5,7 +5,7 @@ const handleValidationError = () => {
 };
 
 const handleCastError = () => {
-  return new AppError("Cast Error", 400);
+  return new AppError("Cast Error", 404);
 };
 
 module.exports = {

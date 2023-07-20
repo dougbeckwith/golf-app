@@ -1,4 +1,3 @@
-const Club = require("../models/club");
 const AppError = require("../helpers/AppError");
 const { isDocumentOwner, isDocumentsOwner } = require("../helpers/documents");
 
@@ -24,7 +23,7 @@ const isPutOwner = async (req, res, next) => {
 };
 
 const isPutsOwner = async (req, res, next) => {
-  if (!isOwnerOfAllDocuments(req.puts, req.currentUser._id)) {
+  if (!isDocumentsOwner(req.puts, req.currentUser._id)) {
     return next(new AppError("Not Authorized", 403));
   }
   next();

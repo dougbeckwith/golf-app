@@ -38,9 +38,9 @@ const Puts = () => {
 
         if (response.status === 200) {
           putsData = await response.json();
-
+          console.log(putsData);
           setPutData(putsData);
-          setChartData(putsData.slice(0, 30));
+          setChartData(putsData.slice(putsData.length - 30, putsData.length));
         } else if (response.status === 401) {
           navigate("/signin");
         } else if (response.status === 403) {
@@ -268,8 +268,7 @@ const Puts = () => {
                     disabled={isAddRoundDisabled()}
                     type="submit"
                     onClick={handleCreateRoundOfPuts}
-                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 "
-                  >
+                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
                     Add Round
                   </button>
                 </form>

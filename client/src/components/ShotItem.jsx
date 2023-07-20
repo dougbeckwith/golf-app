@@ -28,7 +28,6 @@ const ShotItem = ({
           Authorization: `Basic ${encodedCredentials}`
         }
       };
-      console.log(shot);
       const response = await fetch(
         `${process.env.REACT_APP_URL}/clubs/${id}/shots/${shot._id}`,
         options
@@ -40,8 +39,6 @@ const ShotItem = ({
             ...prev
           };
           club.shots = club.shots.filter((item) => {
-            console.log(item);
-            console.log(shot);
             return item._id !== shot._id;
           });
           setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
@@ -92,8 +89,7 @@ const ShotItem = ({
           </div>
           <button
             onClick={deleteShot}
-            className="h-[40px] px-2 py-1 text-sm font-medium rounded-md shadow-sm text-dark-500 bg-gray-500 hover:bg-red "
-          >
+            className="h-[40px] px-2 py-1 text-sm font-medium rounded-md shadow-sm text-dark-500 bg-gray-500 hover:bg-red ">
             Delete
           </button>
         </div>

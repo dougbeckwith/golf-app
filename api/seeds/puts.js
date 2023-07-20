@@ -31,6 +31,6 @@ const generatePuts = (numPuts) => {
   return puts;
 };
 
-const puts = generatePuts(100);
+const puts = generatePuts(20);
 
 module.exports = { puts, deletePuts, createPuts };
