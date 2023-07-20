@@ -1,6 +1,6 @@
 const AppError = require("../helpers/AppError");
 const Club = require("../models/club");
-const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/document");
+const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/documents");
 
 const createClub = async (req, res, next) => {
   try {

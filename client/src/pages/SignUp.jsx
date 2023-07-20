@@ -6,81 +6,65 @@ import UserContext from "../context/UserContext";
 const SignUp = () => {
   const navigate = useNavigate();
   const userContext = useContext(UserContext);
-
-  // State for response errors
-  const [errors, setErrors] = useState([]);
-
-  // State for errors
-  const [error, setError] = useState({
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
-
-  // State for form input
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-    confirmPassword: ""
-  });
+  const emailInputRef = useRef(null);
 
   const [isLoading, setIsloading] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
+  const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
 
-  const emailInputRef = useRef(null);
+  // Focus email input
   useEffect(() => {
     emailInputRef.current.focus();
   }, []);
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    setInput((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setInput((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
   };
 
   const validateInput = (e) => {
     let { name, value } = e.target;
 
-    // don't show errors if nothing has been typed and blur effect goes off
+    // Don't show errors if input is empty and blur effect triggered.
     if (name === "email" && value === "") return;
     if (name === "password" && value === "") return;
     if (name === "confirmPassword" && value === "") return;
 
     setError((prev) => {
-      const stateObj = { ...prev, [name]: "" };
+      const error = { ...prev, [name]: "" };
 
       switch (name) {
         case "email":
           if (!value) {
-            stateObj[name] = "Please enter Email Address.";
+            error[name] = "Please enter Email Address.";
           }
           // eslint-disable-next-line
           if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-            stateObj[name] = "Please enter valid Email Address";
+            error[name] = "Please enter valid Email Address";
           }
           break;
 
         case "password":
           if (!value) {
-            stateObj[name] = "Please enter Password.";
+            error[name] = "Please enter Password.";
           }
           if (value.length < 6 && value.length > 0) {
-            stateObj[name] = "Password must be at least 6 characters long.";
+            error[name] = "Password must be at least 6 characters long.";
           }
           if (input.confirmPassword && value !== input.confirmPassword) {
-            stateObj["confirmPassword"] = "Password and Confirm Password does not match.";
+            error["confirmPassword"] = "Password and Confirm Password does not match.";
           } else {
-            stateObj["confirmPassword"] = "";
+            error["confirmPassword"] = "";
           }
           break;
 
         case "confirmPassword":
           if (!value) {
-            stateObj[name] = "Please enter Confirm Password.";
+            error[name] = "Please enter Confirm Password.";
           } else if (input.password && value !== input.password) {
-            stateObj[name] = "Password and Confirm Password does not match.";
+            error[name] = "Password and Confirm Password does not match.";
           }
           break;
 
@@ -88,26 +72,24 @@ const SignUp = () => {
           break;
       }
 
-      return stateObj;
+      return error;
     });
+  };
+  const isFormErrors = () => {
+    if (error.email && error.password && error.confirmPassword) return true;
+    return false;
+  };
+
+  const isAnyFormInputEmpty = () => {
+    if (input.email && input.password && input.confirmPassword) return false;
+    return true;
   };
 
   const isSignUpButtonDisabled = () => {
-    if (isLoading === true) {
-      return true;
-    }
-    if (
-      !error.email &&
-      !error.password &&
-      !error.confirmPassword &&
-      input.email &&
-      input.password &&
-      input.confirmPassword
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+    if (isLoading) return true;
+    if (isFormErrors()) return true;
+    if (isAnyFormInputEmpty()) return true;
+    return false;
   };
 
   const navigateToSignIn = () => {
@@ -126,13 +108,8 @@ const SignUp = () => {
 
     const options = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email: input.email,
-        password: input.confirmPassword
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: input.email, password: input.confirmPassword })
     };
 
     try {
@@ -142,9 +119,7 @@ const SignUp = () => {
         setErrors([]);
         await userContext.actions.signIn(credentials);
         navigate("/clubs");
-      }
-
-      if (response.status === 400) {
+      } else {
         const { error } = await response.json();
         setErrors(error);
       }

@@ -9,7 +9,7 @@ const {
   deleteClub
 } = require("../controllers/clubController");
 
-const { authenticateUser } = require("../middleware/user-auth");
+const { authenticateUser } = require("../middleware/userAuth");
 
 router.get("/", authenticateUser, getClubs);
 router.get("/:id", authenticateUser, getClub);

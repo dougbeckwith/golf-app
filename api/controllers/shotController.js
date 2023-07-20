@@ -1,7 +1,7 @@
 const Club = require("../models/club");
 const Shot = require("../models/shot");
 const AppError = require("../helpers/AppError");
-const { isDocumentOwner } = require("../helpers/document");
+const { isDocumentOwner } = require("../helpers/documents");
 
 const createShot = async (req, res, next) => {
   const userId = req.currentUser._id;
@@ -9,17 +9,15 @@ const createShot = async (req, res, next) => {
 
   try {
     const club = await Club.findById(clubId);
-    const shot = await Shot.create({ user: userId, club: clubId, ...req.body });
 
     if (!club) {
       return next(new AppError("Club Not Found", 404));
     }
-    if (!shot) {
-      return next(new AppError("Shot Not Found", 404));
-    }
     if (!isDocumentOwner(club, userId)) {
       return next(new AppError("Not Authorized", 403));
     }
+
+    const shot = await Shot.create({ user: userId, club: clubId, ...req.body });
 
     if (club.shots) club.shots = [...club.shots, shot._id];
     else club.shots = [shot._id];

@@ -1,18 +1,16 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const AppError = require("./helpers/AppError");
-
 const cors = require("cors");
 const path = require("path");
-
 const clubRoutes = require("./routes/clubRoutes");
 const userRoutes = require("./routes/userRoutes");
 const putRoutes = require("./routes/putRoutes");
 const shotRoutes = require("./routes/shotRoutes");
-
 const { connectDB } = require("./helpers/database");
 const { DB_DEV_URL } = require("./constants");
+const { handleCastError, handleValidationError } = require("./helpers/errors");
+const AppError = require("./helpers/AppError");
 
 const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
 connectDB(dbUrl);
@@ -26,24 +24,20 @@ app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
-const handleValidationError = () => {
-  return new AppError("Validation Failed", 400);
-};
-
-const handleCastError = () => {
-  return new AppError("Cast Error", 400);
-};
-
-// app.use("*", (req, res, next) => {
-//   next(new AppError("Page Not Found", 404));
-// });
+app.use("*", (req, res, next) => {
+  console.log("* Page not found error");
+  next(new AppError("Page Not Found", 404));
+});
 
 app.use((err, req, res, next) => {
+  console.log("Error Logger:");
   console.dir(err);
   next(err);
 });
 
 app.use((err, req, res, next) => {
+  console.log("Error.name:", err.name);
+  console.log("Error.mesage", err.message);
   if (err.name === "ValidationError") err = handleValidationError();
   if (err.name === "CastError") err = handleCastError();
   next(err);
@@ -52,14 +46,8 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   const { status = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(status);
+  res.status(status).json({ serverError: err });
 });
-
-// app.use((req, res) => {
-//   res.status(404).json({
-//     message: "Route Not Found"
-//   });
-// });
 
 app.use(express.static(path.join(__dirname, "/client/build")));
 

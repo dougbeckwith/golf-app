@@ -1,12 +1,12 @@
 const User = require("../models/user");
 const { hashPw } = require("../helpers/password");
-const { USER_ID } = require("../constants");
+const { DEMO_USER_ID } = require("../constants");
 
-const user = { email: "demouser@gmail.com", password: hashPw("password"), _id: USER_ID };
+const user = { email: "demouser@gmail.com", password: hashPw("password"), _id: DEMO_USER_ID };
 
 const createUser = async (user) => {
-  const newUser = await User.create(user);
-  console.log(`User created: ${newUser}`);
+  const demoUser = await User.create(user);
+  console.log(`User created: ${demoUser}`);
 };
 
 const deleteUsers = async () => {

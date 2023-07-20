@@ -1,6 +1,6 @@
 const AppError = require("../helpers/AppError");
 const Put = require("../models/put");
-const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/document");
+const { isDocumentOwner, isOwnerOfAllDocuments } = require("../helpers/documents");
 
 const createPut = async (req, res, next) => {
   const { puts, dateCreated, user } = req.body;
@@ -25,7 +25,7 @@ const deletePut = async (req, res, next) => {
       throw new AppError("Put Not Found", 404);
     }
     if (!isDocumentOwner(put, userId)) {
-      throw new AppError("Not Authorized", 404);
+      throw new AppError("Not Authorized", 403);
     }
 
     await Put.findByIdAndDelete(putId);

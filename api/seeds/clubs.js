@@ -1,9 +1,10 @@
 const Club = require("../models/club");
-const { USER_ID } = require("../constants");
+const { DEMO_USER_ID } = require("../constants");
 
-// since we generated 5 shots per club.
-// each time we call this function we update the startIndex.
-// to match the shots in the shots array.
+// Since we generated 5 shots per club each time we call this
+// function with a moved startIndex by + 5.
+// This allows us to match the distances with the clubs:
+// (Driver - 300 \ 280-3Wood \ 260- 4Hybrid...)
 const addShotsToClub = async (club, shots, startIndex) => {
   let index = startIndex;
 
@@ -41,62 +42,62 @@ const clubs = [
   {
     name: "Driver",
     brand: "Callaway",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "3 Wood",
     brand: "Callaway",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "4 Hybrid",
     brand: "Callaway",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "4 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "5 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "6 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "7 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "8 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "9 Iron",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "50 Degree Wedge",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "54 Degree Wedge",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   },
   {
     name: "58 Degree Wedge",
     brand: "TaylorMade",
-    user: USER_ID
+    user: DEMO_USER_ID
   }
 ];
 

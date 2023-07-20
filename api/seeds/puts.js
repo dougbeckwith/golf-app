@@ -1,7 +1,7 @@
 const Put = require("../models/put");
 const { createDateWithRandomDay } = require("../helpers/dates");
-const { randomInt } = require("../helpers/randomNumbers");
-const { USER_ID } = require("../constants");
+const { randomInt } = require("../helpers/numbers");
+const { DEMO_USER_ID } = require("../constants");
 
 const createPuts = async (puts) => {
   for (let put of puts) {
@@ -25,7 +25,7 @@ const generatePuts = (numPuts) => {
     puts.push({
       puts: randomInt(24, 49),
       dateCreated: createDateWithRandomDay(),
-      user: USER_ID
+      user: DEMO_USER_ID
     });
   }
   return puts;

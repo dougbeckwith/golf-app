@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 
-const { authenticateUser } = require("../middleware/user-auth");
+const { authenticateUser } = require("../middleware/userAuth");
 const { createShot, deleteShot } = require("../controllers/shotController");
 
 router.post("/", authenticateUser, createShot);
