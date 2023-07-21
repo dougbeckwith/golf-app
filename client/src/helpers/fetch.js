@@ -46,9 +46,11 @@ async function request(url, params, method, encodedCredentials) {
   return response;
 }
 
-export default {
+const Fetch = {
   get,
   create,
   update,
   remove
 };
+
+export default Fetch;

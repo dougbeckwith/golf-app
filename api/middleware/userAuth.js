@@ -1,25 +1,20 @@
 const auth = require("basic-auth");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const AppError = require("../helpers/AppError");
 
 const authenticateUser = async (req, res, next) => {
   let user = null;
   let authenticated = false;
-  let errors = [];
 
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
 
   if (!credentials.name) {
-    errors.push("Please Enter Email Address");
+    return next(new AppError("Please Enter Email Address", 400));
   }
   if (!credentials.pass) {
-    errors.push("Please Enter A Password");
-  }
-
-  if (errors.length > 0) {
-    res.status(401).send({ errors: errors });
-    return;
+    return next(new AppError("Please Enter Password", 400));
   }
 
   if (credentials) {
@@ -29,8 +24,7 @@ const authenticateUser = async (req, res, next) => {
   if (user) {
     authenticated = bcrypt.compareSync(credentials.pass, user.password);
   } else {
-    res.status(401).send({ errors: ["Email or Password Incorrect"] });
-    return;
+    return next(new AppError("Email or Password Incorrect", 401));
   }
 
   if (authenticated) {
@@ -38,7 +32,7 @@ const authenticateUser = async (req, res, next) => {
     req.currentUser = user;
     next();
   } else {
-    res.status(401).send({ errors: ["Email or Password Incorrect"] });
+    return next(new AppError("Email or Password Incorrect", 401));
   }
 };
 

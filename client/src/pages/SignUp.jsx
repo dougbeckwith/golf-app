@@ -10,11 +10,10 @@ const SignUp = () => {
   const emailInputRef = useRef(null);
 
   const [isLoading, setIsloading] = useState(false);
-  const [serverError, setSeverError] = useState([]);
+  const [serverError, setServerError] = useState([]);
   const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
   const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
 
-  // Focus email input
   useEffect(() => {
     emailInputRef.current.focus();
   }, []);
@@ -23,6 +22,55 @@ const SignUp = () => {
     const { name, value } = e.target;
     setInput((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
+  };
+
+  const createUser = async (e) => {
+    const user = { email: input.email, password: input.confirmPassword };
+
+    e.preventDefault();
+    setIsloading(true);
+
+    try {
+      const response = await Fetch.create("/user", user, null);
+      if (response.status === 201) handleUserCreated(user);
+      else handleCreateUserError(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCreateUserError = async (response) => {
+    const { err } = await response.json();
+    setServerError(err.message);
+    setIsloading(false);
+  };
+
+  const handleUserCreated = async (user) => {
+    setServerError([]);
+    await userContext.actions.signIn(user);
+    setIsloading(false);
+    navigate("/clubs");
+  };
+
+  const isAnyFormInputEmpty = () => {
+    if (input.email && input.password && input.confirmPassword) return false;
+    return true;
+  };
+
+  const isFormErrors = () => {
+    if (error.email && error.password && error.confirmPassword) return true;
+    return false;
+  };
+
+  const isSignUpButtonDisabled = () => {
+    if (isLoading) return true;
+    if (isFormErrors()) return true;
+    if (isAnyFormInputEmpty()) return true;
+    return false;
+  };
+
+  const navigateToSignIn = () => {
+    navigate("/signin");
   };
 
   const validateInput = (e) => {
@@ -55,7 +103,7 @@ const SignUp = () => {
             error[name] = "Password must be at least 6 characters long.";
           }
           if (input.confirmPassword && value !== input.confirmPassword) {
-            error["confirmPassword"] = "Password and Confirm Password does not match.";
+            error["confirmPassword"] = "Password and Confirm Password do not match.";
           } else {
             error["confirmPassword"] = "";
           }
@@ -65,7 +113,7 @@ const SignUp = () => {
           if (!value) {
             error[name] = "Please enter Confirm Password.";
           } else if (input.password && value !== input.password) {
-            error[name] = "Password and Confirm Password does not match.";
+            error[name] = "Password and Confirm Password do not match.";
           }
           break;
 
@@ -75,54 +123,6 @@ const SignUp = () => {
 
       return error;
     });
-  };
-
-  const isFormErrors = () => {
-    if (error.email && error.password && error.confirmPassword) return true;
-    return false;
-  };
-
-  const isAnyFormInputEmpty = () => {
-    if (input.email && input.password && input.confirmPassword) return false;
-    return true;
-  };
-
-  const isSignUpButtonDisabled = () => {
-    if (isLoading) return true;
-    if (isFormErrors()) return true;
-    if (isAnyFormInputEmpty()) return true;
-    return false;
-  };
-
-  const navigateToSignIn = () => {
-    navigate("/signin");
-  };
-
-  const handleUserCreated = async (user) => {
-    setSeverError([]);
-    await userContext.actions.signIn(user);
-    navigate("/clubs");
-  };
-
-  const handleError = async (response) => {
-    const { err } = await response.json();
-    setSeverError(err.message);
-  };
-
-  const createUser = async (e) => {
-    const user = { email: input.email, password: input.confirmPassword };
-    e.preventDefault();
-    setIsloading(true);
-
-    try {
-      const response = await Fetch.create("/user", user, null);
-      if (response.status === 201) handleUserCreated(user);
-      else handleError(response);
-    } catch (error) {
-      console.log(error);
-    }
-
-    setIsloading(false);
   };
 
   return (

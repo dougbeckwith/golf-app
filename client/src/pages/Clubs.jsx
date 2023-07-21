@@ -5,60 +5,67 @@ import ClubItem from "../components/ClubItem";
 import ClubList from "../components/ClubList";
 import { sortClubsByDistance } from "../helpers";
 import UserContext from "../context/UserContext";
+import Fetch from "../helpers/fetch";
 
 const Clubs = () => {
+  const { authUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const { authUser } = useContext(UserContext);
   const [clubs, setClubs] = useState([]);
-  const [sortedClubs, setSortedClubs] = useState([]);
   const [filterShotsBy, setFilterShotsBy] = useState("totalDistance");
-  const [longestShot, setLongestShot] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [longestShot, setLongestShot] = useState(0);
+  const [sortedClubs, setSortedClubs] = useState([]);
+
+  const handleLocalStorageSettings = () => {
+    const distanceType = getFilterShotsByLocalStorage();
+
+    if (distanceType) {
+      setFilterShotsBy(distanceType);
+      // sortClubs(clubData, distanceType);
+    } else {
+      return;
+    }
+  };
+
+  const handleSortClubs = (clubData) => {
+    sortClubs(clubData, filterShotsBy);
+  };
+
+  const handleGetClubsError = (response) => {
+    if (response.status === 401) {
+      navigate("/signin");
+    } else if (response.status === 404) {
+      navigate("/notfound");
+    } else {
+      navigate("/error");
+    }
+  };
+
+  const handleGetClubSuccess = async (response) => {
+    const clubData = await response.json();
+    setClubs(clubData);
+    console.log(clubData);
+    return clubData;
+  };
 
   useEffect(() => {
     const getAllClubData = async () => {
       let clubData = [];
-      let filterShotsByLocalStorage = false;
 
       try {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-        const options = {
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${encodedCredentials}`
-          }
-        };
+        const response = await Fetch.get("/clubs", null, encodedCredentials);
+        console.log(response);
 
-        const response = await fetch(`${process.env.REACT_APP_URL}/clubs`, options);
+        if (response.status === 200) clubData = await handleGetClubSuccess(response);
+        else handleGetClubsError(response);
 
-        if (response.status === 200) {
-          clubData = await response.json();
-          console.log(clubData);
-          setClubs(clubData);
-        } else if (response.status === 401) {
-          navigate("/signin");
-        } else if (response.status === 403) {
-          navigate("/forbidden");
-        } else if (response.status === 404) {
-          navigate("/notfound");
-        } else {
-          navigate("/error");
-        }
-        if (clubData.length === 0) {
-          setIsLoading(false);
-          return;
-        }
+        if (clubData.length === 0) return setIsLoading(false);
 
-        filterShotsByLocalStorage = getFilterShotsByLocalStorage();
-
-        if (filterShotsByLocalStorage) {
-          setFilterShotsBy(filterShotsByLocalStorage);
-          sortClubs(clubData, filterShotsByLocalStorage);
-        } else {
-          sortClubs(clubData, filterShotsBy);
-        }
+        handleLocalStorageSettings(clubData);
+        handleSortClubs(clubData);
 
         setIsLoading(false);
       } catch (err) {
@@ -96,10 +103,10 @@ const Clubs = () => {
     if (clubs.length === 0) return;
 
     const sortedClubs = sortClubsByDistance(clubs, shotType);
-    const longestShot = sortedClubs[0].averageDistance;
-
-    setLongestShot(longestShot);
     setSortedClubs(sortedClubs);
+
+    const longestShot = sortedClubs[0].averageDistance;
+    setLongestShot(longestShot);
   };
 
   // navigates to club by id
