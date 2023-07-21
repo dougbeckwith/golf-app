@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import UserContext from "../context/UserContext";
+import Fetch from "../helpers/fetch";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ const SignUp = () => {
   const emailInputRef = useRef(null);
 
   const [isLoading, setIsloading] = useState(false);
-  const [errors, setErrors] = useState([]);
+  const [serverError, setSeverError] = useState([]);
   const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
   const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
 
@@ -75,6 +76,7 @@ const SignUp = () => {
       return error;
     });
   };
+
   const isFormErrors = () => {
     if (error.email && error.password && error.confirmPassword) return true;
     return false;
@@ -96,33 +98,26 @@ const SignUp = () => {
     navigate("/signin");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleUserCreated = async (user) => {
+    setSeverError([]);
+    await userContext.actions.signIn(user);
+    navigate("/clubs");
+  };
 
+  const handleError = async (response) => {
+    const { err } = await response.json();
+    setSeverError(err.message);
+  };
+
+  const createUser = async (e) => {
+    const user = { email: input.email, password: input.confirmPassword };
+    e.preventDefault();
     setIsloading(true);
 
-    const credentials = {
-      email: input.email,
-      password: input.confirmPassword
-    };
-
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: input.email, password: input.confirmPassword })
-    };
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/user`, options);
-
-      if (response.status === 201) {
-        setErrors([]);
-        await userContext.actions.signIn(credentials);
-        navigate("/clubs");
-      } else {
-        const { error } = await response.json();
-        setErrors(error);
-      }
+      const response = await Fetch.create("/user", user, null);
+      if (response.status === 201) handleUserCreated(user);
+      else handleError(response);
     } catch (error) {
       console.log(error);
     }
@@ -219,27 +214,18 @@ const SignUp = () => {
               </div>
               <button
                 disabled={isSignUpButtonDisabled()}
-                onClick={handleSubmit}
+                onClick={createUser}
                 type={"submit"}
-                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
-              >
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Sign Up
               </button>
-              {errors.length > 0 &&
-                errors.map((error, index) => {
-                  return (
-                    <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
-                      {error}
-                    </p>
-                  );
-                })}
+              {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
               <div className="flex w-full justify-center items-center pt-4">
                 <p className="text-gray-600 pr-2">Already have an account?</p>
                 <button
                   onClick={navigateToSignIn}
                   type={"button"}
-                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200"
-                >
+                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
                   Sign In
                 </button>
               </div>

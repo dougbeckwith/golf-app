@@ -3,6 +3,8 @@ const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
+const bodyParser = require("body-parser");
+
 const clubRoutes = require("./routes/clubs");
 const userRoutes = require("./routes/users");
 const putRoutes = require("./routes/puts");
@@ -17,7 +19,8 @@ connectDB(dbUrl);
 
 app.use(morgan("dev"));
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
@@ -36,7 +39,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
   console.log("Error.name:", err.name);
-  console.log("Error.mesage", err.message);
+  console.log("Error.message", err.message);
   if (err.name === "ValidationError") err = handleValidationError();
   if (err.name === "CastError") err = handleCastError();
   next(err);
@@ -45,7 +48,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   const { status = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
-  res.status(status).json({ serverError: err });
+  res.status(status).json({ err });
 });
 
 app.use(express.static(path.join(__dirname, "/client/build")));
