@@ -73,11 +73,16 @@ const isNumeric = (value) => {
   return /^\d+$/.test(value);
 };
 
+const getEncodedCredentials = (authUser) => {
+  return btoa(`${authUser.email}:${authUser.password}`);
+};
+
 export {
   getAverageDistance,
   getDistanceBarPercentage,
   sortClubsByDistance,
   findClubById,
   getAveragePutsPerRound,
-  isNumeric
+  isNumeric,
+  getEncodedCredentials
 };

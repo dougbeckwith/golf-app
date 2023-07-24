@@ -57,7 +57,6 @@ const Clubs = () => {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const response = await Fetch.get("/clubs", null, encodedCredentials);
-        console.log(response);
 
         if (response.status === 200) clubData = await handleGetClubSuccess(response);
         else handleGetClubsError(response);
@@ -70,6 +69,7 @@ const Clubs = () => {
         setIsLoading(false);
       } catch (err) {
         console.log(err);
+        navigate("/error");
       }
     };
 
@@ -109,7 +109,6 @@ const Clubs = () => {
     setLongestShot(longestShot);
   };
 
-  // navigates to club by id
   const handleClick = (id) => {
     navigate(`/clubs/${id}`);
   };

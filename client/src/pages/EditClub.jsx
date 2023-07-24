@@ -14,20 +14,9 @@ const EditClub = () => {
 
   const [club, setClub] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // State for response errors
-  const [errors, setErrors] = useState([]);
-
-  // State for input errors
-  const [error, setError] = useState({
-    name: "",
-    brand: ""
-  });
-
-  const [input, setInput] = useState({
-    name: "",
-    brand: ""
-  });
+  const [serverErrors, setServerErrors] = useState([]);
+  const [error, setError] = useState({ name: "", brand: "" });
+  const [input, setInput] = useState({ name: "", brand: "" });
 
   // State for edit club alert message
   const [show, setShow] = useState(false);
@@ -99,7 +88,7 @@ const EditClub = () => {
       const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
       console.log(response);
       if (response.status === 200) {
-        setErrors([]);
+        // setErrors([]);
         setMessage("Success! Club Updated");
         setNavTo("/clubs");
         setShow(true);
@@ -206,11 +195,9 @@ const EditClub = () => {
                     value={input.name}
                   />
                 </div>
-
                 <div className="flex items-center pt-1 pl-1">
                   {error.name && <p className="h-full text-pink-400 text-xs pr-1">{error.name}</p>}
                 </div>
-
                 <div className="pt-2">
                   <div className="pb-1 pl-1 flex items-center">
                     <label htmlFor="brand" className="text-lg mr-1">
@@ -234,36 +221,24 @@ const EditClub = () => {
                     value={input.brand}
                   />
                 </div>
-
                 <div className="flex items-center pt-1 pl-1">
                   {error.brand && (
                     <p className="h-full text-pink-400 text-xs pr-1">{error.brand}</p>
                   )}
                 </div>
-
                 <button
                   type="submit"
                   disabled={isUpdateClubButtonDisabled()}
                   onClick={handleUpdateClub}
-                  className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
-                >
+                  className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                   Update
                 </button>
                 <button
                   onClick={handleNavToClub}
-                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600"
-                >
+                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
                   Cancel
                 </button>
-
-                {errors.length > 0 &&
-                  errors.map((error, index) => {
-                    return (
-                      <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
-                        {error}
-                      </p>
-                    );
-                  })}
+                {serverErrors && <p className="text-pink-400 text-sm pt-1 pr-1">{error}</p>};
                 <div className="flex w-full justify-center items-center pt-4"></div>
               </form>
             )}

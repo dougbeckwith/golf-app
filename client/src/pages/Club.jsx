@@ -7,8 +7,8 @@ import { getAverageDistance } from "../helpers";
 import ShotList from "../components/ShotList";
 import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import Alert from "../components/Alert";
+import Fetch from "../helpers/fetch";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -16,61 +16,59 @@ const Club = () => {
   const id = params.id;
 
   const { authUser } = useContext(UserContext);
-
   const [club, setClub] = useState();
-  const [avgTotalCarry, setAvgTotalCarry] = useState("");
-  const [avgTotalDistance, setAvgTotalDistance] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-
-  // State for errors add shot form
-  const [error, setError] = useState({
-    totalCarry: "",
-    totalDistance: ""
-  });
-
-  // State for shot add shot form
-  const [shot, setShot] = useState({
-    totalCarry: "",
-    totalDistance: ""
-  });
+  const [avgTotalCarry, setAvgCarryDistance] = useState("");
+  const [avgTotalDistance, setAvgTotalDistance] = useState("");
+  const [encodedCredentials, setEncodedCredentials] = useState("");
+  const [error, setError] = useState({ totalCarry: "", totalDistance: "" });
+  const [shot, setShot] = useState({ totalCarry: "", totalDistance: "" });
 
   // State for alert message
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   const [navTo, setNavTo] = useState("");
 
-  // GET club and set club state
+  useEffect(() => {
+    setEncodedCredentials(btoa(`${authUser.email}:${authUser.password}`));
+  }, [authUser.email, authUser.password]);
+
+  const handleError = async (response) => {
+    const { err } = await response.json();
+    setMessage(`${err.message}`);
+  };
+
+  const handleGetClubSuccess = async (response) => {
+    const club = await response.json();
+    setClub(club);
+    setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
+    setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+    setIsLoading(false);
+  };
+
+  const handleGetClubError = (response) => {
+    if (response.status === 401) {
+      navigate("/signin");
+    } else if (response.status === 403) {
+      navigate("/forbidden");
+    } else if (response.status === 404) {
+      navigate("/notfound");
+    } else {
+      navigate("/error");
+    }
+  };
+
   useEffect(() => {
     const getClub = async () => {
       try {
-        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+        const credentialsEncoded = btoa(`${authUser.email}:${authUser.password}`);
+        const response = await Fetch.get(`/clubs/${id}`, null, credentialsEncoded);
 
-        const options = {
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${encodedCredentials}`
-          }
-        };
-
-        const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
-        if (response.status === 200) {
-          const club = await response.json();
-          console.log(club);
-          setClub(club);
-          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
-          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
-          setIsLoading(false);
-        } else if (response.status === 401) {
-          navigate("/signin");
-        } else if (response.status === 403) {
-          navigate("/forbidden");
-        } else if (response.status === 404) {
-          navigate("/notfound");
-        } else if (response.status === 500) {
-          navigate("/error");
-        }
+        if (response.status === 200) handleGetClubSuccess(response);
+        else handleGetClubError(response);
       } catch (error) {
         console.log(error);
+        navigate("/error");
       }
     };
 
@@ -78,92 +76,39 @@ const Club = () => {
     // eslint-disable-next-line
   }, []);
 
+  const handleAddShotSuccess = async (response) => {
+    const { shotId } = await response.json();
+    setShot({ totalCarry: "", totalDistance: "" });
+    setClub((prevClub) => {
+      const club = { ...prevClub, shots: [...prevClub.shots, { ...shot, _id: shotId }] };
+      setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
+      setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+      return club;
+    });
+  };
+
   const handleAddShot = async (e) => {
     e.preventDefault();
-    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`
-      },
-      body: JSON.stringify({
-        ...shot
-      })
-    };
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}/shots`, options);
-      const { shotId } = await response.json();
-      if (response.status === 201) {
-        setShot({
-          totalCarry: "",
-          totalDistance: ""
-        });
-        setClub((prev) => {
-          const club = {
-            ...prev,
-            shots: [...prev.shots, { ...shot, _id: shotId }]
-          };
-          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
-          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
-          return club;
-        });
-      } else if (response.status === 400) {
-        setMessage("Bad Reqeust");
-        setShow(true);
-      } else if (response.status === 401) {
-        setMessage("Unauthorized");
-        setShow(true);
-      } else if (response.status === 403) {
-        setMessage("Forbidden");
-        setShow(true);
-      } else if (response.status === 404) {
-        setMessage("Club Not Found");
-        setShow(true);
-      } else if (response.status === 500) {
-        setMessage("Server Error");
-        setShow(true);
-      }
+      const response = await Fetch.create(`/clubs/${id}/shots`, { ...shot }, encodedCredentials);
+      if (response.status === 201) handleAddShotSuccess(response);
+      else handleError(response);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const handleDeleteSuccess = () => {
+    setMessage("Success! Club Deleted");
+    setNavTo("/clubs");
+    setShow(true);
+  };
+
   const handleDeleteClub = async () => {
-    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-    const options = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Basic ${encodedCredentials}`
-      }
-    };
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
-
-      if (response.status === 204) {
-        setMessage("Success! Club Deleted");
-        setNavTo("/clubs");
-        setShow(true);
-      } else if (response.status === 400) {
-        setMessage("Bad Reqeust");
-        setShow(true);
-      } else if (response.status === 401) {
-        setMessage("Unauthorized");
-        setShow(true);
-      } else if (response.status === 403) {
-        setMessage("Forbidden");
-        setShow(true);
-      } else if (response.status === 404) {
-        setMessage("Club Not Found");
-        setShow(true);
-      } else if (response.status === 500) {
-        setMessage("Server Error");
-        setShow(true);
-      }
+      const response = await Fetch.remove(`/clubs/${id}`, null, encodedCredentials);
+      if (response.status === 204) handleDeleteSuccess(response);
+      else handleError(response);
     } catch (error) {
       console.log(error);
     }
@@ -171,10 +116,7 @@ const Club = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    setShot((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setShot((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
   };
 
@@ -218,13 +160,10 @@ const Club = () => {
   };
 
   const isAddShotDisabled = () => {
-    if (isLoading === true) {
-      return true;
-    }
-    if (!error.totalDistance && !error.totalCarry && shot.totalDistance && shot.totalCarry) {
-      return false;
-    }
-    return true;
+    if (isLoading) return true;
+    if (error.totalDistance || error.totalCarry) return true;
+    if (!shot.totalDistance && !shot.totalCarry) return true;
+    return false;
   };
 
   return (
@@ -264,14 +203,10 @@ const Club = () => {
                           (<span className="ml-[2px] mr-[2px]">yards</span>)
                         </span>
                       </label>
-                      {error.totalCarry.length === 0 && shot.totalCarry.length !== 0 && (
-                        <IoCheckmarkCircleOutline className={"text-green-500"} />
-                      )}
                     </div>
                     <input
                       name="totalCarry"
                       value={shot.totalCarry}
-                      onBlur={validateInput}
                       onChange={onInputChange}
                       className={`${
                         error.totalCarry
@@ -291,14 +226,10 @@ const Club = () => {
                           (<span className="ml-[2px] mr-[2px]">yards</span>)
                         </span>
                       </label>
-                      {error.totalDistance.length === 0 && shot.totalDistance.length !== 0 && (
-                        <IoCheckmarkCircleOutline className={"text-green-500"} />
-                      )}
                     </div>
                     <input
                       name="totalDistance"
                       value={shot.totalDistance}
-                      onBlur={validateInput}
                       onChange={onInputChange}
                       className={`${
                         error.totalDistance
@@ -319,17 +250,7 @@ const Club = () => {
                       Add Shot
                     </button>
                   </form>
-                  <div className="w-full flex items-center pb-2 lg:justify-center ">
-                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="#d1d5db" />
-                    </div>
-                    <div className="pl-5">
-                      <p className="text-gray-400 text-sm">Avg Carry Distance</p>
-                      <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{avgTotalCarry}</span>
-                      </div>
-                    </div>
-                  </div>
+
                   <div className="w-full flex items-center pb-2 lg:justify-center ">
                     <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
                       <GiGolfTee size={40} color="#d1d5db" />
@@ -338,6 +259,17 @@ const Club = () => {
                       <p className="text-gray-400 text-sm">Avg Total Distance</p>
                       <div className="text-blue-400 text-xl font-bold flex">
                         <span>{avgTotalDistance}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full flex items-center pb-2 lg:justify-center ">
+                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
+                      <GiGolfTee size={40} color="#d1d5db" />
+                    </div>
+                    <div className="pl-5">
+                      <p className="text-gray-400 text-sm">Avg Carry Distance</p>
+                      <div className="text-blue-400 text-xl font-bold flex">
+                        <span>{avgTotalCarry}</span>
                       </div>
                     </div>
                   </div>
@@ -365,7 +297,7 @@ const Club = () => {
                           setClub={setClub}
                           shot={shot}
                           club={club}
-                          setAvgTotalCarry={setAvgTotalCarry}
+                          setAvgCarryDistance={setAvgCarryDistance}
                           setAvgTotalDistance={setAvgTotalDistance}
                           setShow={setShow}
                           setMessage={setMessage}

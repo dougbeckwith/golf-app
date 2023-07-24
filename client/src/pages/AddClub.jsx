@@ -3,80 +3,37 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { v4 as uuidv4 } from "uuid";
-import Alert from "../components/Alert";
+import Fetch from "../helpers/fetch";
 
 const AddClub = () => {
   const navigate = useNavigate();
   const { authUser } = useContext(UserContext);
-
   const [isLoading, setIsloading] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const [error, setError] = useState({ name: "", brand: "" });
+  const [input, setInput] = useState({ name: "", brand: "", user: authUser._id });
 
-  // State for response errors
-  const [errors, setErrors] = useState([]);
+  const handleAddClubError = async (response) => {
+    const { err } = await response.json();
+    setServerError(err.message);
+  };
 
-  // State for input errors
-  const [error, setError] = useState({
-    name: "",
-    brand: ""
-  });
-
-  const [input, setInput] = useState({
-    name: "",
-    brand: ""
-  });
-
-  // State for add club alert message after submit
-  const [show, setShow] = useState(false);
-  const [message, setMessage] = useState("");
-  const [navTo, setNavTo] = useState("");
+  const handleAddClubSuccess = () => {
+    setInput({ name: "", brand: "" });
+    setServerError("");
+    navigate("/clubs");
+  };
 
   const handleAddClub = async (e) => {
     e.preventDefault();
-
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`
-      },
-      body: JSON.stringify({
-        name: input.name,
-        brand: input.brand,
-        user: authUser._id
-      })
-    };
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/clubs`, options);
+      const response = await Fetch.create("/clubs", input, encodedCredentials);
 
-      if (response.status === 201) {
-        setInput({
-          name: "",
-          brand: ""
-        });
-        setMessage("Success! Club Created");
-        setNavTo("/clubs");
-        setShow(true);
-        setErrors([]);
-      } else if (response.status === 400) {
-        setMessage("Bad Reqeust");
-        setShow(true);
-      } else if (response.status === 401) {
-        setMessage("Unauthorized");
-        setShow(true);
-      } else if (response.status === 403) {
-        setMessage("Forbidden");
-        setShow(true);
-      } else if (response.status === 404) {
-        setMessage("Club Not Found");
-        setShow(true);
-      } else if (response.status === 500) {
-        setMessage("Server Error");
-        setShow(true);
-      }
+      if (response.status === 201) handleAddClubSuccess();
+      else handleAddClubError(response);
+
       setIsloading(false);
     } catch (error) {
       console.log(error);
@@ -85,10 +42,7 @@ const AddClub = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    setInput((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setInput((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
   };
 
@@ -144,13 +98,10 @@ const AddClub = () => {
   };
 
   const isAddClubDisabled = () => {
-    if (isLoading === true) {
-      return true;
-    }
-    if (!error.name && !error.brand && input.name && input.brand) {
-      return false;
-    }
-    return true;
+    if (isLoading) return true;
+    if (error.name || error.brand) return true;
+    if (!input.name || !input.brand) return true;
+    return false;
   };
 
   const navigateToClubs = () => {
@@ -224,31 +175,22 @@ const AddClub = () => {
                 type="submit"
                 disabled={isAddClubDisabled()}
                 onClick={handleAddClub}
-                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300"
-              >
+                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
                 Add Club
               </button>
               <button
                 onClick={navigateToClubs}
-                className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600"
-              >
+                className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
                 Cancel
               </button>
 
-              {errors.length > 0 &&
-                errors.map((error, index) => {
-                  return (
-                    <p key={index} className="text-pink-400 text-sm pt-1 pr-1">
-                      {error}
-                    </p>
-                  );
-                })}
+              {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{error}</p>}
+
               <div className="flex w-full justify-center items-center pt-4"></div>
             </form>
           </div>
         </div>
       </div>
-      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

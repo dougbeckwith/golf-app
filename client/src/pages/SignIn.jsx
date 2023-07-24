@@ -4,13 +4,17 @@ import UserContext from "../context/UserContext";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
+  const { authUser, actions } = useContext(UserContext);
   const emailInputRef = useRef(null);
 
   const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ email: "" });
   const [input, setInput] = useState({ email: "", password: "" });
   const [isLoading, setIsloading] = useState(false);
+
+  useEffect(() => {
+    if (authUser) navigate("/clubs");
+  });
 
   useEffect(() => {
     emailInputRef.current.focus();
@@ -23,7 +27,7 @@ const SignIn = () => {
     const credentials = { email: input.email, password: input.password };
 
     try {
-      const response = await userContext.actions.signIn(credentials);
+      const response = await actions.signIn(credentials);
       if (response.status === 200) handleSignInSuccess();
       else handleSignInError(response);
     } catch (error) {

@@ -21,8 +21,12 @@ export const UserProvider = (props) => {
 
     try {
       const response = await Fetch.get("/user", null, encodedCredentials);
-      if (response.status === 200) await handleSignInSuccess(response);
-      return response;
+      if (response.status === 200) {
+        await handleSignInSuccess(response);
+        return response;
+      } else {
+        return response;
+      }
     } catch (error) {
       console.log(error);
     }

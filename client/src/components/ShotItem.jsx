@@ -7,7 +7,7 @@ import { getAverageDistance } from "../helpers";
 const ShotItem = ({
   setClub,
   setAvgTotalDistance,
-  setAvgTotalCarry,
+  setAvgCarryDistance,
   shot,
   setShow,
   setMessage
@@ -41,7 +41,7 @@ const ShotItem = ({
           club.shots = club.shots.filter((item) => {
             return item._id !== shot._id;
           });
-          setAvgTotalCarry(getAverageDistance(club, "totalCarry"));
+          setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
           setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
           return club;
         });

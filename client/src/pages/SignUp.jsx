@@ -6,13 +6,17 @@ import Fetch from "../helpers/fetch";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const userContext = useContext(UserContext);
+  const { authUser, actions } = useContext(UserContext);
   const emailInputRef = useRef(null);
 
   const [isLoading, setIsloading] = useState(false);
   const [serverError, setServerError] = useState([]);
   const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
   const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
+
+  useEffect(() => {
+    if (authUser) navigate("/clubs");
+  });
 
   useEffect(() => {
     emailInputRef.current.focus();
@@ -47,7 +51,7 @@ const SignUp = () => {
 
   const handleUserCreated = async (user) => {
     setServerError([]);
-    await userContext.actions.signIn(user);
+    await actions.signIn(user);
     setIsloading(false);
     navigate("/clubs");
   };
