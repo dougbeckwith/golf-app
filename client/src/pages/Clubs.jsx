@@ -151,7 +151,7 @@ const Clubs = () => {
               <option value="totalCarry">Carry Distance</option>
             </select>
           )}
-          {isLoading(
+          {isLoading && (
             <div className="pb-10">
               <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                 Loading Clubs
