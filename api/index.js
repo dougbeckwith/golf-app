@@ -21,6 +21,7 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "/client/build")));
 
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
@@ -30,6 +31,10 @@ app.use("/clubs/:id/shots", shotRoutes);
 // app.use("*", (req, res, next) => {
 //   next(new AppError("Bad Reqeust", 400));
 // });
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/build", "index.html"));
+});
 
 app.use((err, req, res, next) => {
   console.log("Error Logger:");
@@ -49,12 +54,6 @@ app.use((err, req, res, next) => {
   const { status = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
   res.status(status).json({ err });
-});
-
-app.use(express.static(path.join(__dirname, "/client/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/build", "index.html"));
 });
 
 const port = process.env.PORT || 5000;
