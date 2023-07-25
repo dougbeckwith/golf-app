@@ -18,7 +18,6 @@ const Clubs = () => {
   const [sortedClubs, setSortedClubs] = useState([]);
 
   const handleLocalStorageSettings = () => {
-    const distanceType = getFilterShotsByLocalStorage();
     console.log(distanceType);
     if (distanceType) {
       setFilterShotsBy(distanceType);
@@ -26,7 +25,9 @@ const Clubs = () => {
   };
 
   const handleSortClubs = (clubData) => {
-    sortClubs(clubData, filterShotsBy);
+    const distanceType = getFilterShotsByLocalStorage();
+    console.log(distanceType);
+    sortClubs(clubData, distanceType);
   };
 
   const handleGetClubsError = (response) => {
@@ -69,6 +70,7 @@ const Clubs = () => {
           setIsLoading(false);
           return;
         }
+        console.log("5");
 
         handleLocalStorageSettings(clubData);
         handleSortClubs(clubData);
@@ -107,6 +109,7 @@ const Clubs = () => {
 
   // sorts clubs by shotType (carryDistance, totalDistance)
   const sortClubs = (clubs, shotType) => {
+    console.log("sort clubs", clubs);
     if (clubs.length === 0) return;
 
     const sortedClubs = sortClubsByDistance(clubs, shotType);
@@ -147,7 +150,7 @@ const Clubs = () => {
               <option value="totalCarry">Carry Distance</option>
             </select>
           )}
-          {isLoading && (
+          {isLoading(
             <div className="pb-10">
               <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                 Loading Clubs
