@@ -33,7 +33,7 @@ app.get("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log("Error Logger:");
+  console.log("Error Log:");
   console.dir(err);
   next(err);
 });
