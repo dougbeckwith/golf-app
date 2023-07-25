@@ -44,6 +44,16 @@ const Puts = () => {
     // eslint-disable-next-line
   }, []);
 
+  // Update the chartData when putData changes.
+  // Only show up to 20 of the most recent puts on the chart.
+  useEffect(() => {
+    if (putData.length > 20) {
+      setChartData(putData.slice(putData.length - 20, putData.length));
+    } else {
+      setChartData(putData);
+    }
+  }, [putData]);
+
   const onInputChange = (e) => {
     const { value } = e.target;
     validateInput(e);
