@@ -45,17 +45,20 @@ const Clubs = () => {
 
   useEffect(() => {
     const getAllClubData = async () => {
+      setIsLoading(true);
       let clubData = [];
 
       try {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const response = await Fetch.get("/clubs", null, encodedCredentials);
-
+        console.log(response);
         if (response.status === 200) {
+          console.log("1");
           clubData = await handleGetClubSuccess(response);
+          console.log("2");
         } else handleGetClubsError(response);
-
+        console.log("3");
         if (clubData.length === 0) {
           setIsLoading(false);
           return;
