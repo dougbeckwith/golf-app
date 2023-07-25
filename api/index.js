@@ -26,12 +26,6 @@ app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
-app.use(express.static(path.join(__dirname, "/client/build")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/build", "index.html"));
-});
-
 app.use((err, req, res, next) => {
   console.log("Error Log:");
   console.dir(err);
@@ -50,6 +44,12 @@ app.use((err, req, res, next) => {
   const { status = 500 } = err;
   if (!err.message) err.message = "Oh No, Something Went Wrong!";
   res.status(status).json({ err });
+});
+
+app.use(express.static(path.join(__dirname, "/client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/build", "index.html"));
 });
 
 const port = process.env.PORT || 5000;
