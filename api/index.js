@@ -27,9 +27,9 @@ app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
-app.use("*", (req, res, next) => {
-  next(new AppError("Bad Reqeust", 400));
-});
+// app.use("*", (req, res, next) => {
+//   next(new AppError("Bad Reqeust", 400));
+// });
 
 app.use((err, req, res, next) => {
   console.log("Error Logger:");
