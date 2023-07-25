@@ -12,7 +12,6 @@ const shotRoutes = require("./routes/shots");
 const { connectDB } = require("./helpers/database");
 const { DB_DEV_URL } = require("./constants");
 const { handleCastError, handleValidationError } = require("./helpers/errors");
-const AppError = require("./helpers/AppError");
 
 const dbUrl = process.env.MONGO_URL || DB_DEV_URL;
 connectDB(dbUrl);
@@ -21,16 +20,13 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "/client/build")));
 
 app.use("/clubs", clubRoutes);
 app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
-// app.use("*", (req, res, next) => {
-//   next(new AppError("Bad Reqeust", 400));
-// });
+app.use(express.static(path.join(__dirname, "/client/build")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/build", "index.html"));
