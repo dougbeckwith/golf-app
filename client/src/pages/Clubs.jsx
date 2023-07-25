@@ -19,7 +19,10 @@ const Clubs = () => {
 
   const handleLocalStorageSettings = () => {
     const distanceType = getFilterShotsByLocalStorage();
-    if (distanceType) setFilterShotsBy(distanceType);
+    console.log(distanceType);
+    if (distanceType) {
+      setFilterShotsBy(distanceType);
+    }
   };
 
   const handleSortClubs = (clubData) => {
@@ -59,7 +62,10 @@ const Clubs = () => {
           console.log("2");
         } else handleGetClubsError(response);
         console.log("3");
+        console.log("testing", clubData);
+        console.log(clubData.length);
         if (clubData.length === 0) {
+          console.log("4");
           setIsLoading(false);
           return;
         }
