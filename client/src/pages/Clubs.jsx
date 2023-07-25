@@ -18,6 +18,7 @@ const Clubs = () => {
   const [sortedClubs, setSortedClubs] = useState([]);
 
   const handleLocalStorageSettings = () => {
+    const distanceType = getFilterShotsByLocalStorage();
     console.log(distanceType);
     if (distanceType) {
       setFilterShotsBy(distanceType);
