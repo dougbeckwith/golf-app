@@ -131,7 +131,7 @@ const EditClub = () => {
 
   const isUpdateClubButtonDisabled = () => {
     if (isLoading) return true;
-    if (error.name || !error.brand) return true;
+    if (error.name || error.brand) return true;
     if (!input.name && !input.brand) return true;
     return false;
   };
