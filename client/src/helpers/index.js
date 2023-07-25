@@ -1,3 +1,11 @@
+const getDate = () => {
+  return new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+};
+
 // shotType = 'carryDistance' | 'totalDistance'
 const sortClubsByDistance = (clubs, shotType) => {
   const clubsWithAverageYards = [];
@@ -84,5 +92,6 @@ export {
   findClubById,
   getAveragePutsPerRound,
   isNumeric,
-  getEncodedCredentials
+  getEncodedCredentials,
+  getDate
 };

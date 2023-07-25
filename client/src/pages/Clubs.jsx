@@ -19,13 +19,7 @@ const Clubs = () => {
 
   const handleLocalStorageSettings = () => {
     const distanceType = getFilterShotsByLocalStorage();
-
-    if (distanceType) {
-      setFilterShotsBy(distanceType);
-      // sortClubs(clubData, distanceType);
-    } else {
-      return;
-    }
+    if (distanceType) setFilterShotsBy(distanceType);
   };
 
   const handleSortClubs = (clubData) => {
@@ -58,10 +52,14 @@ const Clubs = () => {
 
         const response = await Fetch.get("/clubs", null, encodedCredentials);
 
-        if (response.status === 200) clubData = await handleGetClubSuccess(response);
-        else handleGetClubsError(response);
+        if (response.status === 200) {
+          clubData = await handleGetClubSuccess(response);
+        } else handleGetClubsError(response);
 
-        if (clubData.length === 0) return setIsLoading(false);
+        if (clubData.length === 0) {
+          setIsLoading(false);
+          return;
+        }
 
         handleLocalStorageSettings(clubData);
         handleSortClubs(clubData);

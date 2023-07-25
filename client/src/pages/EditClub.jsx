@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import Fetch from "../helpers/fetch";
 import Alert from "../components/Alert";
 
 const EditClub = () => {
@@ -14,7 +14,7 @@ const EditClub = () => {
 
   const [club, setClub] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [serverErrors, setServerErrors] = useState([]);
+  const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ name: "", brand: "" });
   const [input, setInput] = useState({ name: "", brand: "" });
 
@@ -23,40 +23,38 @@ const EditClub = () => {
   const [message, setMessage] = useState("");
   const [navTo, setNavTo] = useState("");
 
+  const handleGetClubSuccess = async (response) => {
+    const club = await response.json();
+    setClub(club);
+    setInput({ name: club.name, brand: club.brand });
+  };
+
+  const handleGetClubError = (response) => {
+    if (response.status === 401) {
+      navigate("/signin");
+    } else if (response.status === 403) {
+      navigate("/forbidden");
+    } else if (response.status === 404) {
+      navigate("/notfound");
+    } else {
+      navigate("/error");
+    }
+  };
+
   useEffect(() => {
     const getClub = async () => {
+      setIsLoading(true);
       try {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-        const options = {
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${encodedCredentials}`
-          }
-        };
-
-        const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
+        const response = await Fetch.get(`/clubs/${id}`, null, encodedCredentials);
 
         if (response.status === 200) {
-          const club = await response.json();
-          console.log(club);
-          setClub(club);
-
-          setInput({
-            name: club.name,
-            brand: club.brand
-          });
-
-          setIsLoading(false);
-        } else if (response.status === 401) {
-          navigate("/signin");
-        } else if (response.status === 403) {
-          navigate("/forbidden");
-        } else if (response.status === 404) {
-          navigate("/notfound");
+          handleGetClubSuccess(response);
         } else {
-          navigate("/error");
+          handleGetClubError(response);
         }
+
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -66,47 +64,31 @@ const EditClub = () => {
     // eslint-disable-next-line
   }, []);
 
+  const handleUpdateClubSuccess = () => {
+    setMessage("Success! Club Updated");
+    setNavTo("/clubs");
+    setShow(true);
+  };
+
+  const handleUpdateClubError = async (response) => {
+    const { err } = await response.json();
+    setServerError(err.message);
+  };
+
   const handleUpdateClub = async (e) => {
     e.preventDefault();
 
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-    const options = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`
-      },
-      body: JSON.stringify({
-        name: input.name,
-        brand: input.brand,
-        user: authUser._id
-      })
-    };
+    const updatedClub = { name: input.name, brand: input.brand, user: authUser._id };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/clubs/${id}`, options);
+      const response = await Fetch.update(`/clubs/${id}`, updatedClub, encodedCredentials);
       console.log(response);
+
       if (response.status === 200) {
-        // setErrors([]);
-        setMessage("Success! Club Updated");
-        setNavTo("/clubs");
-        setShow(true);
-      } else if (response.status === 400) {
-        setMessage("Bad Reqeust");
-        setShow(true);
-      } else if (response.status === 401) {
-        setMessage("Unauthorized");
-        setShow(true);
-      } else if (response.status === 403) {
-        setMessage("Forbidden");
-        setShow(true);
-      } else if (response.status === 404) {
-        setMessage("Club Not Found");
-        setShow(true);
-      } else if (response.status === 500) {
-        setMessage("Server Error");
-        setShow(true);
+        handleUpdateClubSuccess();
+      } else {
+        handleUpdateClubError(response);
       }
       setIsLoading(false);
     } catch (error) {
@@ -116,10 +98,7 @@ const EditClub = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
-    setInput((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setInput((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
   };
 
@@ -130,7 +109,7 @@ const EditClub = () => {
       const stateObj = { ...prev, [name]: "" };
 
       switch (name) {
-        case "club":
+        case "name":
           if (!value) {
             stateObj[name] = "Please enter a club.";
           }
@@ -151,13 +130,10 @@ const EditClub = () => {
   };
 
   const isUpdateClubButtonDisabled = () => {
-    if (isLoading === true) {
-      return true;
-    }
-    if (!error.name && !error.brand && input.name && input.brand) {
-      return false;
-    }
-    return true;
+    if (isLoading) return true;
+    if (error.name || !error.brand) return true;
+    if (!input.name && !input.brand) return true;
+    return false;
   };
 
   // Go to club page
@@ -178,9 +154,6 @@ const EditClub = () => {
                     <label htmlFor="name" className="text-lg mr-1">
                       Club
                     </label>
-                    {error.name.length === 0 && input.name.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
                   </div>
                   <input
                     name="name"
@@ -203,9 +176,6 @@ const EditClub = () => {
                     <label htmlFor="brand" className="text-lg mr-1">
                       Brand
                     </label>
-                    {error.brand.length === 0 && input.brand.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
                   </div>
                   <input
                     name="brand"
@@ -238,7 +208,7 @@ const EditClub = () => {
                   className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
                   Cancel
                 </button>
-                {serverErrors && <p className="text-pink-400 text-sm pt-1 pr-1">{error}</p>};
+                {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
                 <div className="flex w-full justify-center items-center pt-4"></div>
               </form>
             )}

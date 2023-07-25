@@ -6,7 +6,8 @@ import { GiGolfTee } from "react-icons/gi";
 import Chart from "../components/Chart";
 import PutList from "../components/PutList";
 import PutItem from "../components/PutItem";
-import { getAveragePutsPerRound, isNumeric } from "../helpers";
+import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
+import Fetch from "../helpers/fetch";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -23,36 +24,13 @@ const Puts = () => {
   useEffect(() => {
     const getAllPuts = async () => {
       try {
-        let putsData = [];
-
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-        const options = {
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${encodedCredentials}`
-          }
-        };
-
-        const response = await fetch(`${process.env.REACT_APP_URL}/puts`, options);
+        const response = await Fetch.get("/puts", null, encodedCredentials);
 
         if (response.status === 200) {
-          putsData = await response.json();
-          console.log(putsData);
-          setPutData(putsData);
-          setChartData(putsData.slice(putsData.length - 30, putsData.length));
-        } else if (response.status === 401) {
-          navigate("/signin");
-        } else if (response.status === 403) {
-          navigate("/forbidden");
-        } else if (response.status === 404) {
-          navigate("/notfound");
+          handleGetPutsSuccess(response);
         } else {
-          navigate("/error");
-        }
-
-        if (putsData.length !== 0) {
-          setAvgPutsPerRound(getAveragePutsPerRound(putsData));
+          handleGetPutsError(response);
         }
 
         setIsLoading(false);
@@ -66,66 +44,10 @@ const Puts = () => {
     // eslint-disable-next-line
   }, []);
 
-  const handleCreateRoundOfPuts = async (e) => {
-    e.preventDefault();
-
-    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-    let dateCreated = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    });
-
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${encodedCredentials}`
-      },
-      body: JSON.stringify({
-        puts: +putsPerRound,
-        dateCreated,
-        user: authUser._id
-      })
-    };
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_URL}/puts`, options);
-
-      if (response.status === 201) {
-        const { putId } = await response.json();
-
-        setPutData((prev) => {
-          const puts = [
-            ...prev,
-            {
-              puts: +putsPerRound,
-              dateCreated,
-              user: authUser._id,
-              _id: putId
-            }
-          ];
-          const average = getAveragePutsPerRound(puts);
-          setAvgPutsPerRound(average);
-          return puts;
-        });
-        setPutsPerRound("");
-      } else if (response.status === 400) {
-        const { errors } = await response.json();
-        setError(errors[0]);
-      } else if (response.status === 500) {
-        setError("Server Error");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const onInputChange = (e) => {
     const { value } = e.target;
-    setPutsPerRound(value);
     validateInput(e);
+    setPutsPerRound(value);
   };
 
   const validateInput = (e) => {
@@ -154,40 +76,105 @@ const Puts = () => {
     setError("");
   };
 
+  const handleGetPutsError = (response) => {
+    if (response.status === 401) {
+      navigate("/signin");
+    } else if (response.status === 404) {
+      navigate("/notfound");
+    } else {
+      navigate("/error");
+    }
+  };
+
+  const handleGetPutsSuccess = async (response) => {
+    const putsData = await response.json();
+    setPutData(putsData);
+    setChartData(putsData.slice(putsData.length - 30, putsData.length));
+    if (putsData.length !== 0) {
+      setAvgPutsPerRound(getAveragePutsPerRound(putsData));
+    }
+    console.log(putsData);
+  };
+
+  const handleCreateRoundOfPutsError = async (response) => {
+    const { err } = await response.json();
+    setError(err.message);
+  };
+
+  const handleCreateRoundOfPutsSuccess = async (response, params) => {
+    const { putId } = await response.json();
+
+    setPutData((prev) => {
+      const updatedPuts = [
+        ...prev,
+        {
+          puts: params.puts,
+          dateCreated: params.dateCreated,
+          user: authUser._id,
+          _id: putId
+        }
+      ];
+      const averagePuts = getAveragePutsPerRound(updatedPuts);
+      setAvgPutsPerRound(averagePuts);
+      return updatedPuts;
+    });
+    setPutsPerRound("");
+  };
+
+  const createRoundsOfPuts = async (e) => {
+    e.preventDefault();
+
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+    const dateCreated = getDate();
+    const puts = +putsPerRound;
+    const params = { puts, dateCreated, user: authUser._id };
+
+    try {
+      const response = await Fetch.create("/puts", params, encodedCredentials);
+      console.log(response);
+      if (response.status === 201) {
+        handleCreateRoundOfPutsSuccess(response, params);
+      } else {
+        handleCreateRoundOfPutsError(response);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeletePutSuccess = (id) => {
+    setPutData((prev) => {
+      let puts = [...prev];
+
+      puts = puts.filter((item) => {
+        return item._id !== id;
+      });
+
+      const average = getAveragePutsPerRound(puts);
+      if (puts.length !== 0) {
+        setAvgPutsPerRound(average);
+      } else {
+        setAvgPutsPerRound(0);
+      }
+
+      return puts;
+    });
+  };
+  const handleDeletePutError = async (response) => {
+    const { err } = await response.json();
+    setError(err.message);
+  };
+
   const handleDeletePut = async (id) => {
-    console.log(id);
     try {
       const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-
-      const options = {
-        method: "DELETE",
-        headers: {
-          Authorization: `Basic ${encodedCredentials}`
-        }
-      };
-
-      const response = await fetch(`${process.env.REACT_APP_URL}/puts/${id}`, options);
+      const response = await Fetch.remove(`/puts/${id}`, null, encodedCredentials);
       console.log(response);
 
       if (response.status === 204) {
-        setPutData((prev) => {
-          let puts = [...prev];
-
-          puts = puts.filter((item) => {
-            return item._id !== id;
-          });
-
-          const average = getAveragePutsPerRound(puts);
-          if (puts.length !== 0) {
-            setAvgPutsPerRound(average);
-          } else {
-            setAvgPutsPerRound(0);
-          }
-
-          return puts;
-        });
+        handleDeletePutSuccess(id);
       } else {
-        setError("Server Error");
+        handleDeletePutError(response);
       }
     } catch (error) {
       console.log(error);
@@ -195,7 +182,9 @@ const Puts = () => {
   };
 
   const isAddRoundDisabled = () => {
-    //to do disable button if
+    if (error) return true;
+    if (!putsPerRound) return true;
+    return false;
   };
 
   return (
@@ -267,7 +256,7 @@ const Puts = () => {
                   <button
                     disabled={isAddRoundDisabled()}
                     type="submit"
-                    onClick={handleCreateRoundOfPuts}
+                    onClick={createRoundsOfPuts}
                     className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
                     Add Round
                   </button>

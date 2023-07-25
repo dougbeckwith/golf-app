@@ -19,17 +19,21 @@ const createShot = async (req, res, next) => {
 };
 
 const deleteShot = async (req, res) => {
-  await Shot.findByIdAndDelete(req.params.shotId);
+  try {
+    await Shot.findByIdAndDelete(req.params.shotId);
 
-  // Remove reference on club to the shot deleted.
-  const club = await Club.findById(req.params.id).populate("shots");
-  const shots = club.shots.filter((shot) => {
-    return shot._id !== req.params.shotId;
-  });
-  club.shots = shots;
-  await club.save();
+    // Remove reference on club to the shot deleted.
+    const club = await Club.findById(req.params.id).populate("shots");
+    const shots = club.shots.filter((shot) => {
+      return shot._id !== req.params.shotId;
+    });
+    club.shots = shots;
+    await club.save();
 
-  res.status(200).end();
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
