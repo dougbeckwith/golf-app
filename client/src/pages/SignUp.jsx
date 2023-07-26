@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
+import BarLoader from "react-spinners/BarLoader";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const SignUp = () => {
   const emailInputRef = useRef(null);
 
   const [isLoading, setIsloading] = useState(false);
-  const [serverError, setServerError] = useState([]);
+  const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ email: "", password: "", confirmPassword: "" });
   const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
 
@@ -24,6 +25,7 @@ const SignUp = () => {
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
+    setServerError("");
     setInput((prev) => ({ ...prev, [name]: value }));
     validateInput(e);
   };
@@ -36,8 +38,12 @@ const SignUp = () => {
 
     try {
       const response = await Fetch.create("/user", user, null);
-      if (response.status === 201) handleUserCreated(user);
-      else handleCreateUserError(response);
+      if (response.status === 201) {
+        handleUserCreated(user);
+      } else {
+        handleCreateUserError(response);
+      }
+      setIsloading(false);
     } catch (error) {
       console.log(error);
     }
@@ -46,13 +52,11 @@ const SignUp = () => {
   const handleCreateUserError = async (response) => {
     const { err } = await response.json();
     setServerError(err.message);
-    setIsloading(false);
   };
 
   const handleUserCreated = async (user) => {
-    setServerError([]);
+    setServerError("");
     await actions.signIn(user);
-    setIsloading(false);
     navigate("/clubs");
   };
 
@@ -135,105 +139,126 @@ const SignUp = () => {
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Create Account</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
-            <form>
-              <div>
-                <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="email" className="text-lg mr-1">
-                    Email Address
-                  </label>
-                  {error.email.length === 0 && input.email.length !== 0 && (
-                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+            {isLoading ? (
+              <div className="pb-10">
+                <h1 className="text-gray-500 pt-5 pb-2 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                  Signing Up
+                </h1>
+                <BarLoader
+                  color={"#007acc"}
+                  loading={isLoading}
+                  size={150}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+                <p className="pt-5">Please allow 30 seconds to Sign Up.</p>
+                <p>Server may be asleep.</p>
+                <div className="pt-5 mx-auto max-w-4xl "></div>
+              </div>
+            ) : (
+              <form>
+                <div>
+                  <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="email" className="text-lg mr-1">
+                      Email Address
+                    </label>
+                    {error.email.length === 0 && input.email.length !== 0 && (
+                      <IoCheckmarkCircleOutline className={"text-green-500"} />
+                    )}
+                  </div>
+                  <input
+                    ref={emailInputRef}
+                    name="email"
+                    type="text"
+                    onBlur={validateInput}
+                    onChange={onInputChange}
+                    className={`${
+                      error.email
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                    }`}
+                    value={input.email}
+                  />
+                </div>
+                <div className="flex items-center pt-1 pl-1">
+                  {error.email && (
+                    <p className="h-full text-pink-400 text-xs pr-1">{error.email}</p>
                   )}
                 </div>
-                <input
-                  ref={emailInputRef}
-                  name="email"
-                  type="text"
-                  onBlur={validateInput}
-                  onChange={onInputChange}
-                  className={`${
-                    error.email
-                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                  }`}
-                  value={input.email}
-                />
-              </div>
-              <div className="flex items-center pt-1 pl-1">
-                {error.email && <p className="h-full text-pink-400 text-xs pr-1">{error.email}</p>}
-              </div>
-              <div className="pt-5">
-                <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="password" className="text-lg mr-1">
-                    Password
-                  </label>
-                  {error.password.length === 0 && input.password.length !== 0 && (
-                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                <div className="pt-5">
+                  <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="password" className="text-lg mr-1">
+                      Password
+                    </label>
+                    {error.password.length === 0 && input.password.length !== 0 && (
+                      <IoCheckmarkCircleOutline className={"text-green-500"} />
+                    )}
+                  </div>
+                  <input
+                    name="password"
+                    type="password"
+                    onBlur={validateInput}
+                    onChange={onInputChange}
+                    className={`${
+                      error.password
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                    }`}
+                    value={input.password}
+                  />
+                </div>
+                <div className="flex items-center pt-1 pl-1">
+                  {error.password && (
+                    <p className="h-full text-pink-400 text-xs pr-1">{error.password}</p>
                   )}
                 </div>
-                <input
-                  name="password"
-                  type="password"
-                  onBlur={validateInput}
-                  onChange={onInputChange}
-                  className={`${
-                    error.password
-                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                  }`}
-                  value={input.password}
-                />
-              </div>
-              <div className="flex items-center pt-1 pl-1">
-                {error.password && (
-                  <p className="h-full text-pink-400 text-xs pr-1">{error.password}</p>
-                )}
-              </div>
-              <div className="pt-5">
-                <div className="pb-1 pl-1 flex items-center">
-                  <label htmlFor="confirmPassword" className="text-lg mr-1">
-                    Confirm Password
-                  </label>
-                  {error.confirmPassword.length === 0 && input.confirmPassword.length !== 0 && (
-                    <IoCheckmarkCircleOutline className={"text-green-500"} />
+                <div className="pt-5">
+                  <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="confirmPassword" className="text-lg mr-1">
+                      Confirm Password
+                    </label>
+                    {error.confirmPassword.length === 0 && input.confirmPassword.length !== 0 && (
+                      <IoCheckmarkCircleOutline className={"text-green-500"} />
+                    )}
+                  </div>
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    onBlur={validateInput}
+                    onChange={onInputChange}
+                    className={`${
+                      error.confirmPassword
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                    }`}
+                    value={input.confirmPassword}
+                  />
+                </div>
+                <div className="flex items-center pt-1 pl-1">
+                  {error.confirmPassword && (
+                    <p className="h-full text-pink-400 text-xs pr-1">{error.confirmPassword}</p>
                   )}
                 </div>
-                <input
-                  name="confirmPassword"
-                  type="password"
-                  onBlur={validateInput}
-                  onChange={onInputChange}
-                  className={`${
-                    error.confirmPassword
-                      ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                      : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                  }`}
-                  value={input.confirmPassword}
-                />
-              </div>
-              <div className="flex items-center pt-1 pl-1">
-                {error.confirmPassword && (
-                  <p className="h-full text-pink-400 text-xs pr-1">{error.confirmPassword}</p>
-                )}
-              </div>
-              <button
-                disabled={isSignUpButtonDisabled()}
-                onClick={createUser}
-                type={"submit"}
-                className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                Sign Up
-              </button>
-              {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
-              <div className="flex w-full justify-center items-center pt-4">
-                <p className="text-gray-600 pr-2">Already have an account?</p>
+                {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
                 <button
-                  onClick={navigateToSignIn}
-                  type={"button"}
-                  className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
-                  Sign In
+                  disabled={isSignUpButtonDisabled()}
+                  onClick={createUser}
+                  type={"submit"}
+                  className="mt-7 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                  Sign Up
                 </button>
-              </div>
-            </form>
+
+                <div className="flex w-full justify-center items-center pt-4">
+                  <p className="text-gray-600 pr-2">Already have an account?</p>
+                  <button
+                    onClick={navigateToSignIn}
+                    type={"button"}
+                    className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
+                    Sign In
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </div>

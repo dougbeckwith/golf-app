@@ -82,17 +82,16 @@ const SignIn = () => {
                 <h1 className="text-gray-500 pt-5 pb-2 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                   Signing In
                 </h1>
-                <p>Please allow 30 seconds to Sign In.</p>
+                <BarLoader
+                  color={"#007acc"}
+                  loading={isLoading}
+                  size={150}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+                <p className="pt-5">Please allow 30 seconds to Sign In.</p>
                 <p>Server may be asleep.</p>
-                <div className="pt-5 mx-auto max-w-4xl ">
-                  <BarLoader
-                    color={"#007acc"}
-                    loading={isLoading}
-                    size={150}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
-                </div>
+                <div className="pt-5 mx-auto max-w-4xl "></div>
               </div>
             ) : (
               <form>
