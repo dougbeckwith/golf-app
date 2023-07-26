@@ -6,6 +6,7 @@ import ClubList from "../components/ClubList";
 import { sortClubsByDistance } from "../helpers";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
+import BarLoader from "react-spinners/BarLoader";
 
 const Clubs = () => {
   const { authUser } = useContext(UserContext);
@@ -46,7 +47,6 @@ const Clubs = () => {
   const handleGetClubSuccess = async (response) => {
     const clubData = await response.json();
     setClubs(clubData);
-    console.log(clubData);
     return clubData;
   };
 
@@ -109,6 +109,7 @@ const Clubs = () => {
 
     const sortedClubs = sortClubsByDistance(clubs, shotType);
     setSortedClubs(sortedClubs);
+    console.log(sortedClubs);
 
     const longestShot = sortedClubs[0].averageDistance;
     setLongestShot(longestShot);
@@ -134,46 +135,55 @@ const Clubs = () => {
               </Link>
             </div>
           </div>
-          {!isLoading && (
-            <select
-              name="clubs"
-              id="clubs"
-              onChange={handleFilterShotsBy}
-              value={filterShotsBy}
-              className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
-              <option value="totalDistance">Total Distance</option>
-              <option value="totalCarry">Carry Distance</option>
-            </select>
-          )}
-          {isLoading && (
+          {isLoading ? (
             <div className="pb-10">
-              <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+              <h1 className="text-gray-500 pt-5 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                 Loading Clubs
               </h1>
-            </div>
-          )}
-          {sortedClubs.length !== 0 && (
-            <ClubList>
-              {sortedClubs.map((club) => (
-                <ClubItem
-                  key={uuidv4()}
-                  club={club}
-                  handleClick={handleClick}
-                  filterShotsBy={filterShotsBy}
-                  longestShot={longestShot}
+              <div className="pt-5 mx-auto max-w-4xl ">
+                <BarLoader
+                  color={"#007acc"}
+                  loading={isLoading}
+                  size={150}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
                 />
-              ))}
-            </ClubList>
-          )}
-          {sortedClubs.length === 0 && !isLoading && (
-            <div className="pb-10">
-              <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                Start by adding clubs to track.
-              </h1>
-              <p className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
-                Record each shot you make to track your average total and carry distance.
-              </p>
+              </div>
             </div>
+          ) : (
+            <>
+              <select
+                name="clubs"
+                id="clubs"
+                onChange={handleFilterShotsBy}
+                value={filterShotsBy}
+                className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
+                <option value="totalDistance">Total Distance</option>
+                <option value="totalCarry">Carry Distance</option>
+              </select>
+              {sortedClubs.length !== 0 ? (
+                <ClubList>
+                  {sortedClubs.map((club) => (
+                    <ClubItem
+                      key={uuidv4()}
+                      club={club}
+                      handleClick={handleClick}
+                      filterShotsBy={filterShotsBy}
+                      longestShot={longestShot}
+                    />
+                  ))}
+                </ClubList>
+              ) : (
+                <div className="pb-10">
+                  <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                    Start by adding clubs to track.
+                  </h1>
+                  <p className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
+                    Record each shot you make to track your average total and carry distance.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -182,3 +192,13 @@ const Clubs = () => {
 };
 
 export default Clubs;
+
+// {
+//   isLoading && (
+//     <div className="pb-10">
+//       <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+//         Loading Clubs
+//       </h1>
+//     </div>
+//   );
+// }

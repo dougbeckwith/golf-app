@@ -8,6 +8,7 @@ import PutList from "../components/PutList";
 import PutItem from "../components/PutItem";
 import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
+import BarLoader from "react-spinners/BarLoader";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Puts = () => {
 
   useEffect(() => {
     const getAllPuts = async () => {
+      setIsLoading(true);
       try {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
         const response = await Fetch.get("/puts", null, encodedCredentials);
@@ -199,15 +201,28 @@ const Puts = () => {
 
   return (
     <>
-      <div className="w-full bg-dark-500 text-gray-500 min-h-screen max-h-min ">
-        <div className="container m-auto xl:pt-16 px-3">
+      <div className="px-5 lg:px-3 md:pt-7 w-full bg-dark-500 ">
+        <div className="container m-auto">
+          <div className="w-full flex items-center mb-3 ">
+            <h1 className="text-gray-400 text-2xl font-semibold">Puts</h1>
+          </div>
           {isLoading ? (
-            <div>Loading</div>
+            <div className="pb-10">
+              <h1 className="text-gray-500 pt-5 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                Loading Puts
+              </h1>
+              <div className="pt-5 mx-auto max-w-4xl ">
+                <BarLoader
+                  color={"#007acc"}
+                  loading={isLoading}
+                  size={150}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              </div>
+            </div>
           ) : (
             <>
-              <div className="flex md:flex-row flex-col md:items-center pt-3 pb-5 w-full">
-                <h1 className="text-gray-400 text-2xl font-semibold">Puts</h1>
-              </div>
               <div className="flex flex-col xl:flex-row">
                 <div className="w-full min-h-[300px] shrink-0 lg:w-[500px] lg:h-[300px] xl:w-[700px] xl:h-[350px]">
                   <Chart putData={chartData} className={"shrink-0"} />
@@ -235,9 +250,8 @@ const Puts = () => {
                   </div>
                 </div>
               </div>
-
               <div className="w-full flex flex-col sm:flex-row xl:mt-10">
-                <form className="mb-2 flex flex-col py-5 px-6 rounded-md bg-dark-300">
+                <form className="text-gray-500 mb-2 flex flex-col py-5 px-6 rounded-md bg-dark-300">
                   <div className="pb-1 pl-1 flex items-center">
                     <label htmlFor="totalCarry" className="text-lg mr-1">
                       Total Puts{" "}
