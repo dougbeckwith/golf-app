@@ -9,10 +9,7 @@ const getDate = () => {
 // shotType = 'carryDistance' | 'totalDistance'
 const sortClubsByDistance = (clubs, shotType) => {
   const clubsWithAverageYards = [];
-  console.log("esting", clubs);
-  console.log("testing", clubs.shots);
   clubs.forEach((club) => {
-    console.log(club.shots.length);
     if (club.shots.length === 0) {
       clubsWithAverageYards.push({ ...club, averageTotalDistance: 0 });
     } else {
