@@ -26,7 +26,11 @@ const Clubs = () => {
 
   const handleSortClubs = (clubData) => {
     const distanceType = getFilterShotsByLocalStorage();
-    sortClubs(clubData, distanceType);
+    if (distanceType) {
+      sortClubs(clubData, distanceType);
+    } else {
+      sortClubs(clubData, filterShotsBy);
+    }
   };
 
   const handleGetClubsError = (response) => {

@@ -1,5 +1,6 @@
 const { connectDB } = require("../helpers/database");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const { clubs, createClubs, deleteClubs } = require("./clubs");
 const { user, createUser, deleteUsers } = require("./user");
