@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 
 const Graph = ({ putData }) => {
   const [dateList, setDateList] = useState([]);
-  const [putsList, setPutsList] = useState([]);
+  const [dataList, setDataList] = useState([]);
 
   const sortData = (data) => {
     data.forEach((round) => {
-      setPutsList((prevList) => {
+      setDataList((prevList) => {
         return [...prevList, round.puts];
       });
       setDateList((prevList) => {
@@ -20,7 +20,7 @@ const Graph = ({ putData }) => {
 
   useEffect(() => {
     setDateList([]);
-    setPutsList([]);
+    setDataList([]);
     sortData(putData);
   }, [putData]);
 
@@ -51,7 +51,7 @@ const Graph = ({ putData }) => {
     datasets: [
       {
         label: "Puts Per Round",
-        data: putsList,
+        data: dataList,
         pointRadius: 0,
         backgroundColor: "#007acc",
         borderColor: "#007acc",
