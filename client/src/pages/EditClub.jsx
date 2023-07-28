@@ -3,7 +3,6 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
-import Alert from "../components/Alert";
 
 const EditClub = () => {
   const navigate = useNavigate();
@@ -17,11 +16,6 @@ const EditClub = () => {
   const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ name: "", brand: "" });
   const [input, setInput] = useState({ name: "", brand: "" });
-
-  // State for edit club alert message
-  const [show, setShow] = useState(false);
-  const [message, setMessage] = useState("");
-  const [navTo, setNavTo] = useState("");
 
   const handleGetClubSuccess = async (response) => {
     const club = await response.json();
@@ -65,9 +59,7 @@ const EditClub = () => {
   }, []);
 
   const handleUpdateClubSuccess = () => {
-    setMessage("Success! Club Updated");
-    setNavTo("/clubs");
-    setShow(true);
+    navigate("/clubs");
   };
 
   const handleUpdateClubError = async (response) => {
@@ -215,7 +207,6 @@ const EditClub = () => {
           </div>
         </div>
       </div>
-      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

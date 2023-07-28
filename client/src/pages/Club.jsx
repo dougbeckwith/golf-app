@@ -7,8 +7,8 @@ import { getAverageDistance } from "../helpers";
 import ShotList from "../components/ShotList";
 import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
-import Alert from "../components/Alert";
 import Fetch from "../helpers/fetch";
+import H2 from "../components/HeadingTwo";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -24,18 +24,13 @@ const Club = () => {
   const [error, setError] = useState({ totalCarry: "", totalDistance: "" });
   const [shot, setShot] = useState({ totalCarry: "", totalDistance: "" });
 
-  // State for alert message
-  const [show, setShow] = useState(false);
-  const [message, setMessage] = useState("");
-  const [navTo, setNavTo] = useState("");
-
   useEffect(() => {
     setEncodedCredentials(btoa(`${authUser.email}:${authUser.password}`));
   }, [authUser.email, authUser.password]);
 
   const handleError = async (response) => {
     const { err } = await response.json();
-    setMessage(`${err.message}`);
+    alert(err.message);
   };
 
   const handleGetClubSuccess = async (response) => {
@@ -99,9 +94,7 @@ const Club = () => {
   };
 
   const handleDeleteSuccess = () => {
-    setMessage("Success! Club Deleted");
-    setNavTo("/clubs");
-    setShow(true);
+    navigate("/clubs");
   };
 
   const handleDeleteClub = async () => {
@@ -285,7 +278,7 @@ const Club = () => {
                     </div>
                   </div>
                 </div>
-                <h1 className="pt-10 text-2xl text-gray-200">Shots</h1>
+                <H2>Shots</H2>
                 {isLoading ? (
                   <div>Loading</div>
                 ) : (
@@ -299,8 +292,6 @@ const Club = () => {
                           club={club}
                           setAvgCarryDistance={setAvgCarryDistance}
                           setAvgTotalDistance={setAvgTotalDistance}
-                          setShow={setShow}
-                          setMessage={setMessage}
                         />
                       );
                     })}
@@ -311,7 +302,6 @@ const Club = () => {
           )}
         </div>
       </div>
-      <Alert show={show} setShow={setShow} message={message} navTo={navTo} />
     </>
   );
 };

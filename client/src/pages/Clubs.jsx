@@ -6,7 +6,12 @@ import ClubList from "../components/ClubList";
 import { sortClubsByDistance } from "../helpers";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
-import BarLoader from "react-spinners/BarLoader";
+import Loader from "../components/Loader";
+import Main from "../components/Main";
+import Container from "../components/Container";
+import H1 from "../components/HeadingOne";
+import Button from "../components/Button";
+import Header from "../components/Header";
 
 const Clubs = () => {
   const { authUser } = useContext(UserContext);
@@ -121,36 +126,16 @@ const Clubs = () => {
 
   return (
     <>
-      <div className="px-5 lg:px-3 md:pt-7 w-full bg-dark-500 ">
-        <div className="container  m-auto">
-          <div className="w-full flex items-center mb-3 ">
-            <h1 className="text-gray-400 text-2xl font-semibold">Club Distances</h1>
-            <div className="ml-auto">
-              <Link to="/clubs/new">
-                <button
-                  type="button"
-                  className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 ">
-                  Add Club
-                </button>
-              </Link>
-            </div>
-          </div>
-          {isLoading ? (
-            <div className="pb-10">
-              <h1 className="text-gray-500 pt-5 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                Loading Clubs
-              </h1>
-              <div className="pt-5 mx-auto max-w-4xl ">
-                <BarLoader
-                  color={"#007acc"}
-                  loading={isLoading}
-                  size={150}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </div>
-            </div>
-          ) : (
+      <Main>
+        <Container>
+          <Header>
+            <H1>Club Distances</H1>
+            <Link to="/clubs/new" className="ml-auto">
+              <Button>Add Club</Button>
+            </Link>
+          </Header>
+          {isLoading && <Loader isLoading={isLoading} text={"Loading Clubs"} />}
+          {!isLoading && (
             <>
               <select
                 name="clubs"
@@ -185,20 +170,10 @@ const Clubs = () => {
               )}
             </>
           )}
-        </div>
-      </div>
+        </Container>
+      </Main>
     </>
   );
 };
 
 export default Clubs;
-
-// {
-//   isLoading && (
-//     <div className="pb-10">
-//       <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-//         Loading Clubs
-//       </h1>
-//     </div>
-//   );
-// }

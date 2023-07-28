@@ -1,14 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+
 import UserContext from "../context/UserContext";
-import { GiGolfTee } from "react-icons/gi";
-import Chart from "../components/Chart";
-import PutList from "../components/PutList";
-import PutItem from "../components/PutItem";
 import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
-import BarLoader from "react-spinners/BarLoader";
+import Header from "../components/HeadingOne";
+import Loader from "../components/Loader";
+import ChartSection from "../components/ChartSection";
+import StatsSection from "../components/StatsSection";
+import InputForm from "../components/InputForm";
+import PuttingRounds from "../components/PuttingRounds";
+import Main from "../components/Main";
+import Container from "../components/Container";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -46,8 +49,6 @@ const Puts = () => {
     // eslint-disable-next-line
   }, []);
 
-  // Update the chartData when putData changes.
-  // Only show up to 20 of the most recent puts on the chart.
   useEffect(() => {
     if (putData.length > 20) {
       setChartData(putData.slice(putData.length - 20, putData.length));
@@ -201,101 +202,30 @@ const Puts = () => {
 
   return (
     <>
-      <div className="px-5 lg:px-3 md:pt-7 w-full bg-dark-500 ">
-        <div className="container m-auto">
-          <div className="w-full flex items-center mb-3 ">
-            <h1 className="text-gray-400 text-2xl font-semibold">Puts</h1>
-          </div>
-          {isLoading ? (
-            <div className="pb-10">
-              <h1 className="text-gray-500 pt-5 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                Loading Puts
-              </h1>
-              <div className="pt-5 mx-auto max-w-4xl ">
-                <BarLoader
-                  color={"#007acc"}
-                  loading={isLoading}
-                  size={150}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </div>
-            </div>
-          ) : (
+      <Main>
+        <Container>
+          <Header>Puts</Header>
+          {isLoading && <Loader isLoading={isLoading} text={"Loading Puts"} />}
+          {!isLoading && (
             <>
-              <div className="flex flex-col xl:flex-row">
-                <div className="w-full min-h-[300px] shrink-0 lg:w-[500px] lg:h-[300px] xl:w-[700px] xl:h-[350px]">
-                  <Chart putData={chartData} className={"shrink-0"} />
-                </div>
-                <div className="w-full flex items-center pb-2  mt-10 xl:mt-0">
-                  <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                    <GiGolfTee size={40} color="#d1d5db" />
-                  </div>
-                  <div className="pl-5">
-                    <p className="text-gray-400 text-sm">Average Puts</p>
-                    <div className="text-blue-400 text-xl font-bold flex">
-                      <span>{averagePutsPerRound}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex items-center pb-2 ">
-                  <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                    <GiGolfTee size={40} color="#d1d5db" />
-                  </div>
-                  <div className="pl-5">
-                    <p className="text-gray-400 text-sm">Total Rounds</p>
-                    <div className="text-blue-400 text-xl font-bold flex">
-                      <span>{putData.length}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="flex flex-col xl:flex-row justify-between">
+                <ChartSection chartData={chartData} />
+                <StatsSection label="Average Puts" value={averagePutsPerRound} />
+                <StatsSection label="Total Rounds" value={putData.length} />
               </div>
-              <div className="w-full flex flex-col sm:flex-row xl:mt-10">
-                <form className="text-gray-500 mb-2 flex flex-col py-5 px-6 rounded-md bg-dark-300">
-                  <div className="pb-1 pl-1 flex items-center">
-                    <label htmlFor="totalCarry" className="text-lg mr-1">
-                      Total Puts{" "}
-                      <span className="text-xs">
-                        (<span className="ml-[2px] mr-[2px]">18 Holes</span>)
-                      </span>
-                    </label>
-                  </div>
-                  <input
-                    name="totalPuts"
-                    value={putsPerRound}
-                    onBlur={validateInput}
-                    onChange={onInputChange}
-                    className={`${
-                      error
-                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400 `
-                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400 `
-                    }`}
-                  />
-                  {error ? (
-                    <p className="text-pink-400 text-xs pr-1 my-2">{error}</p>
-                  ) : (
-                    <p className="text-pink-400 text-xs pr-1 my-2 h-[20px]"></p>
-                  )}
-
-                  <button
-                    disabled={isAddRoundDisabled()}
-                    type="submit"
-                    onClick={createRoundsOfPuts}
-                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
-                    Add Round
-                  </button>
-                </form>
-              </div>
-              <h1 className="pt-10 text-2xl text-gray-400">Putting Rounds</h1>
-              <PutList>
-                {putData.map((round) => {
-                  return <PutItem key={uuidv4()} round={round} handleDeletePut={handleDeletePut} />;
-                })}
-              </PutList>
+              <InputForm
+                error={error}
+                putsPerRound={putsPerRound}
+                onInputChange={onInputChange}
+                createRoundsOfPuts={createRoundsOfPuts}
+                isAddRoundDisabled={isAddRoundDisabled}
+                validateInput={validateInput}
+              />
+              <PuttingRounds putData={putData} handleDeletePut={handleDeletePut} />
             </>
           )}
-        </div>
-      </div>
+        </Container>
+      </Main>
     </>
   );
 };
