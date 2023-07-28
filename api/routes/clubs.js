@@ -10,7 +10,7 @@ const { isClub, isClubs } = require("../middleware/isDocument");
 router.get("/", authenticateUser, isClubs, isClubsOwner, sendClubs);
 router.post("/", authenticateUser, createClub);
 router.get("/:id", authenticateUser, isClub, isClubOwner, sendClub);
-router.patch("/:id", authenticateUser, isClub, isClubOwner, updateClub);
+router.put("/:id", authenticateUser, isClub, isClubOwner, updateClub);
 router.delete("/:id", authenticateUser, isClub, isClubOwner, deleteClub);
 
 module.exports = router;
