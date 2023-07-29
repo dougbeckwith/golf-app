@@ -1,8 +1,8 @@
 import React from "react";
 
-const InputLabel = ({ children, htmlFor }) => {
+const InputLabel = ({ children, htmlFor, className }) => {
   return (
-    <label htmlFor={htmlFor} className="text-gray-400 text-mds">
+    <label htmlFor={htmlFor} className={`block text-gray-400 text-sm ${className}`}>
       {children}
     </label>
   );

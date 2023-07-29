@@ -1,13 +1,15 @@
 import React from "react";
 
-const InputField = ({ value, onChange, onBlur, name }) => {
+const InputField = ({ value, onChange, onBlur, name, innerRef, type }) => {
   return (
     <input
+      type={type}
       name={name}
       value={value}
       onBlur={onBlur}
       onChange={onChange}
-      className="bg-dark-200 p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400"
+      ref={innerRef}
+      className="text-gray-500 bg-dark-200 text-sm w-full p-2 rounded-md border-2 border-dark-200  focus:border-blue-400 focus:outline-none"
     />
   );
 };

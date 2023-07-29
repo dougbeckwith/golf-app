@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import BarLoader from "react-spinners/BarLoader";
+import H1 from "../components/HeadingOne";
+import AccountFooter from "../components/AccountFooter";
+import Button from "../components/Button";
+import InputLabel from "../components/InputLabel";
+import InputField from "../components/InputField";
+import ServerError from "../components/ServerError";
+import ServerSleep from "../components/ServerSleep";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -23,7 +29,6 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     setIsloading(true);
-
     const credentials = { email: input.email, password: input.password };
 
     try {
@@ -47,6 +52,7 @@ const SignIn = () => {
   const handleSignInSuccess = () => {
     setServerError("");
     navigate("/clubs");
+    return;
   };
 
   const isAnyFormInputsEmpty = () => {
@@ -60,90 +66,66 @@ const SignIn = () => {
     return false;
   };
 
-  const navigateToSignUp = () => {
-    navigate("/signup");
-  };
-
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({ ...prev, [name]: value }));
     setServerError("");
   };
 
+  const formFields = [
+    {
+      name: "email",
+      label: "Email Address",
+      onChange: onInputChange,
+      innerRef: emailInputRef,
+      value: input.email,
+      type: "email"
+    },
+    {
+      name: "password",
+      label: "Password",
+      onChange: onInputChange,
+      innerRef: null,
+      value: input.password,
+      type: "password"
+    }
+  ];
+
   return (
     <>
-      <div className="h-screen bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
-        <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Sign In</h2>
-
-          <div className="sm:bg-dark-400 px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
-            {isLoading ? (
-              <div className="pb-10">
-                <h1 className="text-gray-500 pt-5 pb-2 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                  Signing In
-                </h1>
-                <BarLoader
-                  color={"#007acc"}
-                  loading={isLoading}
-                  size={150}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-                <p className="pt-5">Please allow 30 seconds to Sign In.</p>
-                <p>Server may be asleep.</p>
-                <div className="pt-5 mx-auto max-w-4xl "></div>
-              </div>
-            ) : (
-              <form>
-                <div>
-                  <div className="pb-1 pl-1">
-                    <label htmlFor="email" className="text-lg">
-                      Email Address
-                    </label>
+      <div className="px-3 mt-10 w-full flex flex-col justify-center items-center ">
+        <H1 className="mb-2">Club Stats</H1>
+        <div className=" rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
+          {isLoading ? (
+            <ServerSleep isLoading={isLoading} text={"Signing In"}>
+              Please allow 30 seconds to Sign In.
+            </ServerSleep>
+          ) : (
+            <form>
+              {formFields.map((item, index) => {
+                return (
+                  <div key={index} className="mt-2">
+                    <InputLabel htmlFor={item.name} className="mb-1 ml-1">
+                      {item.label}
+                    </InputLabel>
+                    <InputField
+                      name={item.name}
+                      type={item.type}
+                      value={item.email}
+                      onChange={onInputChange}
+                      innerRef={item.innerRef}></InputField>
                   </div>
-                  <input
-                    ref={emailInputRef}
-                    name="email"
-                    type="text"
-                    onChange={onInputChange}
-                    className={`bg-dark-200  text-gray-300  w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400`}
-                    value={input.email}
-                  />
-                </div>
-                <div className="pt-2 pb-4">
-                  <div className="pb-2 pl-1">
-                    <label htmlFor="password" className="text-lg">
-                      Password
-                    </label>
-                  </div>
-                  <input
-                    name="password"
-                    type="password"
-                    onChange={onInputChange}
-                    className="bg-dark-200  text-gray-300  w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400  focus:ring-blue-400"
-                    value={input.password}
-                  />
-                </div>
-                {serverError && <p className="text-pink-400 text-sm">{serverError}</p>}
-                <button
-                  disabled={isSignUpButtonDisabled()}
-                  onClick={handleSignIn}
-                  type={"submit"}
-                  className="mt-4 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                  Sign in to account
-                </button>
-                <div className="flex w-full justify-center items-center pt-4">
-                  <p className="text-gray-500 pr-2">Need an account?</p>
-                  <button
-                    type={"button"}
-                    onClick={navigateToSignUp}
-                    className="text-sm py-3 rounded-md text-gray-400 hover:text-gray-200">
-                    Sign Up
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+                );
+              })}
+              {serverError && <ServerError>{serverError}</ServerError>}
+              <Button className="mt-10" onClick={handleSignIn} disabled={isSignUpButtonDisabled()}>
+                Sign in
+              </Button>
+              <AccountFooter text={"Need an account?"} to={"/signup"}>
+                Sign Up
+              </AccountFooter>
+            </form>
+          )}
         </div>
       </div>
     </>

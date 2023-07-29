@@ -1,9 +1,16 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
-import BarLoader from "react-spinners/BarLoader";
+import UserContext from "../context/UserContext";
+import H1 from "../components/HeadingOne";
+import AccountFooter from "../components/AccountFooter";
+import Button from "../components/Button";
+import InputLabel from "../components/InputLabel";
+import InputField from "../components/InputField";
+import ServerError from "../components/ServerError";
+import ServerSleep from "../components/ServerSleep";
+import InputError from "../components/InputError";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -61,12 +68,12 @@ const SignUp = () => {
   };
 
   const isAnyFormInputEmpty = () => {
-    if (input.email && input.password && input.confirmPassword) return false;
-    return true;
+    if (!input.email || !input.password || !input.confirmPassword) return true;
+    return false;
   };
 
   const isFormErrors = () => {
-    if (error.email && error.password && error.confirmPassword) return true;
+    if (error.email || error.password || error.confirmPassword) return true;
     return false;
   };
 
@@ -74,11 +81,8 @@ const SignUp = () => {
     if (isLoading) return true;
     if (isFormErrors()) return true;
     if (isAnyFormInputEmpty()) return true;
+    if (serverError) return true;
     return false;
-  };
-
-  const navigateToSignIn = () => {
-    navigate("/signin");
   };
 
   const validateInput = (e) => {
@@ -133,133 +137,80 @@ const SignUp = () => {
     });
   };
 
+  const isInputValid = (item) => {
+    if (error[item.name].length === 0 && input[item.name].length !== 0 && !serverError) {
+      return true;
+    }
+    return false;
+  };
+
+  const formFields = [
+    {
+      name: "email",
+      label: "Email Address",
+      onChange: onInputChange,
+      innerRef: emailInputRef,
+      value: input.email,
+      type: "email"
+    },
+    {
+      name: "password",
+      label: "Password",
+      onChange: onInputChange,
+      innerRef: null,
+      value: input.password,
+      type: "password"
+    },
+    {
+      name: "confirmPassword",
+      label: "Confirm Password",
+      onChange: onInputChange,
+      innerRef: null,
+      value: input.confirmPassword,
+      type: "password"
+    }
+  ];
   return (
     <>
-      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-24 justify-center text-gray-500">
-        <div className="container max-w-[600px]">
-          <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Create Account</h2>
-          <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
-            {isLoading ? (
-              <div className="pb-10">
-                <h1 className="text-gray-500 pt-5 pb-2 mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                  Signing Up
-                </h1>
-                <BarLoader
-                  color={"#007acc"}
-                  loading={isLoading}
-                  size={150}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-                <p className="pt-5">Please allow 30 seconds to Sign Up.</p>
-                <p>Server may be asleep.</p>
-                <div className="pt-5 mx-auto max-w-4xl "></div>
-              </div>
-            ) : (
-              <form>
-                <div>
-                  <div className="pb-1 pl-1 flex items-center">
-                    <label htmlFor="email" className="text-lg mr-1">
-                      Email Address
-                    </label>
-                    {error.email.length === 0 && input.email.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
+      <div className="px-3 mt-10 w-full flex flex-col justify-center items-center ">
+        <H1 className="mb-2">Club Stats</H1>
+        <div className=" rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
+          {isLoading ? (
+            <ServerSleep isLoading={isLoading} text={"Signing Up"}>
+              Please allow 30 seconds to Sign Up.
+            </ServerSleep>
+          ) : (
+            <form>
+              {formFields.map((item, index) => {
+                return (
+                  <div key={index} className="mt-2">
+                    <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
+                      {item.label}
+                    </InputLabel>
+                    {isInputValid(item) && (
+                      <IoCheckmarkCircleOutline className={"text-green-500 inline-block"} />
                     )}
+                    <InputField
+                      name={item.name}
+                      type={item.type}
+                      value={input[item.name]}
+                      onChange={onInputChange}
+                      innerRef={item.innerRef}>
+                      {input[item.name]}
+                    </InputField>
+                    {error && <InputError>{error[item.name]}</InputError>}
                   </div>
-                  <input
-                    ref={emailInputRef}
-                    name="email"
-                    type="text"
-                    onBlur={validateInput}
-                    onChange={onInputChange}
-                    className={`${
-                      error.email
-                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                    }`}
-                    value={input.email}
-                  />
-                </div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.email && (
-                    <p className="h-full text-pink-400 text-xs pr-1">{error.email}</p>
-                  )}
-                </div>
-                <div className="pt-5">
-                  <div className="pb-1 pl-1 flex items-center">
-                    <label htmlFor="password" className="text-lg mr-1">
-                      Password
-                    </label>
-                    {error.password.length === 0 && input.password.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
-                  </div>
-                  <input
-                    name="password"
-                    type="password"
-                    onBlur={validateInput}
-                    onChange={onInputChange}
-                    className={`${
-                      error.password
-                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                    }`}
-                    value={input.password}
-                  />
-                </div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.password && (
-                    <p className="h-full text-pink-400 text-xs pr-1">{error.password}</p>
-                  )}
-                </div>
-                <div className="pt-5">
-                  <div className="pb-1 pl-1 flex items-center">
-                    <label htmlFor="confirmPassword" className="text-lg mr-1">
-                      Confirm Password
-                    </label>
-                    {error.confirmPassword.length === 0 && input.confirmPassword.length !== 0 && (
-                      <IoCheckmarkCircleOutline className={"text-green-500"} />
-                    )}
-                  </div>
-                  <input
-                    name="confirmPassword"
-                    type="password"
-                    onBlur={validateInput}
-                    onChange={onInputChange}
-                    className={`${
-                      error.confirmPassword
-                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                    }`}
-                    value={input.confirmPassword}
-                  />
-                </div>
-                <div className="flex items-center pt-1 pl-1">
-                  {error.confirmPassword && (
-                    <p className="h-full text-pink-400 text-xs pr-1">{error.confirmPassword}</p>
-                  )}
-                </div>
-                {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
-                <button
-                  disabled={isSignUpButtonDisabled()}
-                  onClick={createUser}
-                  type={"submit"}
-                  className="mt-7 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
-                  Sign Up
-                </button>
-
-                <div className="flex w-full justify-center items-center pt-4">
-                  <p className="text-gray-600 pr-2">Already have an account?</p>
-                  <button
-                    onClick={navigateToSignIn}
-                    type={"button"}
-                    className="text-sm  py-3 rounded-md text-gray-400 hover:text-gray-200">
-                    Sign In
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+                );
+              })}
+              {serverError && <ServerError>{serverError}</ServerError>}
+              <Button className="mt-10" onClick={createUser} disabled={isSignUpButtonDisabled()}>
+                Sign Up
+              </Button>
+              <AccountFooter text={"Already have an account?"} to={"/signin"}>
+                Sign In
+              </AccountFooter>
+            </form>
+          )}
         </div>
       </div>
     </>
