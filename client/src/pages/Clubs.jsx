@@ -131,7 +131,7 @@ const Clubs = () => {
           <Header>
             <H1>Club Distances</H1>
             <Link to="/clubs/new" className="ml-auto">
-              <Button>Add Club</Button>
+              <Button color={"blue"}>Add Club</Button>
             </Link>
           </Header>
           {isLoading && <Loader isLoading={isLoading} text={"Loading Clubs"} />}
@@ -142,7 +142,7 @@ const Clubs = () => {
                 id="clubs"
                 onChange={handleFilterShotsBy}
                 value={filterShotsBy}
-                className="bg-dark-200 text-gray-400 rounded-md px-2 py-[4px] cursor-pointer">
+                className="bg-dark-200 text-gray-100 rounded-md px-2 py-[4px] cursor-pointer">
                 <option value="totalDistance">Total Distance</option>
                 <option value="totalCarry">Carry Distance</option>
               </select>
@@ -160,10 +160,10 @@ const Clubs = () => {
                 </ClubList>
               ) : (
                 <div className="pb-10">
-                  <h1 className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                  <h1 className="text-gray-200 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                     Start by adding clubs to track.
                   </h1>
-                  <p className="text-gray-500 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
+                  <p className="text-gray-200 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
                     Record each shot you make to track your average total and carry distance.
                   </p>
                 </div>

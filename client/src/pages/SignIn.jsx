@@ -95,7 +95,7 @@ const SignIn = () => {
     <>
       <div className="px-3 mt-10 w-full flex flex-col justify-center items-center ">
         <H1 className="mb-2">Club Stats</H1>
-        <div className=" rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
+        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
           {isLoading ? (
             <ServerSleep isLoading={isLoading} text={"Signing In"}>
               Please allow 30 seconds to Sign In.
@@ -118,7 +118,7 @@ const SignIn = () => {
                 );
               })}
               {serverError && <ServerError>{serverError}</ServerError>}
-              <Button className="mt-10" onClick={handleSignIn} disabled={isSignUpButtonDisabled()}>
+              <Button className="mt-10" color={'blue'} onClick={handleSignIn} disabled={isSignUpButtonDisabled()}>
                 Sign in
               </Button>
               <AccountFooter text={"Need an account?"} to={"/signup"}>

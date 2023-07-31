@@ -9,6 +9,16 @@ import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
 import H2 from "../components/HeadingTwo";
+import Loader from "../components/Loader";
+import Main from "../components/Main";
+import Container from "../components/Container";
+import H1 from "../components/HeadingOne";
+import Button from "../components/Button";
+import Header from "../components/Header";
+import Card from "../components/Card";
+import ButtonSmall from "../components/ButtonSmall";
+import StatsSection from "../components/StatsSection";
+import StatCard from "../components/StatCard";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -23,6 +33,7 @@ const Club = () => {
   const [encodedCredentials, setEncodedCredentials] = useState("");
   const [error, setError] = useState({ totalCarry: "", totalDistance: "" });
   const [shot, setShot] = useState({ totalCarry: "", totalDistance: "" });
+  const [clubStats, setClubStats] = useState([{}]);
 
   useEffect(() => {
     setEncodedCredentials(btoa(`${authUser.email}:${authUser.password}`));
@@ -36,8 +47,7 @@ const Club = () => {
   const handleGetClubSuccess = async (response) => {
     const club = await response.json();
     setClub(club);
-    setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
-    setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+    updateClubStats(club);
     setIsLoading(false);
   };
 
@@ -71,13 +81,24 @@ const Club = () => {
     // eslint-disable-next-line
   }, []);
 
+  const updateClubStats = (club) => {
+    const avgCarry = getAverageDistance(club, "totalCarry");
+    const avgDist = getAverageDistance(club, "totalDistance");
+    setAvgCarryDistance(avgCarry);
+    setAvgTotalDistance(avgDist);
+    setClubStats([
+      { label: "Avg Total Distance", stat: avgDist },
+      { label: "Avg Carry Distance", stat: avgCarry },
+      { label: "Total Shots", stat: club.shots.length }
+    ]);
+  };
+
   const handleAddShotSuccess = async (response) => {
     const { shotId } = await response.json();
     setShot({ totalCarry: "", totalDistance: "" });
     setClub((prevClub) => {
       const club = { ...prevClub, shots: [...prevClub.shots, { ...shot, _id: shotId }] };
-      setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
-      setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+      updateClubStats(club);
       return club;
     });
   };
@@ -161,127 +182,107 @@ const Club = () => {
 
   return (
     <>
-      <div className="w-full bg-dark-500 text-gray-500 min-h-screen max-h-min ">
-        <div className="container m-auto pt-4 xl:pt-16 px-3 sm:px-0">
+      <Main>
+        <Container>
           {isLoading ? (
-            <div>Loading</div>
+            <Loader isLoading={isLoading} text={"Loading Club"} />
           ) : (
             <>
-              <div className="flex md:flex-row flex-col items-center pt-3 pb-5 w-full">
-                <div className="flex items-center pb-2 text-gray-400">
-                  <p className="font-semibold text-2xl ">{club.name}</p>
-                  <span className="px-1 text-2xl md:text-md">-</span>
-                  <p className="text-2xl">{club.brand}</p>
-                </div>
-                <div className="mx-auto md:mx-0 md:ml-auto flex  gap-1">
+              <Header>
+                <H1 className={"mr-2"}>
+                  {club.name} {"-"} {club.brand}
+                </H1>
+                <div className="sm:ml-auto flex gap-2 mt-2 sm:mt-0">
                   <Link to={`/clubs/${id}/edit`}>
-                    <button className=" px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-blue-400 hover:bg-blue-300 ">
-                      Edit Club
-                    </button>
+                    <ButtonSmall color={"blue"}>Edit Club</ButtonSmall>
                   </Link>
-                  <button
-                    onClick={handleDeleteClub}
-                    className="px-2 py-2 text-sm font-medium rounded-md shadow-sm text-gray-400 bg-pink-500 hover:bg-pink-400 ">
+                  <ButtonSmall color={"red"} onClick={handleDeleteClub} styles={"inline"}>
                     Delete Club
-                  </button>
+                  </ButtonSmall>
                 </div>
-              </div>
-              <div className="">
-                <div className="w-full flex flex-col lg:flex-row">
-                  <form className="mb-2 w-full  flex flex-col py-5 px-6 rounded-md bg-dark-300">
-                    <div className="pb-1 pl-1 flex items-center">
-                      <label htmlFor="totalCarry" className="text-lg mr-1">
-                        Total Carry{" "}
-                        <span className="text-xs">
-                          (<span className="ml-[2px] mr-[2px]">yards</span>)
-                        </span>
-                      </label>
-                    </div>
-                    <input
-                      name="totalCarry"
-                      value={shot.totalCarry}
-                      onChange={onInputChange}
-                      className={`${
-                        error.totalCarry
-                          ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                          : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                      }`}
+              </Header>
+              <H2>Stats</H2>
+              <ul className="flex gap-2 flex-wrap mt-2 mb-6">
+                {clubStats.map((stat, index) => {
+                  console.log(stat);
+                  return (
+                    <StatCard
+                      key={index}
+                      iconColor="#d1d5db"
+                      title={stat.label}
+                      value={stat.stat}
                     />
-                    <div className="flex items-center pt-1 pl-1">
-                      {error.totalCarry && (
-                        <p className="h-full text-pink-400 text-xs pr-1">{error.totalCarry}</p>
-                      )}
-                    </div>
-                    <div className="pb-1 pl-1 flex items-center">
-                      <label htmlFor="totalDistance" className="text-lg mr-1">
-                        Total Distance{" "}
-                        <span className="text-xs">
-                          (<span className="ml-[2px] mr-[2px]">yards</span>)
-                        </span>
-                      </label>
-                    </div>
-                    <input
-                      name="totalDistance"
-                      value={shot.totalDistance}
-                      onChange={onInputChange}
-                      className={`${
-                        error.totalDistance
-                          ? `bg-dark-200   w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                          : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
-                      }`}
-                    />
-                    <div className="flex items-center pt-1 pl-1 pb-4">
-                      {error.totalDistance && (
-                        <p className="h-full text-pink-400 text-xs pr-1">{error.totalDistance}</p>
-                      )}
-                    </div>
-                    <button
-                      disabled={isAddShotDisabled()}
-                      type="submit"
-                      onClick={handleAddShot}
-                      className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 ">
-                      Add Shot
-                    </button>
-                  </form>
+                  );
+                })}
+              </ul>
+              <Header>
+                <H2 styles={"mt-10"}>Shots</H2>
+                <ButtonSmall styles={"ml-10"} color={"teal"}>
+                  Add Shot
+                </ButtonSmall>
+              </Header>
 
-                  <div className="w-full flex items-center pb-2 lg:justify-center ">
-                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="#d1d5db" />
-                    </div>
-                    <div className="pl-5">
-                      <p className="text-gray-400 text-sm">Avg Total Distance</p>
-                      <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{avgTotalDistance}</span>
-                      </div>
-                    </div>
+              {isLoading ? (
+                <div>Loading</div>
+              ) : (
+                <>
+                  <Card>
+                    <form className="">
+                      {/* <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="totalCarry" className="text-lg mr-1">
+                      Total Carry{" "}
+                      <span className="text-xs">
+                        (<span className="ml-[2px] mr-[2px]">yards</span>)
+                      </span>
+                    </label>
                   </div>
-                  <div className="w-full flex items-center pb-2 lg:justify-center ">
-                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="#d1d5db" />
-                    </div>
-                    <div className="pl-5">
-                      <p className="text-gray-400 text-sm">Avg Carry Distance</p>
-                      <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{avgTotalCarry}</span>
-                      </div>
-                    </div>
+                  <input
+                    name="totalCarry"
+                    value={shot.totalCarry}
+                    onChange={onInputChange}
+                    className={`${
+                      error.totalCarry
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-red-100 focus:outline-none focus:border-blue-100`
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-100`
+                    }`}
+                  />
+                  <div className="flex items-center pt-1 pl-1">
+                    {error.totalCarry && (
+                      <p className="h-full text-red-100 text-xs pr-1">{error.totalCarry}</p>
+                    )}
                   </div>
-                  <div className="w-full flex items-center pb-2 lg:justify-center">
-                    <div className="w-[75px] h-[75px]  flex justify-center items-center rounded-md">
-                      <GiGolfTee size={40} color="#d1d5db" />
-                    </div>
-                    <div className="pl-5">
-                      <p className="text-gray-400 text-sm">Total Shots</p>
-                      <div className="text-blue-400 text-xl font-bold flex">
-                        <span>{club.shots.length}</span>
-                      </div>
-                    </div>
+                  <div className="pb-1 pl-1 flex items-center">
+                    <label htmlFor="totalDistance" className="text-lg mr-1">
+                      Total Distance{" "}
+                      <span className="text-xs">
+                        (<span className="ml-[2px] mr-[2px]">yards</span>)
+                      </span>
+                    </label>
                   </div>
-                </div>
-                <H2>Shots</H2>
-                {isLoading ? (
-                  <div>Loading</div>
-                ) : (
+                  <input
+                    name="totalDistance"
+                    value={shot.totalDistance}
+                    onChange={onInputChange}
+                    className={`${
+                      error.totalDistance
+                        ? `bg-dark-200   w-full p-3 rounded-md border-2 border-red-100 focus:outline-none focus:border-blue-100`
+                        : `bg-dark-200   w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-100`
+                    }`}
+                  />
+                  <div className="flex items-center pt-1 pl-1 pb-4">
+                    {error.totalDistance && (
+                      <p className="h-full text-red-100 text-xs pr-1">{error.totalDistance}</p>
+                    )}
+                  </div>
+                  <button
+                    disabled={isAddShotDisabled()}
+                    type="submit"
+                    onClick={handleAddShot}
+                    className="px-4 py-2 text-sm font-medium rounded-md shadow-sm text-gray-100 bg-blue-100 hover:bg-blue-200 ">
+                    Add Shot
+                  </button> */}
+                    </form>
+                  </Card>
                   <ShotList>
                     {club.shots.map((shot) => {
                       return (
@@ -290,18 +291,19 @@ const Club = () => {
                           setClub={setClub}
                           shot={shot}
                           club={club}
+                          updateClubStats={updateClubStats}
                           setAvgCarryDistance={setAvgCarryDistance}
                           setAvgTotalDistance={setAvgTotalDistance}
                         />
                       );
                     })}
                   </ShotList>
-                )}
-              </div>
+                </>
+              )}
             </>
           )}
-        </div>
-      </div>
+        </Container>
+      </Main>
     </>
   );
 };

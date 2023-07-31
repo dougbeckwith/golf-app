@@ -3,8 +3,8 @@ import React from "react";
 const StatSmall = ({ label, value }) => {
   return (
     <div>
-      <p className="text-gray-400 text-sm">{label}</p>
-      <p className="text-blue-400 text-md font-bold">{value}</p>
+      <p className="text-gray-100 text-sm">{label}</p>
+      <p className="text-blue-100 text-md font-bold">{value}</p>
     </div>
   );
 };

@@ -135,7 +135,7 @@ const EditClub = () => {
 
   return (
     <>
-      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-500">
+      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-200">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-center pb-4 text-lg md:text-2xl">Edit Club</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
@@ -154,14 +154,14 @@ const EditClub = () => {
                     onChange={onInputChange}
                     className={`${
                       error.name
-                        ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600  w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                        : `bg-dark-200  placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                        ? `bg-dark-200 placeholder-opacity-30 placeholder-gray-600  w-full p-3 rounded-md border-2 border-red-100 focus:outline-none focus:border-blue-100`
+                        : `bg-dark-200  placeholder-opacity-30 placeholder-gray-600 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-100`
                     }`}
                     value={input.name}
                   />
                 </div>
                 <div className="flex items-center pt-1 pl-1">
-                  {error.name && <p className="h-full text-pink-400 text-xs pr-1">{error.name}</p>}
+                  {error.name && <p className="h-full text-red-100 text-xs pr-1">{error.name}</p>}
                 </div>
                 <div className="pt-2">
                   <div className="pb-1 pl-1 flex items-center">
@@ -177,30 +177,28 @@ const EditClub = () => {
                     placeholder="TaylorMade"
                     className={`${
                       error.brand
-                        ? `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-pink-400 focus:outline-none focus:border-blue-400`
-                        : `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-400`
+                        ? `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-red-100 focus:outline-none focus:border-blue-100`
+                        : `bg-dark-200 placeholder-gray-600 placeholder-opacity-30 w-full p-3 rounded-md border-2 border-dark-200 focus:outline-none focus:border-blue-100`
                     }`}
                     value={input.brand}
                   />
                 </div>
                 <div className="flex items-center pt-1 pl-1">
-                  {error.brand && (
-                    <p className="h-full text-pink-400 text-xs pr-1">{error.brand}</p>
-                  )}
+                  {error.brand && <p className="h-full text-red-100 text-xs pr-1">{error.brand}</p>}
                 </div>
                 <button
                   type="submit"
                   disabled={isUpdateClubButtonDisabled()}
                   onClick={handleUpdateClub}
-                  className="mt-10 w-full text-gray-400 bg-blue-400 py-3 rounded-md hover:bg-blue-300">
+                  className="mt-10 w-full text-gray-100 bg-blue-100 py-3 rounded-md hover:bg-blue-200">
                   Update
                 </button>
                 <button
                   onClick={handleNavToClub}
-                  className="mt-4 w-full btn bg-gray-500 text-dark-500 py-3 rounded-md hover:bg-gray-600">
+                  className="mt-4 w-full btn bg-gray-200 text-dark-500 py-3 rounded-md hover:bg-gray-600">
                   Cancel
                 </button>
-                {serverError && <p className="text-pink-400 text-sm pt-1 pr-1">{serverError}</p>}
+                {serverError && <p className="text-red-100 text-sm pt-1 pr-1">{serverError}</p>}
                 <div className="flex w-full justify-center items-center pt-4"></div>
               </form>
             )}

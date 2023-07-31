@@ -12,6 +12,7 @@ import InputForm from "../components/InputForm";
 import PuttingRounds from "../components/PuttingRounds";
 import Main from "../components/Main";
 import Container from "../components/Container";
+import H1 from '../components/HeadingOne'
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -99,10 +100,14 @@ const Puts = () => {
     }
   };
 
+  const lastThirtyPuts = (putsData) => {
+    return putsData.slice(putsData.length - 30, putsData.length)
+  }
+
   const handleGetPutsSuccess = async (response) => {
     const putsData = await response.json();
     setPutData(putsData);
-    setChartData(putsData.slice(putsData.length - 30, putsData.length));
+    setChartData(lastThirtyPuts(putsData));
     if (putsData.length !== 0) {
       setAvgPutsPerRound(getAveragePutsPerRound(putsData));
     }
@@ -204,7 +209,9 @@ const Puts = () => {
     <>
       <Main>
         <Container>
-          <Header>Puts</Header>
+          <Header>
+            <H1>Puts</H1>
+          </Header>
           {isLoading && <Loader isLoading={isLoading} text={"Loading Puts"} />}
           {!isLoading && (
             <>

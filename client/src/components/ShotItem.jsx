@@ -6,7 +6,7 @@ import ShotIcon from "./ShotIcon";
 import Button from "./Button"; // Make sure to import the Button component
 import StatSmall from "./StatSmall";
 
-const ShotItem = ({ setClub, setAvgTotalDistance, setAvgCarryDistance, shot }) => {
+const ShotItem = ({ updateClubStats, setClub, setAvgTotalDistance, setAvgCarryDistance, shot }) => {
   const params = useParams();
   const id = params.id;
   const { authUser } = useContext(UserContext);
@@ -34,8 +34,7 @@ const ShotItem = ({ setClub, setAvgTotalDistance, setAvgCarryDistance, shot }) =
           club.shots = club.shots.filter((item) => {
             return item._id !== shot._id;
           });
-          setAvgCarryDistance(getAverageDistance(club, "totalCarry"));
-          setAvgTotalDistance(getAverageDistance(club, "totalDistance"));
+          updateClubStats(club);
           return club;
         });
       } else if (response.status === 400) {

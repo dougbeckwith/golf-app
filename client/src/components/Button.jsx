@@ -1,12 +1,9 @@
 import React from "react";
 
-const Button = ({ disabled, onClick, children, className }) => {
+const Button = ({ disabled, onClick, children, styles, color }) => {
+  const buttonStyles = `p-2 rounded-md shadow-sm text-gray-100 bg-${color}-100 hover:bg-${color}-200 cursor-pointer ${styles}`;
   return (
-    <button
-      disabled={disabled}
-      type="button"
-      onClick={onClick}
-      className={`w-full p-2 rounded-md shadow-sm text-gray-300 bg-blue-400 hover:bg-blue-300 cursor-pointer ${className}`}>
+    <button disabled={disabled} type="button" onClick={onClick} className={buttonStyles}>
       {children}
     </button>
   );

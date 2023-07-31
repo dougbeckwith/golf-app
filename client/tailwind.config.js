@@ -1,50 +1,53 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  safelist: [
+    "text-2xl",
+    "text-3xl",
+    {
+      pattern: /bg-(red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600)/
+    }
+  ],
   theme: {
+    screens: {
+      xs: "460px",
+      // => @media (min-width: 460px) { ... }
+
+      sm: "640px",
+      // => @media (min-width: 640px) { ... }
+
+      md: "768px",
+      // => @media (min-width: 768px) { ... }
+
+      lg: "1024px",
+      // => @media (min-width: 1024px) { ... }
+
+      xl: "1280px",
+      // => @media (min-width: 1280px) { ... }
+
+      "2xl": "1536px"
+      // => @media (min-width: 1536px) { ... }
+    },
     colors: {
-      dark: {
-        100: "#3e3e42",
-        200: "#2d2d30",
-        300: "#252526",
-        400: "#222222",
-        500: "#1E1E1E"
-      },
-      blue: {
-        100: "#38bdf8",
-        200: "#0ea5e9",
-        300: "#0790DB",
-        400: "#007acc"
+      red: {
+        100: "#be123c",
+        200: "#9f1239"
       },
       gray: {
-        100: "#f9fafb",
-        200: "#f3f4f6",
-        300: "#e5e7eb",
-        400: "#d1d5db",
-        500: "#9ca3af",
-        600: "#848B98",
-        700: "#6b7280"
+        100: "#d1d5db",
+        200: "#9ca3af"
       },
-      purple: {
-        100: "#e1bee7",
-        200: "#ce93d8",
-        300: "#ba68c8"
+      dark: {
+        100: "#222222",
+        200: "#1E1E1E"
       },
-      pink: {
-        100: "#f8bbd0",
-        200: "#f48fb1",
-        300: "#f06292",
-        400: "#ec407a",
-        500: "#e91e63"
+      blue: {
+        300: "#0790DB",
+        100: "#007acc"
       },
-      red: {
-        400: "#ff1744"
-      },
-      green: {
-        500: "#0E9F6E"
-      },
-      relaxRed: "#D2686E",
-      redError: "#ff0000"
-      // ...
+      teal: {
+        100: "#0d9488",
+        200: "#6ee7b7"
+      }
     },
     extend: {}
   },
