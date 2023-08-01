@@ -9,7 +9,7 @@ import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
 import H2 from "../components/HeadingTwo";
-import Loader from "../components/Loader";
+import Loader from "../components/Spinner";
 import Main from "../components/Main";
 import Container from "../components/Container";
 import H1 from "../components/HeadingOne";
@@ -19,6 +19,12 @@ import Card from "../components/Card";
 import ButtonSmall from "../components/ButtonSmall";
 import StatsSection from "../components/StatsSection";
 import StatCard from "../components/StatCard";
+import Spinner from "../components/Spinner";
+import InputLabel from "../components/InputLabel";
+import InputField from "../components/InputField";
+import ServerError from "../components/ServerError";
+import InputError from "../components/InputError";
+import InputWrapper from "../components/InputWrapper";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -180,6 +186,17 @@ const Club = () => {
     return false;
   };
 
+  // const formFields = [
+  //   {
+  //     name: "shot",
+  //     label: "Shot",
+  //     onChange: onInputChange,
+  //     innerRef: null,
+  //     value: input.shot,
+  //     type: "text"
+  //   }
+  // ];
+
   return (
     <>
       <Main>
@@ -222,12 +239,34 @@ const Club = () => {
                 </ButtonSmall>
               </Header>
 
-              {isLoading ? (
-                <div>Loading</div>
-              ) : (
+              {isLoading && <Spinner isLoading={isLoading} text={"Loading Clubs"} />}
+              {!isLoading && (
                 <>
                   <Card>
-                    <form className="">
+                    <form>
+                      <InputWrapper>
+                        <InputLabel htmlFor={"shot"} className="mb-1 ml-1 mr-1 inline-block">
+                          Shot
+                        </InputLabel>
+
+                        <InputField
+                          name="shot"
+                          type="text"
+                          value={input.shot}
+                          onChange={onInputChange}>
+                          {shot.shot}
+                        </InputField>
+                        {error.shot && <InputError>{error.shot}</InputError>}
+                      </InputWrapper>
+
+                      {serverError && <ServerError>{serverError}</ServerError>}
+                      <Button
+                        color="teal"
+                        styles="mt-7 w-full"
+                        onClick={handleAddShot}
+                        disabled={isAddShotDisabled()}>
+                        Add Shot
+                      </Button>
                       {/* <div className="pb-1 pl-1 flex items-center">
                     <label htmlFor="totalCarry" className="text-lg mr-1">
                       Total Carry{" "}

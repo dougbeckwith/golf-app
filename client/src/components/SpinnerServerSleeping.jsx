@@ -1,7 +1,7 @@
 import React from "react";
-import Loader from "./Loader";
+import Loader from "./Spinner";
 
-const ServerSleep = ({ isLoading, text, children }) => {
+const SpinnerServerSleeping = ({ isLoading, text, children }) => {
   return (
     <div className="pb-10 text-gray-200">
       <Loader isLoading={isLoading} text={text} />
@@ -11,4 +11,4 @@ const ServerSleep = ({ isLoading, text, children }) => {
   );
 };
 
-export default ServerSleep;
+export default SpinnerServerSleeping;

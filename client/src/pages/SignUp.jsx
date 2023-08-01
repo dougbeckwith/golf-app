@@ -4,13 +4,16 @@ import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import Fetch from "../helpers/fetch";
 import UserContext from "../context/UserContext";
 import H1 from "../components/HeadingOne";
-import AccountFooter from "../components/AccountFooter";
+import AccountFooter from "../components/FormFooter";
 import Button from "../components/Button";
 import InputLabel from "../components/InputLabel";
 import InputField from "../components/InputField";
 import ServerError from "../components/ServerError";
-import ServerSleep from "../components/ServerSleep";
+import ServerSleep from "../components/SpinnerServerSleeping";
 import InputError from "../components/InputError";
+import FormCard from "../components/FormCard";
+import InputWrapper from "../components/InputWrapper";
+import FormContainer from "../components/FormContainer";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -171,53 +174,51 @@ const SignUp = () => {
     }
   ];
   return (
-    <>
-      <div className="px-3 mt-5 md:mt-10 w-full flex flex-col justify-center items-center ">
-        <H1 className="mb-2 text-blue-300">Club Stats</H1>
-        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-100  sm:max-w-none w-full sm:w-[450px] sm:px-7 sm:py-3">
-          {isLoading ? (
-            <ServerSleep isLoading={isLoading} text={"Signing Up"}>
-              Please allow 30 seconds to Sign Up.
-            </ServerSleep>
-          ) : (
-            <form>
-              {formFields.map((item, index) => {
-                return (
-                  <div key={index} className="mt-2">
-                    <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
-                      {item.label}
-                    </InputLabel>
-                    {isInputValid(item) && (
-                      <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
-                    )}
-                    <InputField
-                      name={item.name}
-                      type={item.type}
-                      value={input[item.name]}
-                      onChange={onInputChange}
-                      innerRef={item.innerRef}>
-                      {input[item.name]}
-                    </InputField>
-                    {error && <InputError>{error[item.name]}</InputError>}
-                  </div>
-                );
-              })}
-              {serverError && <ServerError>{serverError}</ServerError>}
-              <Button
-                color="blue"
-                styles="mt-7 w-full"
-                onClick={createUser}
-                disabled={isSignUpButtonDisabled()}>
-                Sign Up
-              </Button>
-              <AccountFooter text={"Already have an account?"} to={"/signin"}>
-                Sign In
-              </AccountFooter>
-            </form>
-          )}
-        </div>
-      </div>
-    </>
+    <FormContainer>
+      <H1>Club Stats</H1>
+      <FormCard>
+        {isLoading ? (
+          <ServerSleep isLoading={isLoading} text={"Signing Up"}>
+            Please allow 30 seconds to Sign Up.
+          </ServerSleep>
+        ) : (
+          <form>
+            {formFields.map((item, index) => {
+              return (
+                <InputWrapper key={index}>
+                  <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
+                    {item.label}
+                  </InputLabel>
+                  {isInputValid(item) && (
+                    <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
+                  )}
+                  <InputField
+                    name={item.name}
+                    type={item.type}
+                    value={input[item.name]}
+                    onChange={onInputChange}
+                    innerRef={item.innerRef}>
+                    {input[item.name]}
+                  </InputField>
+                  {error && <InputError>{error[item.name]}</InputError>}
+                </InputWrapper>
+              );
+            })}
+            {serverError && <ServerError>{serverError}</ServerError>}
+            <Button
+              color="blue"
+              styles="mt-7 w-full"
+              onClick={createUser}
+              disabled={isSignUpButtonDisabled()}>
+              Sign Up
+            </Button>
+            <AccountFooter text={"Already have an account?"} to={"/signin"}>
+              Sign In
+            </AccountFooter>
+          </form>
+        )}
+      </FormCard>
+    </FormContainer>
   );
 };
 

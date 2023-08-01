@@ -6,7 +6,7 @@ import ClubList from "../components/ClubList";
 import { sortClubsByDistance } from "../helpers";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
-import Loader from "../components/Loader";
+import Spinner from "../components/Spinner";
 import Main from "../components/Main";
 import Container from "../components/Container";
 import H1 from "../components/HeadingOne";
@@ -134,7 +134,7 @@ const Clubs = () => {
               <Button color={"teal"}>Add Club</Button>
             </Link>
           </Header>
-          {isLoading && <Loader isLoading={isLoading} text={"Loading Clubs"} />}
+          {isLoading && <Spinner isLoading={isLoading} text={"Loading Clubs"} />}
           {!isLoading && (
             <>
               <select
@@ -142,9 +142,9 @@ const Clubs = () => {
                 id="clubs"
                 onChange={handleFilterShotsBy}
                 value={filterShotsBy}
-                className="bg-dark-200 text-gray-100 rounded-md px-2 py-[4px] cursor-pointer">
-                <option value="totalDistance">Total Distance</option>
-                <option value="totalCarry">Carry Distance</option>
+                className="bg-dark-200 border-teal-200 rounded-md px-2 py-[4px] outline-none text-gray-100 border-2 cursor-pointer">
+                <option value="totalDistance">Total Distances</option>
+                <option value="totalCarry">Carry Distances</option>
               </select>
               {sortedClubs.length !== 0 ? (
                 <ClubList>

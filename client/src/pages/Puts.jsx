@@ -5,14 +5,14 @@ import UserContext from "../context/UserContext";
 import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
 import Header from "../components/HeadingOne";
-import Loader from "../components/Loader";
+import Loader from "../components/Spinner";
 import ChartSection from "../components/ChartSection";
 import StatsSection from "../components/StatsSection";
 import InputForm from "../components/InputForm";
 import PuttingRounds from "../components/PuttingRounds";
 import Main from "../components/Main";
 import Container from "../components/Container";
-import H1 from '../components/HeadingOne'
+import H1 from "../components/HeadingOne";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -101,8 +101,8 @@ const Puts = () => {
   };
 
   const lastThirtyPuts = (putsData) => {
-    return putsData.slice(putsData.length - 30, putsData.length)
-  }
+    return putsData.slice(putsData.length - 30, putsData.length);
+  };
 
   const handleGetPutsSuccess = async (response) => {
     const putsData = await response.json();

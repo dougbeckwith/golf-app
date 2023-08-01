@@ -4,7 +4,16 @@ module.exports = {
     "text-2xl",
     "text-3xl",
     {
-      pattern: /bg-(fuchsia|red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600|700)/
+      pattern: /text-(fuchsia|red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600|700)/,
+      variants: ["hover"]
+    },
+    {
+      pattern: /bg-(fuchsia|red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600|700)/,
+      variants: ["hover"]
+    },
+    {
+      pattern: /border-(fuchsia|red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600|700)/,
+      variants: ["select", "md:"]
     }
   ],
   theme: {
@@ -30,11 +39,13 @@ module.exports = {
     colors: {
       red: {
         100: "#f43f5e",
-        200: "#e11d48"
+        200: "#be123c",
+        300: "#9f1239"
       },
       gray: {
-        100: "#d1d5db",
-        200: "#9ca3af"
+        100: "#e5e7eb",
+        200: "#d1d5db",
+        300: "#9ca3af"
       },
       green: {
         100: "#059669"
@@ -49,16 +60,25 @@ module.exports = {
         300: "#1E1E1E"
       },
 
+      // blue: {
+      //   100: "#007acc",
+      //   200: "#0790DB",
+      //   300: "#0369a1",
+      //   400: "#015187",
+      //   500: "#011c2e"
+      // },
+
       blue: {
-        100: "#007acc",
-        200: "#0790DB",
+        100: "#0ea5e9",
+        200: "#0284c7",
         300: "#0369a1",
-        400: "#015187",
-        500: "#011c2e"
+        400: "#075985"
       },
+
       teal: {
-        100: "#0f766e",
-        200: "#115e59"
+        100: "#0d9488",
+        200: "#0f766e",
+        300: "#115e59"
       },
       fuchsia: {
         700: "#a21caf"

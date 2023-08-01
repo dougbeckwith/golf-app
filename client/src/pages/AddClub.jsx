@@ -1,17 +1,30 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import Fetch from "../helpers/fetch";
+import H1 from "../components/HeadingOne";
+import AccountFooter from "../components/FormFooter";
+import Button from "../components/Button";
+import InputLabel from "../components/InputLabel";
+import InputField from "../components/InputField";
+import ServerError from "../components/ServerError";
+import ServerSleep from "../components/SpinnerServerSleeping";
+import InputError from "../components/InputError";
 
 const AddClub = () => {
   const navigate = useNavigate();
   const { authUser } = useContext(UserContext);
+  const clubInputRef = useRef(null);
   const [isLoading, setIsloading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ name: "", brand: "" });
   const [input, setInput] = useState({ name: "", brand: "", user: authUser._id });
+
+  useEffect(() => {
+    clubInputRef.current.focus();
+  }, []);
 
   const handleAddClubError = async (response) => {
     const { err } = await response.json();
@@ -53,7 +66,7 @@ const AddClub = () => {
       const stateObj = { ...prev, [name]: "" };
 
       switch (name) {
-        case "club":
+        case "name":
           if (!value) {
             stateObj[name] = "Please enter a club.";
           }
@@ -97,6 +110,13 @@ const AddClub = () => {
     });
   };
 
+  const isInputValid = (item) => {
+    if (error[item.name].length === 0 && input[item.name].length !== 0 && !serverError) {
+      return true;
+    }
+    return false;
+  };
+
   const isAddClubDisabled = () => {
     if (isLoading) return true;
     if (error.name || error.brand) return true;
@@ -108,9 +128,28 @@ const AddClub = () => {
     navigate("/clubs");
   };
 
+  const formFields = [
+    {
+      name: "name",
+      label: "Club",
+      onChange: onInputChange,
+      innerRef: clubInputRef,
+      value: input.name,
+      type: "text"
+    },
+    {
+      name: "brand",
+      label: "Brand",
+      onChange: onInputChange,
+      innerRef: null,
+      value: input.brand,
+      type: "text"
+    }
+  ];
+
   return (
     <>
-      <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-200">
+      {/* <div className="min-h-max bg-dark-500 flex pt-10 sm:pt-10 justify-center text-gray-200">
         <div className="container max-w-[600px]">
           <h2 className="w-full text-gray-100 text-center pb-4 text-2xl md:text-4xl">Add Club</h2>
           <div className="sm:bg-dark-400  px-3 py-4 md:px-6 md:py-8 sm:rounded-lg w-full">
@@ -189,6 +228,51 @@ const AddClub = () => {
               <div className="flex w-full justify-center items-center pt-4"></div>
             </form>
           </div>
+        </div>
+      </div> */}
+      <div className="px-3 mt-5 md:mt-10 w-full flex flex-col justify-center items-center ">
+        <H1>Add Club</H1>
+        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-100  sm:max-w-none w-full sm:w-[450px] sm:px-7 sm:py-3">
+          {isLoading ? (
+            <ServerSleep isLoading={isLoading} text={"Signing Up"}>
+              Please allow 30 seconds to Sign Up.
+            </ServerSleep>
+          ) : (
+            <form>
+              {formFields.map((item, index) => {
+                return (
+                  <div key={index} className="mt-2">
+                    <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
+                      {item.label}
+                    </InputLabel>
+                    {isInputValid(item) && (
+                      <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
+                    )}
+                    <InputField
+                      name={item.name}
+                      type={item.type}
+                      value={input[item.name]}
+                      onChange={onInputChange}
+                      innerRef={item.innerRef}>
+                      {input[item.name]}
+                    </InputField>
+                    {error && <InputError>{error[item.name]}</InputError>}
+                  </div>
+                );
+              })}
+              {serverError && <ServerError>{serverError}</ServerError>}
+              <Button
+                color="blue"
+                styles="mt-7 w-full"
+                onClick={handleAddClub}
+                disabled={isAddClubDisabled()}>
+                Sign Up
+              </Button>
+              <AccountFooter text={"Already have an account?"} to={"/signin"}>
+                Sign In
+              </AccountFooter>
+            </form>
+          )}
         </div>
       </div>
     </>

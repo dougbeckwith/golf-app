@@ -2,7 +2,7 @@ import React from "react";
 import BarLoader from "react-spinners/BarLoader";
 import H2 from "./HeadingTwo";
 
-const Loader = ({ isLoading, text }) => {
+const Spinner = ({ isLoading, text }) => {
   return (
     <>
       <H2>{text}</H2>
@@ -18,4 +18,4 @@ const Loader = ({ isLoading, text }) => {
   );
 };
 
-export default Loader;
+export default Spinner;

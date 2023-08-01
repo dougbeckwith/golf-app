@@ -24,7 +24,7 @@ const ClubItem = ({ club, handleClick, longestShot, filterShotsBy }) => {
         </div>
         <div
           style={{ width: widthPercentage }}
-          className={`mr-auto bg-gradient-to-r from-dark-100 to-blue-400 rounded-full h-4 mb-1 dark:bg-gray-700`}></div>
+          className={`mr-auto bg-gradient-to-r from-dark-100 to-blue-300 rounded-full h-4 mb-1`}></div>
       </div>
     </>
   );

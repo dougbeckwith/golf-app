@@ -59,7 +59,7 @@ const Navbar = () => {
         <ul
           id="nav"
           onClick={toggleIcon}
-          className=" text-2xl absolute md:hidden top-[90px] left-0 w-full h-screen bg-dark-500 flex flex-col items-center z-10">
+          className=" text-2xl absolute md:hidden top-[70px] left-0 w-full h-screen bg-dark-300 flex flex-col items-center z-10">
           <li className=" px-3 font-medium py-10">
             <NavLink
               className="text-gray-200   hover:text-teal-100 px-3 py-2 rounded-md"
