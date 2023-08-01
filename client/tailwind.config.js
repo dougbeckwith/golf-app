@@ -4,7 +4,7 @@ module.exports = {
     "text-2xl",
     "text-3xl",
     {
-      pattern: /bg-(red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600)/
+      pattern: /bg-(fuchsia|red|green|blue|pink|gray|dark|teal)-(100|200|300|400|500|600|700)/
     }
   ],
   theme: {
@@ -29,24 +29,39 @@ module.exports = {
     },
     colors: {
       red: {
-        100: "#be123c",
-        200: "#9f1239"
+        100: "#f43f5e",
+        200: "#e11d48"
       },
       gray: {
         100: "#d1d5db",
         200: "#9ca3af"
       },
-      dark: {
-        100: "#222222",
-        200: "#1E1E1E"
+      green: {
+        100: "#059669"
       },
+      // dark: {
+      //   100: "#222222",
+      //   200: "#1E1E1E"
+      // },
+      dark: {
+        100: "#27272a",
+        200: "#222222",
+        300: "#1E1E1E"
+      },
+
       blue: {
-        300: "#0790DB",
-        100: "#007acc"
+        100: "#007acc",
+        200: "#0790DB",
+        300: "#0369a1",
+        400: "#015187",
+        500: "#011c2e"
       },
       teal: {
-        100: "#0d9488",
-        200: "#6ee7b7"
+        100: "#0f766e",
+        200: "#115e59"
+      },
+      fuchsia: {
+        700: "#a21caf"
       }
     },
     extend: {}

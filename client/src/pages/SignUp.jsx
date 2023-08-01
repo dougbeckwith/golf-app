@@ -172,9 +172,9 @@ const SignUp = () => {
   ];
   return (
     <>
-      <div className="px-3 mt-10 w-full flex flex-col justify-center items-center ">
-        <H1 className="mb-2">Club Stats</H1>
-        <div className=" rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
+      <div className="px-3 mt-5 md:mt-10 w-full flex flex-col justify-center items-center ">
+        <H1 className="mb-2 text-blue-300">Club Stats</H1>
+        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-100  sm:max-w-none w-full sm:w-[450px] sm:px-7 sm:py-3">
           {isLoading ? (
             <ServerSleep isLoading={isLoading} text={"Signing Up"}>
               Please allow 30 seconds to Sign Up.
@@ -188,7 +188,7 @@ const SignUp = () => {
                       {item.label}
                     </InputLabel>
                     {isInputValid(item) && (
-                      <IoCheckmarkCircleOutline className={"text-green-500 inline-block"} />
+                      <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
                     )}
                     <InputField
                       name={item.name}
@@ -203,7 +203,11 @@ const SignUp = () => {
                 );
               })}
               {serverError && <ServerError>{serverError}</ServerError>}
-              <Button className="mt-10" onClick={createUser} disabled={isSignUpButtonDisabled()}>
+              <Button
+                color="blue"
+                styles="mt-7 w-full"
+                onClick={createUser}
+                disabled={isSignUpButtonDisabled()}>
                 Sign Up
               </Button>
               <AccountFooter text={"Already have an account?"} to={"/signin"}>

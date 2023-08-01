@@ -131,7 +131,7 @@ const Clubs = () => {
           <Header>
             <H1>Club Distances</H1>
             <Link to="/clubs/new" className="ml-auto">
-              <Button color={"blue"}>Add Club</Button>
+              <Button color={"teal"}>Add Club</Button>
             </Link>
           </Header>
           {isLoading && <Loader isLoading={isLoading} text={"Loading Clubs"} />}

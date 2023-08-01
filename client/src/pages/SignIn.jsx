@@ -36,7 +36,7 @@ const SignIn = () => {
       if (response.status === 200) {
         handleSignInSuccess();
       } else {
-        handleSignInError(response);
+        handleSignInError(response, credentials);
       }
       setIsloading(false);
     } catch (error) {
@@ -44,7 +44,7 @@ const SignIn = () => {
     }
   };
 
-  const handleSignInError = async (response) => {
+  const handleSignInError = async (response, credentials) => {
     const { err } = await response.json();
     setServerError(err.message);
   };
@@ -93,9 +93,9 @@ const SignIn = () => {
 
   return (
     <>
-      <div className="px-3 mt-10 w-full flex flex-col justify-center items-center ">
-        <H1 className="mb-2">Club Stats</H1>
-        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-200  sm:max-w-none w-full sm:w-[500px] sm:p-7">
+      <div className="px-3 mt-5 md:mt-10 w-full flex flex-col justify-center items-center ">
+        <H1 className="mb-2 text-blue-300">Club Stats</H1>
+        <div className="rounded-md max-w-[400px] sm:mt-5 sm:border-2 sm:border-dark-100  sm:max-w-none w-full sm:w-[450px] sm:px-7 sm:py-3">
           {isLoading ? (
             <ServerSleep isLoading={isLoading} text={"Signing In"}>
               Please allow 30 seconds to Sign In.
@@ -111,14 +111,18 @@ const SignIn = () => {
                     <InputField
                       name={item.name}
                       type={item.type}
-                      value={item.email}
+                      value={input[item.name]}
                       onChange={onInputChange}
                       innerRef={item.innerRef}></InputField>
                   </div>
                 );
               })}
               {serverError && <ServerError>{serverError}</ServerError>}
-              <Button className="mt-10" color={'blue'} onClick={handleSignIn} disabled={isSignUpButtonDisabled()}>
+              <Button
+                styles="mt-7 w-full"
+                color={"blue"}
+                onClick={handleSignIn}
+                disabled={isSignUpButtonDisabled()}>
                 Sign in
               </Button>
               <AccountFooter text={"Need an account?"} to={"/signup"}>

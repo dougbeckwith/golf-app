@@ -16,14 +16,14 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full h-[70px] bg-dark-500 text-sm border-b-2 border-dark-100">
+    <nav className="w-full h-[60px] bg-dark-500 text-xs border-b-2 border-dark-100">
       <div className="h-full mx-auto flex  items-center px-3 sm:px-0">
         <p className="sm:pl-4 text-xl  font-semibold text-blue-100">Golf Stats</p>
         {/* Desktop Links */}
         <ul id="nav" className="hidden md:flex">
           <li className="font-medium py-10 ml-2">
             <NavLink
-              className="text-gray-100  hover:bg-dark-200 hover:text-white ml-8 px-3 py-1 rounded-md"
+              className="text-gray-200   hover:text-teal-100 ml-8 px-3 py-1 rounded-md"
               to="/clubs"
               end>
               Clubs
@@ -31,7 +31,7 @@ const Navbar = () => {
           </li>
           <li className=" px-3 font-medium py-10">
             <NavLink
-              className="text-gray-100  hover:bg-dark-200 hover:text-white px-3 py-1 rounded-md"
+              className="text-gray-200   hover:text-teal-100 px-3 py-1 rounded-md"
               to="/puts">
               Puts
             </NavLink>
@@ -40,7 +40,7 @@ const Navbar = () => {
         <button className=" px-3 font-medium py-10 ml-auto hidden md:block">
           <NavLink
             onClick={handleSignOut}
-            className="text-gray-100  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
+            className="text-gray-200   hover:text-teal-100 px-3 py-2 rounded-md"
             to="/">
             Logout
           </NavLink>
@@ -62,14 +62,14 @@ const Navbar = () => {
           className=" text-2xl absolute md:hidden top-[90px] left-0 w-full h-screen bg-dark-500 flex flex-col items-center z-10">
           <li className=" px-3 font-medium py-10">
             <NavLink
-              className="text-gray-100  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
+              className="text-gray-200   hover:text-teal-100 px-3 py-2 rounded-md"
               to="/clubs">
               Clubs
             </NavLink>
           </li>
           <li className=" px-3 font-medium py-10">
             <NavLink
-              className="text-gray-100  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
+              className="text-gray-200   hover:text-teal-100 px-3 py-2 rounded-md"
               to="/puts">
               Puts
             </NavLink>
@@ -78,7 +78,7 @@ const Navbar = () => {
           <li className=" px-3 font-medium py-10">
             <NavLink
               onClick={handleSignOut}
-              className="text-gray-100  hover:bg-dark-200 hover:text-white px-3 py-2 rounded-md"
+              className="text-gray-200   hover:text-teal-100 px-3 py-2 rounded-md"
               to="/">
               Logout
             </NavLink>
