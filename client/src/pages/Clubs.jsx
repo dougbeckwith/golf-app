@@ -124,6 +124,12 @@ const Clubs = () => {
     navigate(`/clubs/${id}`);
   };
 
+  const doClubsHaveNoShots = () => {
+    if (sortedClubs.length === 0) return true;
+    if (sortedClubs[0].shots.length === 0) return true;
+    return false;
+  };
+
   return (
     <>
       <Main>
@@ -131,40 +137,56 @@ const Clubs = () => {
           <Header>
             <H1>Club Distances</H1>
             <Link to="/clubs/new" className="ml-auto">
-              <Button color={"teal"}>Add Club</Button>
+              {sortedClubs.length !== 0 && <Button color={"blue"}>Add Club</Button>}
             </Link>
           </Header>
+          {!doClubsHaveNoShots() && sortedClubs.length !== 0 && (
+            <select
+              name="clubs"
+              id="clubs"
+              onChange={handleFilterShotsBy}
+              value={filterShotsBy}
+              className="bg-dark-200 border-gray-300 rounded-md px-2 py-[4px] outline-none text-gray-100 border-2 cursor-pointer">
+              <option value="totalDistance">Avg Total</option>
+              <option value="totalCarry">Avg Carry</option>
+            </select>
+          )}
+          {sortedClubs.length && sortedClubs[0].shots.length === 0 ? (
+            <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
+              <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                Add some shots to your first club
+              </h1>
+              <Link to={`/clubs/${sortedClubs[0]._id}`}>
+                <Button color={"blue"}>Add Shots</Button>
+              </Link>
+            </div>
+          ) : (
+            <></>
+          )}
           {isLoading && <Spinner isLoading={isLoading} text={"Loading Clubs"} />}
           {!isLoading && (
             <>
-              <select
-                name="clubs"
-                id="clubs"
-                onChange={handleFilterShotsBy}
-                value={filterShotsBy}
-                className="bg-dark-200 border-teal-200 rounded-md px-2 py-[4px] outline-none text-gray-100 border-2 cursor-pointer">
-                <option value="totalDistance">Total Distances</option>
-                <option value="totalCarry">Carry Distances</option>
-              </select>
               {sortedClubs.length !== 0 ? (
-                <ClubList>
-                  {sortedClubs.map((club) => (
-                    <ClubItem
-                      key={uuidv4()}
-                      club={club}
-                      handleClick={handleClick}
-                      filterShotsBy={filterShotsBy}
-                      longestShot={longestShot}
-                    />
-                  ))}
-                </ClubList>
+                <>
+                  <ClubList>
+                    {sortedClubs.map((club) => (
+                      <ClubItem
+                        key={uuidv4()}
+                        club={club}
+                        handleClick={handleClick}
+                        filterShotsBy={filterShotsBy}
+                        longestShot={longestShot}
+                      />
+                    ))}
+                  </ClubList>
+                </>
               ) : (
-                <div className="flex bg-dark-200 pb-5 flex-col justify-center items-center">
+                <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
                   <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                     Start by adding clubs to track.
                   </h1>
                   <Link to="/clubs/new">
-                    <Button color={"teal"}>Add Club</Button>
+                    <Button color={"blue"}>Add Club</Button>
                   </Link>
                 </div>
               )}

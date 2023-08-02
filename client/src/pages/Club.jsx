@@ -233,7 +233,7 @@ const Club = () => {
                 <>
                   <H2>Stats</H2>
                   <ClubStatsList clubStats={clubStats} />
-                  <H2 styles={"mt-10"}>Shots</H2>
+                  <H2 styles={"mt-10"}>Add Shots</H2>
                   <FormCard>
                     {formFields.map((item, index) => {
                       return (
@@ -263,6 +263,7 @@ const Club = () => {
                       Add Shot
                     </Button>
                   </FormCard>
+                  <H2 styles={"mt-10"}>Shots</H2>
                   <ShotList>
                     {club.shots.map((shot) => {
                       return (

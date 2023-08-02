@@ -5,7 +5,7 @@ const ClubStatsList = ({ clubStats }) => {
   return (
     <ul className="flex gap-2 flex-wrap mt-2 mb-6">
       {clubStats.map((stat, index) => {
-        return <StatCard key={index} iconColor="#d1d5db" title={stat.label} value={stat.stat} />;
+        return <StatCard key={index} iconColor="#9ca3af" title={stat.label} value={stat.stat} />;
       })}
     </ul>
   );
