@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useContext, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import Fetch from "../helpers/fetch";
 import H1 from "../components/HeadingOne";
 import Button from "../components/Button";
@@ -111,12 +110,13 @@ const AddClub = () => {
     });
   };
 
-  const isInputValid = (item) => {
-    if (error[item.name].length === 0 && input[item.name].length !== 0 && !serverError) {
-      return true;
-    }
-    return false;
-  };
+  // Might use this in the future for checking input errors
+  // const isInputValid = (item) => {
+  //   if (error[item.name].length === 0 && input[item.name].length !== 0 && !serverError) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   const isAddClubDisabled = () => {
     if (isLoading) return true;
