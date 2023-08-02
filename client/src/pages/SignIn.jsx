@@ -103,7 +103,7 @@ const SignIn = () => {
             Please allow 30 seconds to Sign In.
           </SpinnerServerSleeping>
         ) : (
-          <form>
+          <>
             {formFields.map((item, index) => {
               return (
                 <InputWrapper key={index}>
@@ -130,7 +130,7 @@ const SignIn = () => {
             <FormFooter text={"Need an account?"} to={"/signup"}>
               Sign Up
             </FormFooter>
-          </form>
+          </>
         )}
       </FormCard>
     </FormContainer>

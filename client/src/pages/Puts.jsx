@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
-import Header from "../components/HeadingOne";
+import Header from "../components/Header";
 import Loader from "../components/Spinner";
 import ChartSection from "../components/ChartSection";
 import StatsSection from "../components/StatsSection";

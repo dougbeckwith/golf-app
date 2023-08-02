@@ -159,13 +159,13 @@ const Clubs = () => {
                   ))}
                 </ClubList>
               ) : (
-                <div className="pb-10">
-                  <h1 className="text-gray-200 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                <div className="flex bg-dark-200 pb-5 flex-col justify-center items-center">
+                  <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
                     Start by adding clubs to track.
                   </h1>
-                  <p className="text-gray-200 pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-xl font-medium tracking-tight ">
-                    Record each shot you make to track your average total and carry distance.
-                  </p>
+                  <Link to="/clubs/new">
+                    <Button color={"teal"}>Add Club</Button>
+                  </Link>
                 </div>
               )}
             </>

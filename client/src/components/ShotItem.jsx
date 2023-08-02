@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import { getAverageDistance } from "../helpers";
 import ShotIcon from "./ShotIcon";
 import Button from "./Button"; // Make sure to import the Button component
 import StatSmall from "./StatSmall";
 
-const ShotItem = ({ updateClubStats, setClub, setAvgTotalDistance, setAvgCarryDistance, shot }) => {
+const ShotItem = ({ updateClubStats, setClub, shot }) => {
   const params = useParams();
   const id = params.id;
   const { authUser } = useContext(UserContext);
@@ -54,11 +53,13 @@ const ShotItem = ({ updateClubStats, setClub, setAvgTotalDistance, setAvgCarryDi
   };
 
   return (
-    <div className="flex justify-between gap-4 bg-dark-400 rounded-md py-2 px-4">
+    <div className="flex items-center justify-between gap-4 bg-dark-200 rounded-md py-2 px-4">
       <ShotIcon />
       <StatSmall label="Total" value={shot.totalDistance} />
       <StatSmall label="Carry" value={shot.totalCarry} />
-      <Button onClick={deleteShot}>Delete</Button>
+      <Button color={"gray"} styles={"h-[40px] text-dark-300 "} onClick={deleteShot}>
+        Delete
+      </Button>
     </div>
   );
 };

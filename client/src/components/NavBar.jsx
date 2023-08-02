@@ -18,7 +18,7 @@ const Navbar = () => {
   return (
     <nav className="w-full h-[60px] bg-dark-500 text-xs border-b-2 border-dark-100">
       <div className="h-full mx-auto flex  items-center px-3 sm:px-0">
-        <p className="sm:pl-4 text-xl  font-semibold text-blue-100">Golf Stats</p>
+        <p className="sm:pl-4 text-xl  font-semibold text-blue-400">Golf Stats</p>
         {/* Desktop Links */}
         <ul id="nav" className="hidden md:flex">
           <li className="font-medium py-10 ml-2">

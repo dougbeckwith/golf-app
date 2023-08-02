@@ -176,48 +176,46 @@ const SignUp = () => {
   return (
     <FormContainer>
       <H1>Club Stats</H1>
-      <FormCard>
-        {isLoading ? (
-          <ServerSleep isLoading={isLoading} text={"Signing Up"}>
-            Please allow 30 seconds to Sign Up.
-          </ServerSleep>
-        ) : (
-          <form>
-            {formFields.map((item, index) => {
-              return (
-                <InputWrapper key={index}>
-                  <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
-                    {item.label}
-                  </InputLabel>
-                  {isInputValid(item) && (
-                    <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
-                  )}
-                  <InputField
-                    name={item.name}
-                    type={item.type}
-                    value={input[item.name]}
-                    onChange={onInputChange}
-                    innerRef={item.innerRef}>
-                    {input[item.name]}
-                  </InputField>
-                  {error && <InputError>{error[item.name]}</InputError>}
-                </InputWrapper>
-              );
-            })}
-            {serverError && <ServerError>{serverError}</ServerError>}
-            <Button
-              color="blue"
-              styles="mt-7 w-full"
-              onClick={createUser}
-              disabled={isSignUpButtonDisabled()}>
-              Sign Up
-            </Button>
-            <AccountFooter text={"Already have an account?"} to={"/signin"}>
-              Sign In
-            </AccountFooter>
-          </form>
-        )}
-      </FormCard>
+      {isLoading ? (
+        <ServerSleep isLoading={isLoading} text={"Signing Up"}>
+          Please allow 30 seconds to Sign Up.
+        </ServerSleep>
+      ) : (
+        <FormCard>
+          {formFields.map((item, index) => {
+            return (
+              <InputWrapper key={index}>
+                <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
+                  {item.label}
+                </InputLabel>
+                {isInputValid(item) && (
+                  <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
+                )}
+                <InputField
+                  name={item.name}
+                  type={item.type}
+                  value={input[item.name]}
+                  onChange={onInputChange}
+                  innerRef={item.innerRef}>
+                  {input[item.name]}
+                </InputField>
+                {error && input[item.name] !== "" && <InputError>{error[item.name]}</InputError>}
+              </InputWrapper>
+            );
+          })}
+          {serverError && <ServerError>{serverError}</ServerError>}
+          <Button
+            color="blue"
+            styles="mt-7 w-full"
+            onClick={createUser}
+            disabled={isSignUpButtonDisabled()}>
+            Sign Up
+          </Button>
+          <AccountFooter text={"Already have an account?"} to={"/signin"}>
+            Sign In
+          </AccountFooter>
+        </FormCard>
+      )}
     </FormContainer>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 
 const ShotList = ({ children }) => {
-  return <div className="pt-5 gap-2 flex flex-wrap">{children}</div>;
+  return <ul className="pt-5 gap-2 flex flex-wrap">{children}</ul>;
 };
 
 export default ShotList;
