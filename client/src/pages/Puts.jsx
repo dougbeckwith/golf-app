@@ -239,7 +239,7 @@ const Puts = () => {
   const formFields = [
     {
       name: "putsPerRound",
-      label: "Total Carry",
+      label: "Total Puts 18 Holes",
       onChange: onInputChange,
       innerRef: null,
       value: putsPerRound,
