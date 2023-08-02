@@ -183,7 +183,7 @@ const Clubs = () => {
               ) : (
                 <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
                   <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                    Start by adding clubs to track.
+                    Welcome to Golf Stats, get started by adding some clubs.
                   </h1>
                   <Link to="/clubs/new">
                     <Button color={"blue"}>Add Club</Button>
