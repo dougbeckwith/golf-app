@@ -254,14 +254,13 @@ const Puts = () => {
           <Header>
             <H1>Puts</H1>
           </Header>
-          {isLoading && <Spinner isLoading={isLoading} text={"Loading Data"} />}
+          {isLoading && <Spinner isLoading={isLoading} text={"Loading Puts"} />}
 
           {!isLoading && (
             <>
               <H2>Stats</H2>
               <div className="flex align- flex-wrap ">
                 <ChartSection chartData={chartData} />
-                {console.log(putStats)}
                 <StatsList styles={"self-start xl:mx-auto xl:gap-10 mt-5"} stats={putStats} />
               </div>
               <H2 styles={"mt-10"}>Add Puts</H2>
