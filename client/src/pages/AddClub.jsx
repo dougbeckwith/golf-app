@@ -164,9 +164,6 @@ const AddClub = () => {
                   <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
                     {item.label}
                   </InputLabel>
-                  {isInputValid(item) && (
-                    <IoCheckmarkCircleOutline className={"text-green-100 inline-block"} />
-                  )}
                   <InputField
                     name={item.name}
                     type={item.type}

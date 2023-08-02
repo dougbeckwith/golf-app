@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { getAverageDistance } from "../helpers";
-import ShotList from "../components/ShotList";
+import List from "../components/List";
 import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
@@ -22,7 +22,7 @@ import ServerError from "../components/ServerError";
 import InputError from "../components/InputError";
 import InputWrapper from "../components/InputWrapper";
 import FormCard from "../components/FormCard";
-import ClubStatsList from "../components/ClubStatsList";
+import StatsList from "../components/StatsList";
 
 const Club = () => {
   const navigate = useNavigate();
@@ -232,7 +232,7 @@ const Club = () => {
               {!isLoading && (
                 <>
                   <H2>Stats</H2>
-                  <ClubStatsList clubStats={clubStats} />
+                  <StatsList stats={clubStats} />
                   <H2 styles={"mt-10"}>Add Shots</H2>
                   <FormCard>
                     {formFields.map((item, index) => {
@@ -264,7 +264,7 @@ const Club = () => {
                     </Button>
                   </FormCard>
                   <H2 styles={"mt-10"}>Shots</H2>
-                  <ShotList>
+                  <List>
                     {club.shots.map((shot) => {
                       return (
                         <ShotItem
@@ -276,7 +276,7 @@ const Club = () => {
                         />
                       );
                     })}
-                  </ShotList>
+                  </List>
                 </>
               )}
             </>

@@ -1,21 +1,22 @@
-import React from "react";
-import { MdOutlineGolfCourse } from "react-icons/md";
+import React, { useContext } from "react";
 import Button from "./Button";
-import StatsSection from "./StatsSection";
+import ShotIcon from "./ShotIcon";
+import StatSmall from "./StatSmall";
 
 const PutItem = ({ round, handleDeletePut }) => {
-  const { _id, puts, dateCreated } = round;
+  const { _id, puts } = round;
 
   const handleDeleteClick = () => {
     handleDeletePut(_id);
   };
 
   return (
-    <div className="bg-dark-200 max-w-fit">
-      <ul className="flex gap-4">
-        <StatsSection value={puts} label={"Puts"} />
-        <Button onClick={handleDeleteClick}>Delete</Button>
-      </ul>
+    <div className="flex items-center justify-between gap-4 bg-dark-200 rounded-md py-2 px-4">
+      <ShotIcon />
+      <StatSmall label="Puts" value={puts} />
+      <Button color={"gray"} styles={"h-[40px] text-dark-300 "} onClick={handleDeleteClick}>
+        Delete
+      </Button>
     </div>
   );
 };

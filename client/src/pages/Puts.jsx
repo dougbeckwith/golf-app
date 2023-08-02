@@ -1,18 +1,26 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { v4 as uuidv4 } from "uuid";
 import UserContext from "../context/UserContext";
 import { getAveragePutsPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
-import Header from "../components/Header";
-import Loader from "../components/Spinner";
 import ChartSection from "../components/ChartSection";
-import StatsSection from "../components/StatsSection";
-import InputForm from "../components/InputForm";
-import PuttingRounds from "../components/PuttingRounds";
-import Main from "../components/Main";
 import Container from "../components/Container";
 import H1 from "../components/HeadingOne";
+import H2 from "../components/HeadingTwo";
+import Main from "../components/Main";
+import Button from "../components/Button";
+import Header from "../components/Header";
+import List from "../components/List";
+import Spinner from "../components/Spinner";
+import InputLabel from "../components/InputLabel";
+import InputField from "../components/InputField";
+import ServerError from "../components/ServerError";
+import InputError from "../components/InputError";
+import InputWrapper from "../components/InputWrapper";
+import FormCard from "../components/FormCard";
+import StatsList from "../components/StatsList";
+import PutItem from "../components/PutItem";
 
 const Puts = () => {
   const navigate = useNavigate();
@@ -25,6 +33,8 @@ const Puts = () => {
   const [putData, setPutData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [putStats, setPutStats] = useState([]);
 
   useEffect(() => {
     const getAllPuts = async () => {
@@ -109,14 +119,18 @@ const Puts = () => {
     setPutData(putsData);
     setChartData(lastThirtyPuts(putsData));
     if (putsData.length !== 0) {
-      setAvgPutsPerRound(getAveragePutsPerRound(putsData));
+      const avgPuts = getAveragePutsPerRound(putsData);
+      setAvgPutsPerRound(avgPuts);
+      setPutStats([
+        { label: "Avg Puts", stat: avgPuts },
+        { label: "Total Rounds", stat: putsData.length }
+      ]);
     }
-    console.log(putsData);
   };
 
   const handleCreateRoundOfPutsError = async (response) => {
     const { err } = await response.json();
-    setError(err.message);
+    setServerError(err.message);
   };
 
   const handleCreateRoundOfPutsSuccess = async (response, params) => {
@@ -134,6 +148,11 @@ const Puts = () => {
       ];
       const averagePuts = getAveragePutsPerRound(updatedPuts);
       setAvgPutsPerRound(averagePuts);
+      setPutStats([
+        { label: "Avg Puts", stat: averagePuts },
+        { label: "Total Rounds", stat: updatedPuts.length }
+      ]);
+
       return updatedPuts;
     });
     setPutsPerRound("");
@@ -161,6 +180,7 @@ const Puts = () => {
   };
 
   const handleDeletePutSuccess = (id) => {
+    console.log("testing");
     setPutData((prev) => {
       let puts = [...prev];
 
@@ -168,12 +188,18 @@ const Puts = () => {
         return item._id !== id;
       });
 
-      const average = getAveragePutsPerRound(puts);
+      const averagePuts = getAveragePutsPerRound(puts);
       if (puts.length !== 0) {
-        setAvgPutsPerRound(average);
+        setAvgPutsPerRound(averagePuts);
       } else {
         setAvgPutsPerRound(0);
       }
+
+      setAvgPutsPerRound(averagePuts);
+      setPutStats([
+        { label: "Avg Puts", stat: averagePuts },
+        { label: "Total Rounds", stat: puts.length }
+      ]);
 
       return puts;
     });
@@ -205,6 +231,17 @@ const Puts = () => {
     return false;
   };
 
+  const formFields = [
+    {
+      name: "putsPerRound",
+      label: "Total Carry",
+      onChange: onInputChange,
+      innerRef: null,
+      value: putsPerRound,
+      type: "text"
+    }
+  ];
+
   return (
     <>
       <Main>
@@ -212,23 +249,50 @@ const Puts = () => {
           <Header>
             <H1>Puts</H1>
           </Header>
-          {isLoading && <Loader isLoading={isLoading} text={"Loading Puts"} />}
+          {isLoading && <Spinner isLoading={isLoading} text={"Loading Data"} />}
+
           {!isLoading && (
             <>
-              <div className="flex flex-col xl:flex-row justify-between">
+              <H2>Stats</H2>
+              <div className="flex align- flex-wrap ">
                 <ChartSection chartData={chartData} />
-                <StatsSection label="Average Puts" value={averagePutsPerRound} />
-                <StatsSection label="Total Rounds" value={putData.length} />
+                {console.log(putStats)}
+                <StatsList styles={"self-start xl:mx-auto xl:gap-10 mt-5"} stats={putStats} />
               </div>
-              <InputForm
-                error={error}
-                putsPerRound={putsPerRound}
-                onInputChange={onInputChange}
-                createRoundsOfPuts={createRoundsOfPuts}
-                isAddRoundDisabled={isAddRoundDisabled}
-                validateInput={validateInput}
-              />
-              <PuttingRounds putData={putData} handleDeletePut={handleDeletePut} />
+              <H2 styles={"mt-10"}>Add Puts</H2>
+              <FormCard>
+                {formFields.map((item, index) => {
+                  return (
+                    <InputWrapper key={index}>
+                      <InputLabel htmlFor={item.name} className="mb-1 ml-1 mr-1 inline-block">
+                        {item.label}
+                      </InputLabel>
+                      <InputField
+                        name={item.name}
+                        type={item.type}
+                        value={item.value}
+                        onChange={onInputChange}>
+                        {item.value}
+                      </InputField>
+                      {error && putsPerRound !== "" && <InputError>{error}</InputError>}
+                    </InputWrapper>
+                  );
+                })}
+                {serverError && <ServerError>{serverError}</ServerError>}
+                <Button
+                  color="teal"
+                  styles="mt-7 mb-3 w-full"
+                  onClick={createRoundsOfPuts}
+                  disabled={isAddRoundDisabled()}>
+                  Add Puts
+                </Button>
+              </FormCard>
+              <H2 styles={"mt-10"}>Puts</H2>
+              <List>
+                {putData.map((round) => {
+                  return <PutItem key={uuidv4()} round={round} handleDeletePut={handleDeletePut} />;
+                })}
+              </List>
             </>
           )}
         </Container>
