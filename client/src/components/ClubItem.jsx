@@ -29,7 +29,7 @@ const ClubItem = ({ club, handleClick, longestShot, filterShotsBy }) => {
           )}
         </div>
         {widthPercentage[0] === "N" || averageDistance === 0 ? (
-          <div className="h-4 mb-1"></div>
+          <div className="mb-1"></div>
         ) : (
           <div
             style={{ width: widthPercentage }}

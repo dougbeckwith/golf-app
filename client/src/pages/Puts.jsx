@@ -29,7 +29,6 @@ const Puts = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [putsPerRound, setPutsPerRound] = useState("");
-  const [averagePutsPerRound, setAvgPutsPerRound] = useState(0);
   const [putData, setPutData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
@@ -120,9 +119,13 @@ const Puts = () => {
     setChartData(lastThirtyPuts(putsData));
     if (putsData.length !== 0) {
       const avgPuts = getAveragePutsPerRound(putsData);
-      setAvgPutsPerRound(avgPuts);
       setPutStats([
         { label: "Avg Puts", stat: avgPuts },
+        { label: "Total Rounds", stat: putsData.length }
+      ]);
+    } else {
+      setPutStats([
+        { label: "Avg Puts", stat: 0 },
         { label: "Total Rounds", stat: putsData.length }
       ]);
     }
@@ -147,7 +150,7 @@ const Puts = () => {
         }
       ];
       const averagePuts = getAveragePutsPerRound(updatedPuts);
-      setAvgPutsPerRound(averagePuts);
+      // setAvgPutsPerRound(averagePuts);
       setPutStats([
         { label: "Avg Puts", stat: averagePuts },
         { label: "Total Rounds", stat: updatedPuts.length }
@@ -190,16 +193,18 @@ const Puts = () => {
 
       const averagePuts = getAveragePutsPerRound(puts);
       if (puts.length !== 0) {
-        setAvgPutsPerRound(averagePuts);
+        setPutStats([
+          { label: "Avg Puts", stat: averagePuts },
+          { label: "Total Rounds", stat: puts.length }
+        ]);
       } else {
-        setAvgPutsPerRound(0);
+        setPutStats([
+          { label: "Avg Puts", stat: 0 },
+          { label: "Total Rounds", stat: puts.length }
+        ]);
       }
 
-      setAvgPutsPerRound(averagePuts);
-      setPutStats([
-        { label: "Avg Puts", stat: averagePuts },
-        { label: "Total Rounds", stat: puts.length }
-      ]);
+      // setAvgPutsPerRound(averagePuts);
 
       return puts;
     });

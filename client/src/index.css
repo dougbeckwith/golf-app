@@ -11,9 +11,6 @@
   }
 }
 
-/* #nav a.active {
-  color: #115e59;
+#nav a.active {
+  color: teal;
 }
-#nav a.hover {
-  color: #0f766e;
-} */
