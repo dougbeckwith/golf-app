@@ -4,7 +4,6 @@ const Shot = require("../models/shot");
 const AppError = require("../helpers/AppError");
 
 const isClub = async (req, res, next) => {
-  console.log("is club");
   try {
     const club = await Club.findById(req.params.id).populate("shots").exec();
     if (!club) {
