@@ -8,10 +8,10 @@ import Button from "../components/Button";
 import InputLabel from "../components/InputLabel";
 import InputField from "../components/InputField";
 import ServerError from "../components/ServerError";
-import ServerSleep from "../components/SpinnerServerSleeping";
 import InputError from "../components/InputError";
 import FormCard from "../components/FormCard";
 import FormContainer from "../components/FormContainer";
+import Spinner from "../components/Spinner";
 
 const AddClub = () => {
   const navigate = useNavigate();
@@ -155,9 +155,7 @@ const AddClub = () => {
       <FormContainer>
         <H1>Add Club</H1>
         {isLoading ? (
-          <ServerSleep isLoading={isLoading} text={"Signing Up"}>
-            Please allow 30 seconds to Sign Up.
-          </ServerSleep>
+          <Spinner isLoading={isLoading} text={"Loading Data"} />
         ) : (
           <FormCard>
             {formFields.map((item, index) => {
