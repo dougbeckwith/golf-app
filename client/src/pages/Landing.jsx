@@ -76,7 +76,7 @@ const Landing = () => {
               Easily track your golf data to remove strokes from your game. Start today! Dive deep
               into your golf game.
             </p>
-            <div className=" mt-10 justify-center gap-4 flex-wrap flex mb-10">
+            <div className="mt-10 justify-center gap-4 flex-wrap flex mb-10">
               <Link to="/signin">
                 <Button
                   color={"gray"}
@@ -89,9 +89,9 @@ const Landing = () => {
                 <Button color={"blue"} styles={"w-[150px]"} disabled={isButtonDisabled()}>
                   Sign Up
                 </Button>
-              </Link>{" "}
+              </Link>
               <Button onClick={handleDemoSignIn} color={"teal"} styles={"w-[150px]"}>
-                Try Demo{" "}
+                Try Demo
               </Button>
             </div>
           </div>

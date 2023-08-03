@@ -2,6 +2,7 @@ const { connectDB } = require("../helpers/database");
 const mongoose = require("mongoose");
 
 const { clubs, createClubs, deleteClubs } = require("./clubs");
+const { greens, createGreens, deleteGreens } = require("./greens");
 const { user, createUser, deleteUsers } = require("./user");
 const { deleteShots, createShots, associateShotsToClubs } = require("./shots");
 const { puts, deletePuts, createPuts } = require("./puts");
@@ -18,6 +19,7 @@ const clearDB = async () => {
     await deleteClubs();
     await deletePuts();
     await deleteShots();
+    await deleteGreens();
     console.log("Database cleared.");
   } catch (error) {
     throw error;
@@ -32,6 +34,7 @@ const seedDB = async () => {
     await createClubs(clubs);
     await createPuts(puts);
     await createShots();
+    await createGreens(greens);
     await associateShotsToClubs(clubs);
     console.log("Seeding complete!!!");
     closeDbConnection();

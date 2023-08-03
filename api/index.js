@@ -6,9 +6,11 @@ const path = require("path");
 const bodyParser = require("body-parser");
 
 const clubRoutes = require("./routes/clubs");
+const greenRoutes = require("./routes/greens");
 const userRoutes = require("./routes/users");
 const putRoutes = require("./routes/puts");
 const shotRoutes = require("./routes/shots");
+
 const { connectDB } = require("./helpers/database");
 const { DB_DEV_URL } = require("./constants");
 const { handleCastError, handleValidationError } = require("./helpers/errors");
@@ -22,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/clubs", clubRoutes);
+app.use("/greens", greenRoutes);
 app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
