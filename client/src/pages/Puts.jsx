@@ -239,7 +239,7 @@ const Puts = () => {
   const formFields = [
     {
       name: "putsPerRound",
-      label: "Total Puts 18 Holes",
+      label: "Total Puts (18 Holes)",
       onChange: onInputChange,
       innerRef: null,
       value: putsPerRound,
@@ -252,7 +252,7 @@ const Puts = () => {
       <Main>
         <Container>
           <Header>
-            <H1>Puts</H1>
+            <H1>Putting</H1>
           </Header>
           {isLoading && <Spinner isLoading={isLoading} text={"Loading Puts"} />}
 

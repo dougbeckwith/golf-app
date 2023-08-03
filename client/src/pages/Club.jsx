@@ -32,8 +32,6 @@ const Club = () => {
   const { authUser } = useContext(UserContext);
   const [club, setClub] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  // const [avgTotalCarry, setAvgCarryDistance] = useState("");
-  // const [avgTotalDistance, setAvgTotalDistance] = useState("");
   const [encodedCredentials, setEncodedCredentials] = useState("");
   const [error, setError] = useState({ totalCarry: "", totalDistance: "" });
   const [shot, setShot] = useState({ totalCarry: "", totalDistance: "" });

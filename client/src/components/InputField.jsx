@@ -9,7 +9,7 @@ const InputField = ({ value, onChange, onBlur, name, innerRef, type }) => {
       onBlur={onBlur}
       onChange={onChange}
       ref={innerRef}
-      className="text-gray-200 bg-dark-100 text-sm w-full p-2 rounded-md border-2 border-dark-100  focus:border-blue-100 focus:outline-none"
+      className="text-gray-300 bg-dark-100 text-sm w-full p-2 rounded-md border-2 border-dark-100  focus:border-blue-100 focus:outline-none"
     />
   );
 };

@@ -11,6 +11,10 @@
   }
 }
 
-#nav a.active {
+nav ul li a.active {
+  color: #0d9488;
+}
+
+nav ul li a:hover {
   color: #0d9488;
 }
