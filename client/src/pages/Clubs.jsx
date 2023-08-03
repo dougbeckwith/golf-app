@@ -151,18 +151,6 @@ const Clubs = () => {
               <option value="totalCarry">Avg Carry</option>
             </select>
           )}
-          {sortedClubs.length && sortedClubs[0].shots.length === 0 ? (
-            <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
-              <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
-                Add some shots to your first club
-              </h1>
-              <Link to={`/clubs/${sortedClubs[0]._id}`}>
-                <Button color={"blue"}>Add Shots</Button>
-              </Link>
-            </div>
-          ) : (
-            <></>
-          )}
           {isLoading && <Spinner isLoading={isLoading} text={"Loading Clubs"} />}
           {!isLoading && (
             <>
@@ -182,7 +170,7 @@ const Clubs = () => {
                 </>
               ) : (
                 <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
-                  <h1 className="text-gray-200 mb-5  pt-5 text-center mx-auto max-w-4xl font-display text-xl  md:text-2xl font-medium tracking-tight  ">
+                  <h1 className="text-gray-200 mb-2  pt-2 text-center mx-auto max-w-4xl font-display text-sm lg:text-lg  md:text-xl font-medium tracking-tight ">
                     Welcome to Golf Stats, get started by adding some clubs.
                   </h1>
                   <Link to="/clubs/new">

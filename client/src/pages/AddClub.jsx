@@ -136,7 +136,8 @@ const AddClub = () => {
       onChange: onInputChange,
       innerRef: clubInputRef,
       value: input.name,
-      type: "text"
+      type: "text",
+      placeHolder: "7 Iron"
     },
     {
       name: "brand",
@@ -144,7 +145,8 @@ const AddClub = () => {
       onChange: onInputChange,
       innerRef: null,
       value: input.brand,
-      type: "text"
+      type: "text",
+      placeHolder: "TaylorMade"
     }
   ];
 
@@ -169,6 +171,7 @@ const AddClub = () => {
                     type={item.type}
                     value={input[item.name]}
                     onChange={onInputChange}
+                    placeHolder={item.placeHolder}
                     innerRef={item.innerRef}>
                     {input[item.name]}
                   </InputField>
