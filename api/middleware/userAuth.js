@@ -3,13 +3,16 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const AppError = require("../helpers/AppError");
 
+// Basic Auth
 const authenticateUser = async (req, res, next) => {
   let user = null;
   let authenticated = false;
 
   // Parse the user's credentials from the Authorization header.
   const credentials = auth(req);
-
+  if (!credentials) {
+    return next(new AppError("No Credentials Found", 400));
+  }
   if (!credentials.name) {
     return next(new AppError("Please Enter Email Address", 400));
   }

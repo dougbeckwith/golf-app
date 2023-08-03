@@ -30,14 +30,14 @@ app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);
 
 app.use((err, req, res, next) => {
-  console.log("Error Log:");
+  console.log("Error Logger:");
+  console.log("Error.name:", err.name);
+  console.log("Error.message", err.message);
   console.dir(err);
   next(err);
 });
 
 app.use((err, req, res, next) => {
-  console.log("Error.name:", err.name);
-  console.log("Error.message", err.message);
   if (err.name === "ValidationError") err = handleValidationError();
   if (err.name === "CastError") err = handleCastError();
   next(err);
