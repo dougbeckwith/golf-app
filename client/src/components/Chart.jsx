@@ -3,14 +3,14 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { useEffect, useState } from "react";
 
-const Graph = ({ putData }) => {
+const Graph = ({ data, dataPoint, label, min, max }) => {
   const [dateList, setDateList] = useState([]);
   const [dataList, setDataList] = useState([]);
 
-  const sortData = (data) => {
-    data.forEach((round) => {
+  const sortData = (item) => {
+    item.forEach((round) => {
       setDataList((prevList) => {
-        return [...prevList, round.puts];
+        return [...prevList, round[dataPoint]];
       });
       setDateList((prevList) => {
         return [...prevList, round.dateCreated];
@@ -21,8 +21,9 @@ const Graph = ({ putData }) => {
   useEffect(() => {
     setDateList([]);
     setDataList([]);
-    sortData(putData);
-  }, [putData]);
+    sortData(data);
+    // eslint-disable-next-line
+  }, [data]);
 
   const options = {
     scales: {
@@ -32,8 +33,8 @@ const Graph = ({ putData }) => {
         }
       },
       y: {
-        min: 10,
-        max: 60,
+        min: min,
+        max: max,
         grid: {
           color: "#3e3e42"
         }
@@ -50,7 +51,7 @@ const Graph = ({ putData }) => {
     labels: dateList,
     datasets: [
       {
-        label: "Puts Per Round",
+        label: label, // dynamic
         data: dataList,
         pointRadius: 0,
         backgroundColor: "#007acc",

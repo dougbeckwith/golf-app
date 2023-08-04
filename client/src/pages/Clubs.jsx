@@ -64,7 +64,6 @@ const Clubs = () => {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
 
         const response = await Fetch.get("/clubs", null, encodedCredentials);
-        console.log(response);
         if (response.status === 200) {
           clubData = await handleGetClubSuccess(response);
         } else handleGetClubsError(response);

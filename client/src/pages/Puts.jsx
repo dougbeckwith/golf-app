@@ -115,6 +115,7 @@ const Puts = () => {
 
   const handleGetPutsSuccess = async (response) => {
     const putsData = await response.json();
+    console.log(putsData);
     setPutData(putsData);
     setChartData(lastThirtyPuts(putsData));
     if (putsData.length !== 0) {
@@ -183,7 +184,6 @@ const Puts = () => {
   };
 
   const handleDeletePutSuccess = (id) => {
-    console.log("testing");
     setPutData((prev) => {
       let puts = [...prev];
 
@@ -260,10 +260,10 @@ const Puts = () => {
             <>
               <H2>Stats</H2>
               <div className="flex align- flex-wrap ">
-                <ChartSection chartData={chartData} />
+                <ChartSection dataPoint={"puts"} label={"Puts Per Round"} chartData={chartData} />
                 <StatsList styles={"self-start xl:mx-auto xl:gap-10 mt-5"} stats={putStats} />
               </div>
-              <H2 styles={"mt-10"}>Add Puts</H2>
+              <H2 styles={"mt-10"}>Add Round</H2>
               <FormCard>
                 {formFields.map((item, index) => {
                   return (
@@ -291,7 +291,7 @@ const Puts = () => {
                   Add Puts
                 </Button>
               </FormCard>
-              <H2 styles={"mt-10"}>Puts</H2>
+              <H2 styles={"mt-10"}>Rounds</H2>
               <List>
                 {putData.map((round) => {
                   return <PutItem key={uuidv4()} round={round} handleDeletePut={handleDeletePut} />;

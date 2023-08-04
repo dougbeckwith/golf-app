@@ -6,10 +6,19 @@ const dateToString = (date) => {
   });
 };
 
+// Function to convert date from "MM/DD/YYYY" to "YYYY/MM/DD" format
+const formatDate = (dateString) => {
+  const [month, day, year] = dateString.split("/");
+  return `${year}/${month}/${day}`;
+};
+
 const createDateWithRandomDay = () => {
   const date = new DateExtention();
   date.setRandomDay();
-  return dateToString(date);
+  date.setMonth(4);
+  const stringDate = dateToString(date);
+  const formatedDate = formatDate(stringDate);
+  return formatedDate;
 };
 
 class DateExtention extends Date {

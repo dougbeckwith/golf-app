@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Forbidden from "./pages/Forbidden";
 import Puts from "./pages/Puts";
 import UnhandledError from "./pages/UnhandledError";
+import Greens from "./pages/Greens";
 
 const App = () => {
   return (
@@ -30,6 +31,9 @@ const App = () => {
           <Route path="/puts" element={<Layout />}>
             <Route index element={<Puts />} />
             <Route path="new" element={<AddClub />} />
+          </Route>
+          <Route path="/greens" element={<Layout />}>
+            <Route index element={<Greens />} />
           </Route>
         </Route>
 

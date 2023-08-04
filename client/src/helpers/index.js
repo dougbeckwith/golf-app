@@ -73,6 +73,20 @@ const getAveragePutsPerRound = (rounds) => {
   return avgPuts;
 };
 
+const getAverageGreensPerRound = (rounds) => {
+  let totalGreens = 0;
+  let avgGreens = null;
+  const totalRounds = rounds.length;
+
+  rounds.forEach((round) => {
+    totalGreens += round.greens;
+  });
+
+  avgGreens = totalGreens / totalRounds;
+  avgGreens = roundToOneDecimal(avgGreens, 1);
+  return avgGreens;
+};
+
 const roundToOneDecimal = (value, precision) => {
   let multiplier = Math.pow(10, precision || 0);
   return Math.round(value * multiplier) / multiplier;
@@ -89,6 +103,7 @@ const getEncodedCredentials = (authUser) => {
 export {
   getAverageDistance,
   getDistanceBarPercentage,
+  getAverageGreensPerRound,
   sortClubsByDistance,
   findClubById,
   getAveragePutsPerRound,

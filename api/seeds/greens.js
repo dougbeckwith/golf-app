@@ -23,12 +23,30 @@ const generateGreens = (numGreens) => {
   const greens = [];
   for (let i = 0; i < numGreens; i++) {
     greens.push({
-      greens: randomInt(0, 18),
+      greens: randomInt(5, 12),
       dateCreated: createDateWithRandomDay(),
       user: DEMO_USER_ID
     });
   }
-  return greens;
+
+  function sortByDateCreated(arr) {
+    arr.sort((a, b) => {
+      const dateA = a.dateCreated;
+      const dateB = b.dateCreated;
+      return dateA.localeCompare(dateB);
+    });
+    return arr;
+  }
+
+  const sortedData = sortByDateCreated(greens);
+  console.log(sortedData, "hmm");
+
+  // const sortedGreens = clubsWithAverageYards.sort(function (a, b) {
+  //   return b.averageDistance - a.averageDistance;
+  // });
+
+  // return sortedGreens;
+  return sortedData;
 };
 
 const greens = generateGreens(20);
