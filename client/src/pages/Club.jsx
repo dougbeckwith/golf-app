@@ -182,7 +182,7 @@ const Club = () => {
   const isAddShotDisabled = () => {
     if (isLoading) return true;
     if (error.totalDistance || error.totalCarry) return true;
-    if (!shot.totalDistance && !shot.totalCarry) return true;
+    if (!shot.totalDistance || !shot.totalCarry) return true;
     return false;
   };
 
