@@ -92,8 +92,8 @@ const Puts = () => {
       return;
     }
 
-    if (+value < 1) {
-      setError("Please enter a number greater than 1");
+    if (+value < 0) {
+      setError("Please enter 0 or more puts");
       return;
     }
     setError("");
@@ -239,7 +239,7 @@ const Puts = () => {
   const formFields = [
     {
       name: "putsPerRound",
-      label: "Total Puts (18 Holes)",
+      label: "Number Of Puts (18 Holes)",
       onChange: onInputChange,
       innerRef: null,
       value: putsPerRound,
@@ -288,7 +288,7 @@ const Puts = () => {
                   styles="mt-7 mb-3 w-full"
                   onClick={createRoundsOfPuts}
                   disabled={isAddRoundDisabled()}>
-                  Add Puts
+                  Add Round
                 </Button>
               </FormCard>
               <H2 styles={"mt-10"}>Rounds</H2>

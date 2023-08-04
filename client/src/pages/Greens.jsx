@@ -259,7 +259,7 @@ const Greens = () => {
   const formFields = [
     {
       name: "greensPerRound",
-      label: "Greens In Regulation (18 Holes)",
+      label: "Number Of Greens In Regulation (18 Holes)",
       onChange: onInputChange,
       innerRef: null,
       value: greensPerRound,
@@ -314,7 +314,7 @@ const Greens = () => {
                   styles="mt-7 mb-3 w-full"
                   onClick={createRoundsOfGreens}
                   disabled={isAddRoundDisabled()}>
-                  Add Greens
+                  Add Round
                 </Button>
               </FormCard>
               <H2 styles={"mt-10"}>Rounds</H2>
