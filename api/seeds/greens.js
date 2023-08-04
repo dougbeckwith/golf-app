@@ -1,5 +1,5 @@
 const Green = require("../models/green");
-const { createDateWithRandomDay } = require("../helpers/dates");
+const { createDateWithRandomDay, sortByDateCreated } = require("../helpers/dates");
 const { randomInt } = require("../helpers/numbers");
 const { DEMO_USER_ID } = require("../constants");
 
@@ -29,23 +29,8 @@ const generateGreens = (numGreens) => {
     });
   }
 
-  function sortByDateCreated(arr) {
-    arr.sort((a, b) => {
-      const dateA = a.dateCreated;
-      const dateB = b.dateCreated;
-      return dateA.localeCompare(dateB);
-    });
-    return arr;
-  }
-
   const sortedData = sortByDateCreated(greens);
-  console.log(sortedData, "hmm");
 
-  // const sortedGreens = clubsWithAverageYards.sort(function (a, b) {
-  //   return b.averageDistance - a.averageDistance;
-  // });
-
-  // return sortedGreens;
   return sortedData;
 };
 

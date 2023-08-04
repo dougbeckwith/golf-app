@@ -6,6 +6,15 @@ const dateToString = (date) => {
   });
 };
 
+const sortByDateCreated = (arr) => {
+  arr.sort((a, b) => {
+    const dateA = a.dateCreated;
+    const dateB = b.dateCreated;
+    return dateA.localeCompare(dateB);
+  });
+  return arr;
+};
+
 // Function to convert date from "MM/DD/YYYY" to "YYYY/MM/DD" format
 const formatDate = (dateString) => {
   const [month, day, year] = dateString.split("/");
@@ -38,5 +47,6 @@ class DateExtention extends Date {
 module.exports = {
   dateToString,
   createDateWithRandomDay,
+  sortByDateCreated,
   DateExtention
 };

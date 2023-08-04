@@ -1,5 +1,5 @@
 const Put = require("../models/put");
-const { createDateWithRandomDay } = require("../helpers/dates");
+const { createDateWithRandomDay, sortByDateCreated } = require("../helpers/dates");
 const { randomInt } = require("../helpers/numbers");
 const { DEMO_USER_ID } = require("../constants");
 
@@ -28,7 +28,10 @@ const generatePuts = (numPuts) => {
       user: DEMO_USER_ID
     });
   }
-  return puts;
+
+  const sortedData = sortByDateCreated(puts);
+
+  return sortedData;
 };
 
 const puts = generatePuts(20);
