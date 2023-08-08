@@ -15,6 +15,9 @@ const DesktopLinks = ({ handleSignOut }) => {
       <li>
         <NavLink to="/greens">Greens</NavLink>
       </li>
+      <li>
+        <NavLink to="/fairways">Fairways</NavLink>
+      </li>
       <li onClick={handleSignOut} className="ml-auto">
         <NavLink to="/">Logout</NavLink>
       </li>

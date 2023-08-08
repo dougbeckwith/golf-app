@@ -17,6 +17,9 @@ const MobileLinks = ({ toggleIcon, handleSignOut }) => {
       <li onClick={toggleIcon}>
         <NavLink to="/greens">Greens</NavLink>
       </li>
+      <li onClick={toggleIcon}>
+        <NavLink to="/fairways">Fairways</NavLink>
+      </li>
       <li onClick={handleSignOut}>
         <NavLink to="/">Logout</NavLink>
       </li>

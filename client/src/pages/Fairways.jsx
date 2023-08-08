@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import UserContext from "../context/UserContext";
-import { getAverageGreensPerRound, isNumeric, getDate } from "../helpers";
+import { getAverageFairwaysPerRound, isNumeric, getDate } from "../helpers";
 import Fetch from "../helpers/fetch";
 import ChartSection from "../components/ChartSection";
 import Container from "../components/Container";
@@ -20,32 +20,32 @@ import InputError from "../components/InputError";
 import InputWrapper from "../components/InputWrapper";
 import FormCard from "../components/FormCard";
 import StatsList from "../components/StatsList";
-import GreenItem from "../components/GreenItem";
+import FairwayItem from "../components/FairwayItem";
 
-const Greens = () => {
+const Fairways = () => {
   const navigate = useNavigate();
 
   const { authUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [greensPerRound, setGreensPerRound] = useState("");
-  const [greenData, setGreenData] = useState([]);
+  const [fairwaysPerRound, setFairwaysPerRound] = useState("");
+  const [fairwayData, setFairwayData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState("");
   const [serverError, setServerError] = useState("");
-  const [greenStats, setGreenStats] = useState([]);
+  const [fairwayStats, setFairwayStats] = useState([]);
 
   useEffect(() => {
-    const getAllGreens = async () => {
+    const getAllFairways = async () => {
       setIsLoading(true);
       try {
         const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-        const response = await Fetch.get("/greens", null, encodedCredentials);
+        const response = await Fetch.get("/fairways", null, encodedCredentials);
 
         if (response.status === 200) {
-          handleGetGreensSuccess(response);
+          handleGetFairwaysSuccess(response);
         } else {
-          handleGetGreensError(response);
+          handleGetFairwaysError(response);
         }
 
         setIsLoading(false);
@@ -54,23 +54,23 @@ const Greens = () => {
       }
     };
 
-    getAllGreens();
+    getAllFairways();
 
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    if (greenData.length > 20) {
-      setChartData(greenData.slice(greenData.length - 20, greenData.length));
+    if (fairwayData.length > 20) {
+      setChartData(fairwayData.slice(fairwayData.length - 20, fairwayData.length));
     } else {
-      setChartData(greenData);
+      setChartData(fairwayData);
     }
-  }, [greenData]);
+  }, [fairwayData]);
 
   const onInputChange = (e) => {
     const { value } = e.target;
     validateInput(e);
-    setGreensPerRound(value);
+    setFairwaysPerRound(value);
   };
 
   const validateInput = (e) => {
@@ -99,7 +99,7 @@ const Greens = () => {
     setError("");
   };
 
-  const handleGetGreensError = (response) => {
+  const handleGetFairwaysError = (response) => {
     if (response.status === 401) {
       navigate("/signin");
     } else if (response.status === 404) {
@@ -109,119 +109,119 @@ const Greens = () => {
     }
   };
 
-  const lastThirtyGreens = (greensData) => {
-    return greensData.slice(greensData.length - 30, greensData.length);
+  const lastThirtyFairways = (fairwaysData) => {
+    return fairwaysData.slice(fairwaysData.length - 30, fairwaysData.length);
   };
 
-  const handleGetGreensSuccess = async (response) => {
-    const greensData = await response.json();
-    console.log(greensData);
-    setGreenData(greensData);
-    setChartData(lastThirtyGreens(greensData));
-    if (greensData.length !== 0) {
-      const avgGreens = getAverageGreensPerRound(greensData);
-      setGreenStats([
-        { label: "Avg Greens Hit", stat: `${avgGreens}%` },
-        { label: "Total Rounds", stat: greensData.length }
+  const handleGetFairwaysSuccess = async (response) => {
+    const fairwaysData = await response.json();
+    console.log(fairwaysData);
+    setFairwayData(fairwaysData);
+    setChartData(lastThirtyFairways(fairwaysData));
+    if (fairwaysData.length !== 0) {
+      const avgFairways = getAverageFairwaysPerRound(fairwaysData);
+      setFairwayStats([
+        { label: "Avg Fairways Hit", stat: `${avgFairways}%` },
+        { label: "Total Rounds", stat: fairwaysData.length }
       ]);
     } else {
-      setGreenStats([
-        { label: "Avg Greens Hit", stat: `${0}%` },
-        { label: "Total Rounds", stat: greensData.length }
+      setFairwayStats([
+        { label: "Avg Fairways Hit", stat: 0 },
+        { label: "Total Rounds", stat: fairwaysData.length }
       ]);
     }
   };
 
-  const handleCreateRoundOfGreensError = async (response) => {
+  const handleCreateRoundOfFairwaysError = async (response) => {
     const { err } = await response.json();
     setServerError(err.message);
   };
 
-  const handleCreateRoundOfGreensSuccess = async (response, params) => {
-    const { greenId } = await response.json();
+  const handleCreateRoundOfFairwaysSuccess = async (response, params) => {
+    const { fairwayId } = await response.json();
 
-    setGreenData((prev) => {
-      const updatedGreens = [
+    setFairwayData((prev) => {
+      const updatedFairways = [
         ...prev,
         {
-          greens: params.greens,
+          fairways: params.fairways,
           dateCreated: params.dateCreated,
           user: authUser._id,
-          _id: greenId
+          _id: fairwayId
         }
       ];
-      const averageGreens = getAverageGreensPerRound(updatedGreens);
-      setGreenStats([
-        { label: "Avg Greens Hit", stat: `${averageGreens}%` },
-        { label: "Total Rounds", stat: updatedGreens.length }
+      const avgFairways = getAverageFairwaysPerRound(updatedFairways);
+      setFairwayStats([
+        { label: "Avg Fairways Hit", stat: `${avgFairways}%` },
+        { label: "Total Rounds", stat: updatedFairways.length }
       ]);
 
-      return updatedGreens;
+      return updatedFairways;
     });
-    setGreensPerRound("");
+    setFairwaysPerRound("");
   };
 
-  const createRoundsOfGreens = async (e) => {
+  const createRoundsOfFairways = async (e) => {
     e.preventDefault();
     const isDisabled = isAddRoundDisabled();
     if (isDisabled) return;
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
     const dateCreated = getDate();
-    const greens = +greensPerRound;
-    const params = { greens, dateCreated, user: authUser._id };
+    const fairways = +fairwaysPerRound;
+    const params = { fairways, dateCreated, user: authUser._id };
 
     try {
-      const response = await Fetch.create("/greens", params, encodedCredentials);
+      const response = await Fetch.create("/fairways", params, encodedCredentials);
       console.log(response);
       if (response.status === 201) {
-        handleCreateRoundOfGreensSuccess(response, params);
+        handleCreateRoundOfFairwaysSuccess(response, params);
       } else {
-        handleCreateRoundOfGreensError(response);
+        handleCreateRoundOfFairwaysError(response);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleDeleteGreenSuccess = (id) => {
-    setGreenData((prev) => {
-      let greens = [...prev];
+  const handleDeleteFairwaySuccess = (id) => {
+    setFairwayData((prev) => {
+      let fairways = [...prev];
 
-      greens = greens.filter((item) => {
+      fairways = fairways.filter((item) => {
         return item._id !== id;
       });
 
-      const averageGreens = getAverageGreensPerRound(greens);
-      if (greens.length !== 0) {
-        setGreenStats([
-          { label: "Avg Greens Hit", stat: `${averageGreens}%` },
-          { label: "Total Rounds", stat: greens.length }
+      const avgFairways = getAverageFairwaysPerRound(fairways);
+      if (fairways.length !== 0) {
+        setFairwayStats([
+          { label: "Avg Fairways Hit", stat: `${avgFairways}%` },
+          { label: "Total Rounds", stat: fairways.length }
         ]);
       } else {
-        setGreenStats([
-          { label: "Avg Greens Hit", stat: `${0}%` },
-          { label: "Total Rounds", stat: greens.length }
+        setFairwayStats([
+          { label: "Avg Fairways Hit", stat: 0 },
+          { label: "Total Rounds", stat: fairways.length }
         ]);
       }
 
-      return greens;
+      return fairways;
     });
   };
-  const handleDeleteGreenError = async (response) => {
+  const handleDeleteFairwayError = async (response) => {
     const { err } = await response.json();
     setError(err.message);
   };
 
-  const handleDeleteGreen = async (id) => {
+  const handleDeleteFairway = async (id) => {
     try {
       const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-      const response = await Fetch.remove(`/greens/${id}`, null, encodedCredentials);
+      const response = await Fetch.remove(`/fairways/${id}`, null, encodedCredentials);
       console.log(response);
 
       if (response.status === 204) {
-        handleDeleteGreenSuccess(id);
+        handleDeleteFairwaySuccess(id);
       } else {
-        handleDeleteGreenError(response);
+        handleDeleteFairwayError(response);
       }
     } catch (error) {
       console.log(error);
@@ -230,7 +230,7 @@ const Greens = () => {
 
   const isAddRoundDisabled = () => {
     if (error) return true;
-    if (!greensPerRound) {
+    if (!fairwaysPerRound) {
       setError("Please enter a number");
       return true;
     }
@@ -239,11 +239,11 @@ const Greens = () => {
 
   const formFields = [
     {
-      name: "greensPerRound",
-      label: "Percent Of Greens In Regulation (18 Holes)",
+      name: "fairwaysPerRound",
+      label: "Percent Of Fairways In Regulation (18 Holes)",
       onChange: onInputChange,
       innerRef: null,
-      value: greensPerRound,
+      value: fairwaysPerRound,
       type: "text"
     }
   ];
@@ -253,22 +253,22 @@ const Greens = () => {
       <Main>
         <Container>
           <Header>
-            <H1>Greens In Regulation</H1>
+            <H1>Fairways In Regulation</H1>
           </Header>
-          {isLoading && <Spinner isLoading={isLoading} text={"Loading Greens"} />}
+          {isLoading && <Spinner isLoading={isLoading} text={"Loading Stats"} />}
 
           {!isLoading && (
             <>
               <H2>Stats</H2>
               <div className="flex flex-wrap">
                 <ChartSection
-                  dataPoint={"greens"}
-                  label={"% Greens In Regulation"}
+                  dataPoint={"fairways"}
+                  label={"% Fairways In Regulation"}
                   chartData={chartData}
                   min={0}
                   max={100}
                 />
-                <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={greenStats} />
+                <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={fairwayStats} />
               </div>
               <H2 styles={"mt-10"}>Add Round</H2>
               <FormCard>
@@ -285,20 +285,24 @@ const Greens = () => {
                         onChange={onInputChange}>
                         {item.value}
                       </InputField>
-                      {error || greensPerRound !== "" ? <InputError>{error}</InputError> : <></>}
+                      {error || fairwaysPerRound !== "" ? <InputError>{error}</InputError> : <></>}
                     </InputWrapper>
                   );
                 })}
                 {serverError && <ServerError>{serverError}</ServerError>}
-                <Button color="teal" styles="mt-7 mb-3 w-full" onClick={createRoundsOfGreens}>
+                <Button color="teal" styles="mt-7 mb-3 w-full" onClick={createRoundsOfFairways}>
                   Add Round
                 </Button>
               </FormCard>
               <H2 styles={"mt-10"}>Rounds</H2>
               <List>
-                {greenData.map((round) => {
+                {fairwayData.map((round) => {
                   return (
-                    <GreenItem key={uuidv4()} round={round} handleDeleteGreen={handleDeleteGreen} />
+                    <FairwayItem
+                      key={uuidv4()}
+                      round={round}
+                      handleDeleteFairway={handleDeleteFairway}
+                    />
                   );
                 })}
               </List>
@@ -310,4 +314,4 @@ const Greens = () => {
   );
 };
 
-export default Greens;
+export default Fairways;

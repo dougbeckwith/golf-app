@@ -87,6 +87,20 @@ const getAverageGreensPerRound = (rounds) => {
   return avgGreens;
 };
 
+const getAverageFairwaysPerRound = (rounds) => {
+  let totalFairways = 0;
+  let avgFairways = null;
+  const totalRounds = rounds.length;
+
+  rounds.forEach((round) => {
+    totalFairways += round.fairways;
+  });
+
+  avgFairways = totalFairways / totalRounds;
+  avgFairways = roundToOneDecimal(avgFairways, 1);
+  return avgFairways;
+};
+
 const roundToOneDecimal = (value, precision) => {
   let multiplier = Math.pow(10, precision || 0);
   return Math.round(value * multiplier) / multiplier;
@@ -104,6 +118,7 @@ export {
   getAverageDistance,
   getDistanceBarPercentage,
   getAverageGreensPerRound,
+  getAverageFairwaysPerRound,
   sortClubsByDistance,
   findClubById,
   getAveragePutsPerRound,

@@ -15,7 +15,7 @@ import Forbidden from "./pages/Forbidden";
 import Puts from "./pages/Puts";
 import UnhandledError from "./pages/UnhandledError";
 import Greens from "./pages/Greens";
-
+import Fairways from "./pages/Fairways";
 const App = () => {
   return (
     <BrowserRouter>
@@ -34,6 +34,9 @@ const App = () => {
           </Route>
           <Route path="/greens" element={<Layout />}>
             <Route index element={<Greens />} />
+          </Route>
+          <Route path="/fairways" element={<Layout />}>
+            <Route index element={<Fairways />} />
           </Route>
         </Route>
 
