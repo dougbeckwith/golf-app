@@ -139,7 +139,7 @@ const Clubs = () => {
               {sortedClubs.length !== 0 && <Button color={"blue"}>Add Club</Button>}
             </Link>
           </Header>
-          {!doClubsHaveNoShots() && sortedClubs.length !== 0 && (
+          {!isLoading && !doClubsHaveNoShots() && sortedClubs.length !== 0 && (
             <select
               name="clubs"
               id="clubs"

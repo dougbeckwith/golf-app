@@ -1,11 +1,12 @@
 import React from "react";
 import BarLoader from "react-spinners/BarLoader";
-import H2 from "./HeadingTwo";
 
 const Spinner = ({ isLoading, text }) => {
   return (
     <>
-      <H2>{text}</H2>
+      <h1 className="inline-block text-gray-300 text-md md:text-lg lg:text-lg font-semibold">
+        {text}
+      </h1>
       <BarLoader
         className="mt-1"
         color={"#007acc"}

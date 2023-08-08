@@ -56,7 +56,6 @@ const Club = () => {
     const club = await response.json();
     setClub(club);
     updateClubStats(club);
-    setIsLoading(false);
   };
 
   const handleGetClubError = (response) => {
@@ -74,11 +73,16 @@ const Club = () => {
   useEffect(() => {
     const getClub = async () => {
       try {
+        setIsLoading(true);
         const credentialsEncoded = btoa(`${authUser.email}:${authUser.password}`);
         const response = await Fetch.get(`/clubs/${id}`, null, credentialsEncoded);
 
-        if (response.status === 200) handleGetClubSuccess(response);
-        else handleGetClubError(response);
+        if (response.status === 200) {
+          await handleGetClubSuccess(response);
+        } else {
+          handleGetClubError(response);
+        }
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
         navigate("/error");
