@@ -164,6 +164,8 @@ const Puts = () => {
 
   const createRoundsOfPuts = async (e) => {
     e.preventDefault();
+    const isDisabled = isAddRoundDisabled();
+    if (isDisabled) return;
 
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
     const dateCreated = getDate();
@@ -232,14 +234,17 @@ const Puts = () => {
 
   const isAddRoundDisabled = () => {
     if (error) return true;
-    if (!putsPerRound) return true;
+    if (!putsPerRound) {
+      setError("Please enter a number");
+      return true;
+    }
     return false;
   };
 
   const formFields = [
     {
       name: "putsPerRound",
-      label: "Number Of Puts (18 Holes)",
+      label: "Total Number Of Puts (18 Holes)",
       onChange: onInputChange,
       innerRef: null,
       value: putsPerRound,
@@ -278,16 +283,12 @@ const Puts = () => {
                         onChange={onInputChange}>
                         {item.value}
                       </InputField>
-                      {error && putsPerRound !== "" && <InputError>{error}</InputError>}
+                      {error || putsPerRound !== "" ? <InputError>{error}</InputError> : <></>}
                     </InputWrapper>
                   );
                 })}
                 {serverError && <ServerError>{serverError}</ServerError>}
-                <Button
-                  color="teal"
-                  styles="mt-7 mb-3 w-full"
-                  onClick={createRoundsOfPuts}
-                  disabled={isAddRoundDisabled()}>
+                <Button color="teal" styles="mt-7 mb-3 w-full" onClick={createRoundsOfPuts}>
                   Add Round
                 </Button>
               </FormCard>

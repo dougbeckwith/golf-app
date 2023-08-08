@@ -120,13 +120,20 @@ const SignIn = () => {
               );
             })}
             {serverError && <ServerError>{serverError}</ServerError>}
-            <Button
-              styles="mt-7 w-full"
-              color={"blue"}
-              onClick={handleSignIn}
-              disabled={isSignUpButtonDisabled()}>
-              Sign in
-            </Button>
+            {isSignUpButtonDisabled() ? (
+              <Button
+                styles="mt-7 w-full cursor-default hover:bg-blue-300"
+                color={"blue"}
+                onClick={handleSignIn}
+                disabled={true}>
+                Sign in
+              </Button>
+            ) : (
+              <Button styles="mt-7 w-full" color={"blue"} onClick={handleSignIn}>
+                Sign in
+              </Button>
+            )}
+
             <FormFooter text={"Need an account?"} to={"/signup"}>
               Sign Up
             </FormFooter>

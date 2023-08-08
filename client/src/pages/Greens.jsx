@@ -180,7 +180,8 @@ const Greens = () => {
 
   const createRoundsOfGreens = async (e) => {
     e.preventDefault();
-
+    const isDisabled = isAddRoundDisabled();
+    if (isDisabled) return;
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
     const dateCreated = getDate();
     const greens = +greensPerRound;
@@ -252,7 +253,10 @@ const Greens = () => {
 
   const isAddRoundDisabled = () => {
     if (error) return true;
-    if (!greensPerRound) return true;
+    if (!greensPerRound) {
+      setError("Please enter a number");
+      return true;
+    }
     return false;
   };
 
@@ -304,16 +308,12 @@ const Greens = () => {
                         onChange={onInputChange}>
                         {item.value}
                       </InputField>
-                      {error && greensPerRound !== "" && <InputError>{error}</InputError>}
+                      {error || greensPerRound !== "" ? <InputError>{error}</InputError> : <></>}
                     </InputWrapper>
                   );
                 })}
                 {serverError && <ServerError>{serverError}</ServerError>}
-                <Button
-                  color="teal"
-                  styles="mt-7 mb-3 w-full"
-                  onClick={createRoundsOfGreens}
-                  disabled={isAddRoundDisabled()}>
+                <Button color="teal" styles="mt-7 mb-3 w-full" onClick={createRoundsOfGreens}>
                   Add Round
                 </Button>
               </FormCard>

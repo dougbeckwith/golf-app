@@ -111,6 +111,8 @@ const Club = () => {
 
   const handleAddShot = async (e) => {
     e.preventDefault();
+    const isDisabled = isAddShotDisabled();
+    if (isDisabled) return;
     try {
       const response = await Fetch.create(`/clubs/${id}/shots`, { ...shot }, encodedCredentials);
       if (response.status === 201) handleAddShotSuccess(response);
@@ -137,11 +139,22 @@ const Club = () => {
   const onInputChange = (e) => {
     const { name, value } = e.target;
     setShot((prev) => ({ ...prev, [name]: value }));
+
     validateInput(e);
   };
 
   const validateInput = (e) => {
     let { name, value } = e.target;
+    console.log(name, value);
+
+    if (value === "" && name === "totalDistance") {
+      setError((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
+    if (value === "" && name === "totalCarry") {
+      setError((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
 
     setError((prev) => {
       const stateObj = { ...prev, [name]: "" };
@@ -182,25 +195,49 @@ const Club = () => {
   const isAddShotDisabled = () => {
     if (isLoading) return true;
     if (error.totalDistance || error.totalCarry) return true;
-    if (!shot.totalDistance || !shot.totalCarry) return true;
+    if (!shot.totalCarry && !shot.totalDistance) {
+      setError((prevError) => {
+        let error = { ...prevError };
+        error.totalDistance = "Please enter a total distance";
+        error.totalCarry = "Please enter a total carry distance";
+        return error;
+      });
+      return true;
+    }
+    if (!shot.totalDistance) {
+      setError((prevError) => {
+        let error = { ...prevError };
+        error.totalDistance = "Please enter a total distance";
+        return error;
+      });
+      return true;
+    }
+    if (!shot.totalCarry) {
+      setError((prevError) => {
+        let error = { ...prevError };
+        error.totalCarry = "Please enter a total carry distance";
+        return error;
+      });
+      return true;
+    }
     return false;
   };
 
   const formFields = [
     {
-      name: "totalCarry",
-      label: "Total Carry",
-      onChange: onInputChange,
-      innerRef: null,
-      value: shot.totalCarry,
-      type: "text"
-    },
-    {
       name: "totalDistance",
-      label: "Total Distance",
+      label: "Total Distance ( Yards )",
       onChange: onInputChange,
       innerRef: null,
       value: shot.totalDistance,
+      type: "text"
+    },
+    {
+      name: "totalCarry",
+      label: "Total Carry Distance ( Yards )",
+      onChange: onInputChange,
+      innerRef: null,
+      value: shot.totalCarry,
       type: "text"
     }
   ];
@@ -246,18 +283,16 @@ const Club = () => {
                             onChange={onInputChange}>
                             {shot[item.name]}
                           </InputField>
-                          {error && shot[item.name] !== "" && (
+                          {error || shot[item.name] !== "" ? (
                             <InputError>{error[item.name]}</InputError>
+                          ) : (
+                            <></>
                           )}
                         </InputWrapper>
                       );
                     })}
                     {serverError && <ServerError>{serverError}</ServerError>}
-                    <Button
-                      color="teal"
-                      styles="mt-7 mb-3 w-full"
-                      onClick={handleAddShot}
-                      disabled={isAddShotDisabled()}>
+                    <Button color="teal" styles="mt-7 mb-3 w-full" onClick={handleAddShot}>
                       Add Shot
                     </Button>
                   </FormCard>

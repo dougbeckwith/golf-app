@@ -204,13 +204,20 @@ const SignUp = () => {
             );
           })}
           {serverError && <ServerError>{serverError}</ServerError>}
-          <Button
-            color="blue"
-            styles="mt-7 w-full"
-            onClick={createUser}
-            disabled={isSignUpButtonDisabled()}>
-            Sign Up
-          </Button>
+          {isSignUpButtonDisabled() ? (
+            <Button
+              color="blue"
+              styles="mt-7 w-full cursor-default hover:bg-blue-300"
+              onClick={createUser}
+              disabled={true}>
+              Sign Up
+            </Button>
+          ) : (
+            <Button color="blue" styles="mt-7 w-full" onClick={createUser}>
+              Sign Up
+            </Button>
+          )}
+
           <AccountFooter text={"Already have an account?"} to={"/signin"}>
             Sign In
           </AccountFooter>
