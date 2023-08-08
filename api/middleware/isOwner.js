@@ -29,6 +29,20 @@ const isGreensOwner = async (req, res, next) => {
   next();
 };
 
+const isFairwayOwner = async (req, res, next) => {
+  if (!isDocumentOwner(req.fairway, req.currentUser._id)) {
+    return next(new AppError("Not Authorized", 403));
+  }
+  next();
+};
+
+const isFairwaysOwner = async (req, res, next) => {
+  if (!isDocumentsOwner(req.fairways, req.currentUser._id)) {
+    return next(new AppError("Not Authorized", 403));
+  }
+  next();
+};
+
 const isPutOwner = async (req, res, next) => {
   if (!isDocumentOwner(req.put, req.currentUser._id)) {
     return next(new AppError("Not Authorized", 403));
@@ -55,6 +69,8 @@ module.exports = {
   isClubsOwner,
   isGreenOwner,
   isGreensOwner,
+  isFairwayOwner,
+  isFairwaysOwner,
   isPutOwner,
   isPutsOwner,
   isShotOwner

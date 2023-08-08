@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 
 const clubRoutes = require("./routes/clubs");
 const greenRoutes = require("./routes/greens");
+const fairwayRoutes = require("./routes/fairways");
 const userRoutes = require("./routes/users");
 const putRoutes = require("./routes/puts");
 const shotRoutes = require("./routes/shots");
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/clubs", clubRoutes);
 app.use("/greens", greenRoutes);
+app.use("/fairways", fairwayRoutes);
 app.use("/user", userRoutes);
 app.use("/puts", putRoutes);
 app.use("/clubs/:id/shots", shotRoutes);

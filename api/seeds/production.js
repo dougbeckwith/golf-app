@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const { clubs, createClubs, deleteClubs } = require("./clubs");
 const { greens, createGreens, deleteGreens } = require("./greens");
+const { fairways, createFairways, deleteFairways } = require("./fairways");
 const { user, createUser, deleteUsers } = require("./user");
 const { deleteShots, createShots, associateShotsToClubs } = require("./shots");
 const { puts, deletePuts, createPuts } = require("./puts");
@@ -20,6 +21,7 @@ const clearDB = async () => {
     await deletePuts();
     await deleteShots();
     await deleteGreens();
+    await deleteFairways();
     console.log("Database cleared.");
   } catch (error) {
     throw error;
@@ -40,6 +42,7 @@ const seedDB = async () => {
     await createShots();
     await createGreens(greens);
     await associateShotsToClubs(clubs);
+    await createFairways(fairways);
     console.log("Seeding complete!!!");
     closeDbConnection();
   } catch (error) {

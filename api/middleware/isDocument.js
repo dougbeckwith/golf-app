@@ -2,6 +2,7 @@ const Club = require("../models/club");
 const Put = require("../models/put");
 const Shot = require("../models/shot");
 const Green = require("../models/green");
+const Fairway = require("../models/fairway");
 const AppError = require("../helpers/AppError");
 
 const isClub = async (req, res, next) => {
@@ -61,6 +62,35 @@ const isGreens = async (req, res, next) => {
   }
 };
 
+const isFairway = async (req, res, next) => {
+  try {
+    const fairway = await Fairway.findById(req.params.id);
+
+    if (!fairway) {
+      return next(new AppError("Fairway Not Found", 404));
+    }
+
+    req.fairway = fairway;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+const isFairways = async (req, res, next) => {
+  try {
+    const fairways = await Fairway.find({ user: req.currentUser._id });
+    if (!fairways) {
+      return next(new AppError("Fairways Not Found", 404));
+    }
+
+    req.fairways = fairways;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 const isPut = async (req, res, next) => {
   try {
     const put = await Put.findById(req.params.id);
@@ -108,6 +138,8 @@ module.exports = {
   isClubs,
   isGreen,
   isGreens,
+  isFairway,
+  isFairways,
   isPut,
   isPuts,
   isShot

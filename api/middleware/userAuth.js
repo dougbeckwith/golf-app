@@ -19,7 +19,6 @@ const authenticateUser = async (req, res, next) => {
   if (!credentials.pass) {
     return next(new AppError("Please Enter Password", 400));
   }
-
   if (credentials) {
     user = await User.findOne({ email: credentials.name }).exec();
   }

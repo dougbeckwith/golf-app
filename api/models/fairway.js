@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const greenSchema = new Schema(
+const fairwaySchema = new Schema(
   {
     dateCreated: {
       type: String,
       required: true
     },
-    greens: {
+    fairways: {
       type: Number,
       min: [0, "Please enter a number greater than 0"],
-      max: [100, "Please enter a number less than 100"],
+      max: [100, "Please enter a number less than 19"],
       required: [true, "Please enter a valid number"]
     },
     user: {
@@ -18,8 +18,8 @@ const greenSchema = new Schema(
       ref: "User"
     }
   },
-  { collection: "Greens" }
+  { collection: "Fairways" }
 );
 
-const Green = mongoose.model("Green", greenSchema);
-module.exports = Green;
+const Fairway = mongoose.model("Fairway", fairwaySchema);
+module.exports = Fairway;

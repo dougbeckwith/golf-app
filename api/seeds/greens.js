@@ -15,7 +15,7 @@ const createGreens = async (greens) => {
 };
 
 const deleteGreens = async () => {
-  console.log("Deleting puts...");
+  console.log("Deleting greens...");
   await Green.deleteMany({});
 };
 
@@ -23,7 +23,7 @@ const generateGreens = (numGreens) => {
   const greens = [];
   for (let i = 0; i < numGreens; i++) {
     greens.push({
-      greens: randomInt(5, 12),
+      greens: randomInt(40, 60),
       dateCreated: createDateWithRandomDay(),
       user: DEMO_USER_ID
     });
