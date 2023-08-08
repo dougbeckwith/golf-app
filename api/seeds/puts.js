@@ -23,7 +23,7 @@ const generatePuts = (numPuts) => {
   const puts = [];
   for (let i = 0; i < numPuts; i++) {
     puts.push({
-      puts: randomInt(24, 39),
+      puts: randomInt(34, 42),
       dateCreated: createDateWithRandomDay(),
       user: DEMO_USER_ID
     });

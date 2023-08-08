@@ -151,7 +151,6 @@ const Puts = () => {
         }
       ];
       const averagePuts = getAveragePutsPerRound(updatedPuts);
-      // setAvgPutsPerRound(averagePuts);
       setPutStats([
         { label: "Avg Puts", stat: averagePuts },
         { label: "Total Rounds", stat: updatedPuts.length }
@@ -265,7 +264,12 @@ const Puts = () => {
             <>
               <H2>Stats</H2>
               <div className="flex align- flex-wrap ">
-                <ChartSection dataPoint={"puts"} label={"Puts Per Round"} chartData={chartData} />
+                <ChartSection
+                  dataPoint={"puts"}
+                  label={"Puts Per Round"}
+                  chartData={chartData}
+                  max={50}
+                />
                 <StatsList styles={"self-start xl:mx-auto xl:gap-10 mt-5"} stats={putStats} />
               </div>
               <H2 styles={"mt-10"}>Add Round</H2>
