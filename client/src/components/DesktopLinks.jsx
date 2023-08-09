@@ -5,6 +5,9 @@ const DesktopLinks = ({ handleSignOut }) => {
   return (
     <ul id="nav" className="hidden text-sm md:flex gap-4 text-gray-200 w-full ml-10">
       <li>
+        <NavLink to="/dashboard">Dashboard</NavLink>
+      </li>
+      <li>
         <NavLink to="/clubs" end>
           Clubs
         </NavLink>

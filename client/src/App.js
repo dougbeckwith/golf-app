@@ -16,6 +16,8 @@ import Puts from "./pages/Puts";
 import UnhandledError from "./pages/UnhandledError";
 import Greens from "./pages/Greens";
 import Fairways from "./pages/Fairways";
+import Dashboard from "./pages/Dashboard";
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -37,6 +39,9 @@ const App = () => {
           </Route>
           <Route path="/fairways" element={<Layout />}>
             <Route index element={<Fairways />} />
+          </Route>
+          <Route path="/dashboard" element={<Layout />}>
+            <Route index element={<Dashboard />} />
           </Route>
         </Route>
 
