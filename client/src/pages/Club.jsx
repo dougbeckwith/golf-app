@@ -8,7 +8,6 @@ import ShotItem from "../components/ShotItem";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
 import H2 from "../components/HeadingTwo";
-import Loader from "../components/Spinner";
 import Main from "../components/Main";
 import Container from "../components/Container";
 import H1 from "../components/HeadingOne";
@@ -250,7 +249,7 @@ const Club = () => {
       <Main>
         <Container>
           {isLoading ? (
-            <Loader isLoading={isLoading} text={"Loading Club"} />
+            <Spinner isLoading={isLoading} text={"Loading Club"} />
           ) : (
             <>
               <Header>

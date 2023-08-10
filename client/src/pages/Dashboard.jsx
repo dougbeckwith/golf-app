@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
 import Spinner from "../components/Spinner";
@@ -19,8 +19,9 @@ const Dashboard = () => {
   const { authUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const [stats, setStats] = useState({ puts: "", greens: "", fairways: "" });
+  const [stats, setStats] = useState([{}]);
   const [isLoading, setIsLoading] = useState(true);
+  const [goals, setGoals] = useState(null);
 
   const handleResponseError = (response) => {
     if (response.status === 401) {
@@ -38,7 +39,11 @@ const Dashboard = () => {
     const averageGreensHit = getAverageGreensPerRound(greensData);
     console.log("avg greens", averageGreensHit);
     setStats((prevStats) => {
-      return { ...prevStats, greens: averageGreensHit };
+      if (prevStats.length) {
+        return prevStats.push({ greens: averageGreensHit, label: "Avg Greens Hit" });
+      } else {
+        return { greens: averageGreensHit, label: "Avg Greens Hit" };
+      }
     });
   };
 
@@ -57,7 +62,11 @@ const Dashboard = () => {
     const averagePutsPerRound = getAveragePutsPerRound(putsData);
     console.log("avg puts", averagePutsPerRound);
     setStats((prevStats) => {
-      return { ...prevStats, puts: averagePutsPerRound };
+      if (prevStats.length) {
+        return prevStats.push({ stat: averagePutsPerRound, label: "Avg Puts Per Round" });
+      } else {
+        return { stat: averagePutsPerRound, label: "Avg Puts Per Round" };
+      }
     });
   };
 
@@ -76,7 +85,11 @@ const Dashboard = () => {
     const averageFairwaysPerRound = getAverageFairwaysPerRound(fairwaysData);
     console.log("avg fairways", averageFairwaysPerRound);
     setStats((prevStats) => {
-      return { ...prevStats, fairways: averageFairwaysPerRound };
+      if (prevStats.length) {
+        return prevStats.push({ stat: averageFairwaysPerRound, label: "Avg Fairways Hit" });
+      } else {
+        return { stat: averageFairwaysPerRound, label: "Avg Fairways Hit" };
+      }
     });
   };
 
@@ -98,6 +111,7 @@ const Dashboard = () => {
         await getGreensData();
         await getPutsData();
         await getFairwaysData();
+
         setIsLoading(false);
       } catch (err) {
         console.log(err);
@@ -109,7 +123,8 @@ const Dashboard = () => {
 
     // eslint-disable-next-line
   }, []);
-
+  // goals
+  // Add goals page
   return (
     <>
       <Main>
@@ -117,7 +132,28 @@ const Dashboard = () => {
           <Header>
             <H1>Dashboard</H1>
           </Header>
-          <H2>Stats</H2>
+
+          {isLoading ? (
+            <Spinner isLoading={isLoading} text={"Loading Stats"} />
+          ) : (
+            <>
+              <H2>Stats</H2>
+              {stats && <p>{}</p>}
+              <H2>Goals</H2>
+              {goals ? (
+                <p>Goals</p>
+              ) : (
+                <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
+                  <h1 className="text-gray-200 mb-2  pt-2 text-center mx-auto max-w-4xl font-display text-sm lg:text-lg  md:text-xl font-medium tracking-tight ">
+                    Start adding some goals to improve your golf game.
+                  </h1>
+                  <Link to="/goals/new">
+                    <Button color={"blue"}>Add Goals</Button>
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
         </Container>
       </Main>
     </>

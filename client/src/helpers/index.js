@@ -60,6 +60,9 @@ const getDistanceBarPercentage = (averageDistance, longestDistance) => {
 };
 
 const getAveragePutsPerRound = (rounds) => {
+  if (rounds.length === 0) {
+    return 0;
+  }
   let totalPuts = 0;
   let avgPuts = null;
   const totalRounds = rounds.length;
@@ -74,6 +77,9 @@ const getAveragePutsPerRound = (rounds) => {
 };
 
 const getAverageGreensPerRound = (rounds) => {
+  if (rounds.length === 0) {
+    return 0;
+  }
   let totalGreens = 0;
   let avgGreens = null;
   const totalRounds = rounds.length;
@@ -88,6 +94,9 @@ const getAverageGreensPerRound = (rounds) => {
 };
 
 const getAverageFairwaysPerRound = (rounds) => {
+  if (rounds.length === 0) {
+    return 0;
+  }
   let totalFairways = 0;
   let avgFairways = null;
   const totalRounds = rounds.length;
