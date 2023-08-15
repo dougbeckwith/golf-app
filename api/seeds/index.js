@@ -8,6 +8,7 @@ const { user, createUser, deleteUsers } = require("./user");
 const { deleteShots, createShots, associateShotsToClubs } = require("./shots");
 const { puts, deletePuts, createPuts } = require("./puts");
 const { DB_DEV_URL } = require("../constants");
+const { deleteGoal, createGoal } = require("./goals");
 
 const closeDbConnection = () => {
   mongoose.connection.close();
@@ -22,6 +23,8 @@ const clearDB = async () => {
     await deleteShots();
     await deleteGreens();
     await deleteFairways();
+    await deleteGoal();
+
     console.log("Database cleared.");
   } catch (error) {
     throw error;
@@ -39,6 +42,8 @@ const seedDB = async () => {
     await createGreens(greens);
     await associateShotsToClubs(clubs);
     await createFairways(fairways);
+    await createGoal();
+
     console.log("Seeding complete!!!");
     closeDbConnection();
   } catch (error) {
