@@ -157,7 +157,6 @@ const Dashboard = () => {
           ) : (
             <>
               <H2>Stats</H2>
-
               <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={stats} />
               <H2>Goals</H2>
               {goals ? (

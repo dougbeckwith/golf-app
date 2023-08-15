@@ -22,7 +22,7 @@ const SignIn = () => {
   const [isLoading, setIsloading] = useState(false);
 
   useEffect(() => {
-    if (authUser) navigate("/clubs");
+    if (authUser) navigate("/dashboard");
   });
 
   useEffect(() => {

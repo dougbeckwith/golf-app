@@ -13,11 +13,11 @@ const Landing = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (authUser) navigate("/clubs");
+    if (authUser) navigate("/dashboard");
   });
 
   const handleDemoSignInSuccess = () => {
-    navigate("/clubs");
+    navigate("/dashboard");
   };
 
   const handleDemoSignInError = async (response) => {

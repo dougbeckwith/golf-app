@@ -26,7 +26,7 @@ const SignUp = () => {
   const [input, setInput] = useState({ email: "", password: "", confirmPassword: "" });
 
   useEffect(() => {
-    if (authUser) navigate("/clubs");
+    if (authUser) navigate("/dashboard");
   });
 
   useEffect(() => {

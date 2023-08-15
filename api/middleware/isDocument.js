@@ -2,6 +2,7 @@ const Club = require("../models/club");
 const Put = require("../models/put");
 const Shot = require("../models/shot");
 const Green = require("../models/green");
+const Goal = require("../models/goal");
 const Fairway = require("../models/fairway");
 const AppError = require("../helpers/AppError");
 
@@ -27,6 +28,21 @@ const isClubs = async (req, res, next) => {
     }
 
     req.clubs = clubs;
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+const isGoal = async (req, res, next) => {
+  try {
+    const goal = await Goal.findById(req.params.id);
+
+    if (!goal) {
+      return next(new AppError("Green Not Found", 404));
+    }
+
+    req.goal = goal;
     next();
   } catch (err) {
     next(err);
@@ -136,6 +152,7 @@ const isShot = async (req, res, next) => {
 module.exports = {
   isClub,
   isClubs,
+  isGoal,
   isGreen,
   isGreens,
   isFairway,
