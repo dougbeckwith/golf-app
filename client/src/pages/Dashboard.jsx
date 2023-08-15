@@ -9,6 +9,8 @@ import H1 from "../components/HeadingOne";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import H2 from "../components/HeadingTwo";
+import StatsList from "../components/StatsList";
+
 import {
   getAverageGreensPerRound,
   getAveragePutsPerRound,
@@ -19,7 +21,21 @@ const Dashboard = () => {
   const { authUser } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const [stats, setStats] = useState([{}]);
+  const [stats, setStats] = useState([
+    {
+      label: "Puts Per Round",
+      stat: 0
+    },
+    {
+      label: "Avg Fairways",
+      stat: 0
+    },
+    {
+      label: "Avg Greens",
+      stat: 0
+    }
+  ]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [goals, setGoals] = useState(null);
 
@@ -39,11 +55,12 @@ const Dashboard = () => {
     const averageGreensHit = getAverageGreensPerRound(greensData);
     console.log("avg greens", averageGreensHit);
     setStats((prevStats) => {
-      if (prevStats.length) {
-        return prevStats.push({ greens: averageGreensHit, label: "Avg Greens Hit" });
-      } else {
-        return { greens: averageGreensHit, label: "Avg Greens Hit" };
-      }
+      const newStats = [...prevStats];
+      newStats[2] = {
+        label: "Avg Greens",
+        stat: `${averageGreensHit}%`
+      };
+      return newStats;
     });
   };
 
@@ -62,11 +79,12 @@ const Dashboard = () => {
     const averagePutsPerRound = getAveragePutsPerRound(putsData);
     console.log("avg puts", averagePutsPerRound);
     setStats((prevStats) => {
-      if (prevStats.length) {
-        return prevStats.push({ stat: averagePutsPerRound, label: "Avg Puts Per Round" });
-      } else {
-        return { stat: averagePutsPerRound, label: "Avg Puts Per Round" };
-      }
+      const newStats = [...prevStats];
+      newStats[0] = {
+        label: "Avg Puts",
+        stat: averagePutsPerRound
+      };
+      return newStats;
     });
   };
 
@@ -85,11 +103,12 @@ const Dashboard = () => {
     const averageFairwaysPerRound = getAverageFairwaysPerRound(fairwaysData);
     console.log("avg fairways", averageFairwaysPerRound);
     setStats((prevStats) => {
-      if (prevStats.length) {
-        return prevStats.push({ stat: averageFairwaysPerRound, label: "Avg Fairways Hit" });
-      } else {
-        return { stat: averageFairwaysPerRound, label: "Avg Fairways Hit" };
-      }
+      const newStats = [...prevStats];
+      newStats[1] = {
+        label: "Avg Fairways",
+        stat: `${averageFairwaysPerRound}%`
+      };
+      return newStats;
     });
   };
 
@@ -138,7 +157,8 @@ const Dashboard = () => {
           ) : (
             <>
               <H2>Stats</H2>
-              {stats && <p>{}</p>}
+
+              <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={stats} />
               <H2>Goals</H2>
               {goals ? (
                 <p>Goals</p>
