@@ -17,6 +17,7 @@ import UnhandledError from "./pages/UnhandledError";
 import Greens from "./pages/Greens";
 import Fairways from "./pages/Fairways";
 import Dashboard from "./pages/Dashboard";
+import AddGoal from "./pages/AddGoal";
 
 const App = () => {
   return (
@@ -43,6 +44,16 @@ const App = () => {
           <Route path="/dashboard" element={<Layout />}>
             <Route index element={<Dashboard />} />
           </Route>
+          <Route path="/goals" element={<Layout />}>
+            <Route path="new" element={<AddGoal />} />
+            {/* <Route path="edit" element={<EditGoal />} /> */}
+          </Route>
+          {/* <Route path="/goals/new" element={<Layout />}>
+            <Route index element={<AddGoal />} />
+          </Route>
+          <Route path="/goals/edit" element={<Layout />}>
+            <Route index element={<EditGoal />} />
+          </Route> */}
         </Route>
 
         {/* public routes */}

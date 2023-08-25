@@ -9,9 +9,11 @@ const AppError = require("../helpers/AppError");
 const isClub = async (req, res, next) => {
   try {
     const club = await Club.findById(req.params.id).populate("shots").exec();
+
     if (!club) {
       return next(new AppError("Club Not Found", 404));
     }
+
     req.club = club;
     next();
   } catch (err) {
@@ -36,13 +38,13 @@ const isClubs = async (req, res, next) => {
 
 const isGoal = async (req, res, next) => {
   try {
-    const goal = await Goal.findById(req.params.id);
+    const goal = await Goal.find({ user: req.currentUser._id });
 
     if (!goal) {
-      return next(new AppError("Green Not Found", 404));
+      return next(new AppError("Goal Not Found", 404));
     }
 
-    req.goal = goal;
+    req.goals = goal[0];
     next();
   } catch (err) {
     next(err);
@@ -67,6 +69,7 @@ const isGreen = async (req, res, next) => {
 const isGreens = async (req, res, next) => {
   try {
     const greens = await Green.find({ user: req.currentUser._id });
+
     if (!greens) {
       return next(new AppError("Greens Not Found", 404));
     }
@@ -96,6 +99,7 @@ const isFairway = async (req, res, next) => {
 const isFairways = async (req, res, next) => {
   try {
     const fairways = await Fairway.find({ user: req.currentUser._id });
+
     if (!fairways) {
       return next(new AppError("Fairways Not Found", 404));
     }
@@ -125,6 +129,7 @@ const isPut = async (req, res, next) => {
 const isPuts = async (req, res, next) => {
   try {
     const puts = await Put.find({ user: req.currentUser._id });
+
     if (!puts) {
       return next(new AppError("Puts Not Found", 404));
     }
@@ -139,9 +144,11 @@ const isPuts = async (req, res, next) => {
 const isShot = async (req, res, next) => {
   try {
     const shot = await Shot.findById(req.params.shotId);
+
     if (!shot) {
       return next(new AppError("Shot Not Found", 404));
     }
+
     req.shot = shot;
     next();
   } catch (err) {

@@ -22,7 +22,7 @@ const deleteGoal = async (req, res, next) => {
 
 const sendGoal = async (req, res, next) => {
   try {
-    res.status(200).send(req.fairways);
+    res.status(200).send(req.goals);
   } catch (error) {
     next(error);
   }

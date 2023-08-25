@@ -122,6 +122,28 @@ const Dashboard = () => {
     }
   };
 
+  const handleGetGoalDataSuccess = async (response) => {
+    console.log(response);
+    const goalsData = await response.json();
+
+    console.log("goals", goalsData);
+    setGoals([
+      { fairways: goalsData.fairways },
+      { greens: goalsData.greens },
+      { puts: goalsData.puts }
+    ]);
+  };
+
+  const getGoalData = async () => {
+    const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+    const response = await Fetch.get("/goals", null, encodedCredentials);
+    if (response.status === 200) {
+      await handleGetGoalDataSuccess(response);
+    } else {
+      handleResponseError(response);
+    }
+  };
+
   useEffect(() => {
     const getAllStats = async () => {
       setIsLoading(true);
@@ -130,6 +152,7 @@ const Dashboard = () => {
         await getGreensData();
         await getPutsData();
         await getFairwaysData();
+        await getGoalData();
 
         setIsLoading(false);
       } catch (err) {
@@ -160,7 +183,16 @@ const Dashboard = () => {
               <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={stats} />
               <H2>Goals</H2>
               {goals ? (
-                <p>Goals</p>
+                goals.map((goal, index) => {
+                  const key = Object.keys(goal)[0];
+                  const value = goal[key];
+                  return (
+                    <p>
+                      {" "}
+                      {key} {value}
+                    </p>
+                  );
+                })
               ) : (
                 <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
                   <h1 className="text-gray-200 mb-2  pt-2 text-center mx-auto max-w-4xl font-display text-sm lg:text-lg  md:text-xl font-medium tracking-tight ">

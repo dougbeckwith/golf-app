@@ -268,6 +268,7 @@ const Puts = () => {
                   dataPoint={"puts"}
                   label={"Puts Per Round"}
                   chartData={chartData}
+                  min={0}
                   max={50}
                 />
                 <StatsList styles={"self-start xl:mx-auto xl:gap-10 mt-5"} stats={putStats} />

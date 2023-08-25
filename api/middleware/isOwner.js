@@ -16,7 +16,7 @@ const isClubsOwner = async (req, res, next) => {
 };
 
 const isGoalOwner = async (req, res, next) => {
-  if (!isDocumentOwner(req.goal, req.currentUser._id)) {
+  if (!isDocumentOwner(req.goals, req.currentUser._id)) {
     return next(new AppError("Not Authorized", 403));
   }
   next();
