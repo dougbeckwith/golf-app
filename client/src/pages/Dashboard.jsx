@@ -10,12 +10,14 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import H2 from "../components/HeadingTwo";
 import StatsList from "../components/StatsList";
+import GoalCard from "../components/GoalCard";
 
 import {
   getAverageGreensPerRound,
   getAveragePutsPerRound,
   getAverageFairwaysPerRound
 } from "../helpers";
+import GoalList from "../components/GoalList";
 
 const Dashboard = () => {
   const { authUser } = useContext(UserContext);
@@ -53,7 +55,6 @@ const Dashboard = () => {
     const greensData = await response.json();
 
     const averageGreensHit = getAverageGreensPerRound(greensData);
-    console.log("avg greens", averageGreensHit);
     setStats((prevStats) => {
       const newStats = [...prevStats];
       newStats[2] = {
@@ -77,7 +78,6 @@ const Dashboard = () => {
   const handleGetPutsSuccess = async (response) => {
     const putsData = await response.json();
     const averagePutsPerRound = getAveragePutsPerRound(putsData);
-    console.log("avg puts", averagePutsPerRound);
     setStats((prevStats) => {
       const newStats = [...prevStats];
       newStats[0] = {
@@ -101,7 +101,6 @@ const Dashboard = () => {
   const handleGetFairwaysSuccess = async (response) => {
     const fairwaysData = await response.json();
     const averageFairwaysPerRound = getAverageFairwaysPerRound(fairwaysData);
-    console.log("avg fairways", averageFairwaysPerRound);
     setStats((prevStats) => {
       const newStats = [...prevStats];
       newStats[1] = {
@@ -126,11 +125,11 @@ const Dashboard = () => {
     console.log(response);
     const goalsData = await response.json();
 
-    console.log("goals", goalsData);
+    console.log(goalsData);
     setGoals([
-      { fairways: goalsData.fairways },
-      { greens: goalsData.greens },
-      { puts: goalsData.puts }
+      { puts: goalsData.puts, label: "Puts" },
+      { fairways: goalsData.fairways, label: "Fairways" },
+      { greens: goalsData.greens, label: "Greens" }
     ]);
   };
 
@@ -183,16 +182,11 @@ const Dashboard = () => {
               <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={stats} />
               <H2>Goals</H2>
               {goals ? (
-                goals.map((goal, index) => {
-                  const key = Object.keys(goal)[0];
-                  const value = goal[key];
-                  return (
-                    <p>
-                      {" "}
-                      {key} {value}
-                    </p>
-                  );
-                })
+                <GoalList
+                  styles={"flex flex-wrap self-start gap-3 mt-8"}
+                  goals={goals}
+                  stats={stats}
+                />
               ) : (
                 <div className="flex bg-dark-200 mt-5 lg:mt-10 pb-5 rounded-md flex-col justify-center items-center">
                   <h1 className="text-gray-200 mb-2  pt-2 text-center mx-auto max-w-4xl font-display text-sm lg:text-lg  md:text-xl font-medium tracking-tight ">
