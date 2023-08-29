@@ -10,7 +10,6 @@ import Button from "../components/Button";
 import Header from "../components/Header";
 import H2 from "../components/HeadingTwo";
 import StatsList from "../components/StatsList";
-import GoalCard from "../components/GoalCard";
 
 import {
   getAverageGreensPerRound,
@@ -126,11 +125,15 @@ const Dashboard = () => {
     const goalsData = await response.json();
 
     console.log(goalsData);
-    setGoals([
-      { puts: goalsData.puts, label: "Puts" },
-      { fairways: goalsData.fairways, label: "Fairways" },
-      { greens: goalsData.greens, label: "Greens" }
-    ]);
+    if (goalsData.length === 0) {
+      setGoals(null);
+    } else {
+      setGoals([
+        { puts: goalsData.puts, label: "Puts" },
+        { fairways: goalsData.fairways, label: "Fairways" },
+        { greens: goalsData.greens, label: "Greens" }
+      ]);
+    }
   };
 
   const getGoalData = async () => {
@@ -180,7 +183,14 @@ const Dashboard = () => {
             <>
               <H2>Stats</H2>
               <StatsList styles={"flex flex-wrap self-start gap-3 mt-8"} stats={stats} />
-              <H2>Goals</H2>
+              <Header>
+                <H2>Goals</H2>
+                {goals && (
+                  <Link to="/goals/edit" className="ml-auto">
+                    <Button color={"blue"}>Edit Goals</Button>
+                  </Link>
+                )}
+              </Header>
               {goals ? (
                 <GoalList
                   styles={"flex flex-wrap self-start gap-3 mt-8"}

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import Fetch from "../helpers/fetch";
 import H1 from "../components/HeadingOne";
@@ -17,19 +17,29 @@ const EditGoal = () => {
   const navigate = useNavigate();
   const { authUser } = useContext(UserContext);
 
-  const params = useParams();
-  const id = params.id;
-
   const goalInputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [goalId, setGoalId] = useState("");
   const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ puts: "", fairways: "", greens: "" });
   const [input, setInput] = useState({ puts: "", fairways: "", greens: "", user: authUser._id });
 
   const handleGetGoalSuccess = async (response) => {
     const goal = await response.json();
-    setInput({ name: goal.name, brand: goal.brand });
-    goalInputRef.current.focus();
+    console.log(goal);
+    if (goal.length === 0) {
+      navigate("/dashboard");
+    } else {
+      setGoalId(goal._id);
+      setInput({ name: goal.name, brand: goal.brand });
+      setInput({
+        puts: goal.puts,
+        fairways: goal.fairways,
+        greens: goal.greens,
+        user: authUser._id
+      });
+      goalInputRef.current.focus();
+    }
   };
 
   const handleGetGoalError = (response) => {
@@ -80,10 +90,9 @@ const EditGoal = () => {
     e.preventDefault();
 
     const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
-    const updatedClub = { name: input.name, brand: input.brand, user: authUser._id };
 
     try {
-      const response = await Fetch.update(`/goals`, updatedClub, encodedCredentials);
+      const response = await Fetch.update(`/goals/${goalId}`, input, encodedCredentials);
       console.log(response);
 
       if (response.status === 200) {
@@ -204,6 +213,7 @@ const EditGoal = () => {
           <Spinner isLoading={isLoading} text={"Loading Data"} />
         ) : (
           <FormCard>
+            <p className="text-gray-200 text-center">Per 18 Holes</p>
             {formFields.map((item, index) => {
               return (
                 <div key={index} className="mt-2">

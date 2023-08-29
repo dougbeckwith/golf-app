@@ -17,13 +17,53 @@ const AddGoal = () => {
   const navigate = useNavigate();
   const { authUser } = useContext(UserContext);
   const goalInputRef = useRef(null);
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState("");
   const [error, setError] = useState({ puts: "", fairways: "", greens: "" });
   const [input, setInput] = useState({ puts: "", fairways: "", greens: "", user: authUser._id });
 
+  const handleGetGoalSuccess = async (response) => {
+    const goals = await response.json();
+    if (goals.length === 0) {
+      goalInputRef.current.focus();
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleGetGoalError = (response) => {
+    if (response.status === 401) {
+      navigate("/signin");
+    } else if (response.status === 403) {
+      navigate("/forbidden");
+    } else if (response.status === 404) {
+      navigate("/notfound");
+    } else {
+      navigate("/error");
+    }
+  };
+
   useEffect(() => {
-    goalInputRef.current.focus();
+    const getGoal = async () => {
+      setIsLoading(true);
+      try {
+        const encodedCredentials = btoa(`${authUser.email}:${authUser.password}`);
+        const response = await Fetch.get(`/goals`, null, encodedCredentials);
+
+        if (response.status === 200) {
+          handleGetGoalSuccess(response);
+        } else {
+          handleGetGoalError(response);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getGoal();
+    // eslint-disable-next-line
   }, []);
 
   const handleAddGoalError = async (response) => {
@@ -43,11 +83,10 @@ const AddGoal = () => {
 
     try {
       const response = await Fetch.create("/goals", input, encodedCredentials);
-
       if (response.status === 201) handleAddGoalSuccess();
       else handleAddGoalError(response);
 
-      setIsloading(false);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -124,30 +163,30 @@ const AddGoal = () => {
   const formFields = [
     {
       name: "puts",
-      label: "Puts Per Round",
+      label: "Number Of Puts",
       onChange: onInputChange,
       innerRef: goalInputRef,
       value: input.puts,
       type: "text",
-      placeHolder: "33"
+      placeHolder: ""
     },
     {
       name: "greens",
-      label: "Greens",
+      label: "Percent Of Greens Hit",
       onChange: onInputChange,
       innerRef: null,
       value: input.greens,
       type: "text",
-      placeHolder: "50"
+      placeHolder: ""
     },
     {
       name: "fairways",
-      label: "Fairways",
+      label: "Percent Of Fairways Hit",
       onChange: onInputChange,
       innerRef: null,
       value: input.fairways,
       type: "text",
-      placeHolder: "50"
+      placeHolder: ""
     }
   ];
 
@@ -159,6 +198,7 @@ const AddGoal = () => {
           <Spinner isLoading={isLoading} text={"Loading Data"} />
         ) : (
           <FormCard>
+            <p className="text-gray-200 text-center">Per 18 Holes</p>
             {formFields.map((item, index) => {
               return (
                 <div key={index} className="mt-2">

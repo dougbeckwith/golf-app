@@ -43,8 +43,13 @@ const isGoal = async (req, res, next) => {
     if (!goal) {
       return next(new AppError("Goal Not Found", 404));
     }
+    if (goal.length === 0) {
+      req.goals = [];
+      return res.send([]);
+    } else {
+      req.goals = goal[0];
+    }
 
-    req.goals = goal[0];
     next();
   } catch (err) {
     next(err);
